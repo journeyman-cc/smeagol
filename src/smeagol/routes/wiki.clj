@@ -18,6 +18,7 @@
 (ns smeagol.routes.wiki
   (:use clojure.walk)
   (:require [compojure.core :refer :all]
+            [clj-jgit.porcelain :as git]
             [noir.io :as io]
             [noir.response :as response]
             [noir.util.route :as route]
@@ -27,11 +28,21 @@
             [smeagol.util :as util]))
 
 (defn process-source
-  "Process `source-text` and save it to the specified `file-path`, finally redirecting to wiki-page"
-  [file-path source-text request]
-  (let [params (keywordize-keys (:params request))
-        content (or (:content params) "Introduction")]
+  "Process `source-text` and save it to the specified `file-path`, committing it
+   to Git and finally redirecting to wiki-page."
+  [params]
+  (let [source-text (:src params)
+        content (:content params)
+        file-name (str content ".md")
+        file-path (str (io/resource-path) "/content/" file-name)
+        exists? (.exists (clojure.java.io/as-file file-path))
+        git-repo (git/load-repo (str (io/resource-path) "/content/.git"))
+        user (session/get :user)
+        email (auth/get-email user)
+        summary (:summary params)]
     (spit file-path source-text)
+    (if (not exists?) (git/git-add git-repo file-name))
+    (git/git-commit git-repo summary {:name user :email email})
     (response/redirect (str "/wiki?" content))
   ))
 
@@ -45,14 +56,15 @@
         file-name (str "/content/" content ".md")
         file-path (str (io/resource-path) file-name)
         exists? (.exists (clojure.java.io/as-file file-path))]
-    (cond src-text (process-source file-path src-text request)
+    (cond src-text (process-source params)
           true
           (layout/render "edit.html"
                    {:title content
                     :left-bar (util/md->html "/content/_edit-left-bar.md")
                     :header (util/md->html "/content/_header.md")
                     :content (if exists? (io/slurp-resource file-name) "")
-                    :user (session/get :user)}))))
+                    :user (session/get :user)
+                    :exists exists?}))))
 
 (defn local-links
   "Rewrite text in `html-src` surrounded by double square brackets as a local link into this wiki."
