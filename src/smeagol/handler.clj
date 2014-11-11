@@ -73,7 +73,7 @@
            :middleware (load-middleware)
            :ring-defaults (mk-defaults false)
            ;; add access rules here
-           :access-rules [{:redirect "/login"
+           :access-rules [{:redirect "auth"
                 :rule user-access}]
            ;; serialize/deserialize the following data formats
            ;; available formats:

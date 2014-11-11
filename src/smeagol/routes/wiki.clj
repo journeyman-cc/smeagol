@@ -3,6 +3,9 @@
   (:require [compojure.core :refer :all]
             [noir.io :as io]
             [noir.response :as response]
+            [noir.util.route :as route]
+            [noir.session :as session]
+            [smeagol.authenticate :as auth]
             [smeagol.layout :as layout]
             [smeagol.util :as util]))
 
@@ -31,9 +34,11 @@
                    {:title content
                     :left-bar (util/md->html "/content/_edit-left-bar.md")
                     :header (util/md->html "/content/_header.md")
-                    :content (if exists? (io/slurp-resource file-name) "")}))))
+                    :content (if exists? (io/slurp-resource file-name) "")
+                    :user (session/get :user)}))))
 
 (defn local-links
+  "Rewrite text in `html-src` surrounded by double square brackets as a local link into this wiki."
   [html-src]
   (clojure.string/replace html-src #"\[\[[^\[\]]*\]\]"
                           #(let [text (clojure.string/replace %1 #"[\[\]]" "")]
@@ -52,9 +57,34 @@
                    {:title content
                     :left-bar (util/md->html "/content/_left-bar.md")
                     :header (util/md->html "/content/_header.md")
-                    :content (local-links (util/md->html file-name))})
+                    :content (local-links (util/md->html file-name))
+                    :user (session/get :user)})
           true (response/redirect (str "edit?content=" content)))))
 
+(defn auth-page
+  "Render the auth page"
+  [request]
+  (let [params (keywordize-keys (:params request))
+        username (:username params)
+        password (:password params)
+        action (:action params)
+        user (session/get :user)]
+    (println (str "Action = " action))
+    (cond
+      (= action "Logout!") 
+      (do 
+        (session/remove! :user)
+        (response/redirect "wiki"))
+      (and username password (auth/authenticate username password))
+      (do
+        (session/put! :user username)
+        (response/redirect "wiki"))
+      true
+      (layout/render "auth.html"
+                   {:title (if user (str "Logout " user) "Log in")
+                    :left-bar (util/md->html "/content/_left-bar.md")
+                    :header (util/md->html "/content/_header.md")
+                    :user user}))))
 
 (defn about-page []
   (layout/render "about.html"))
@@ -62,6 +92,8 @@
 (defroutes wiki-routes
   (GET "/wiki" request (wiki-page request))
   (GET "/" request (wiki-page request))
-  (GET "/edit" request (edit-page request))
-  (POST "/edit" request (edit-page request))
+  (GET "/edit" request (route/restricted (edit-page request)))
+  (POST "/edit" request (route/restricted (edit-page request)))
+  (GET "/auth" request (auth-page request))
+  (POST "/auth" request (auth-page request))
   (GET "/about" [] (about-page)))

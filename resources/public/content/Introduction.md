@@ -10,11 +10,19 @@ Smeagol uses the Markdown format as provided by [markdown-clj](https://github.co
 
 ## Security and authentication
 
-Not done yet.
+Currently security is very weak. There is currently a file called *passwd* in the *resources/public* directory, which contains a clojure map of username/plain-text password pairs thus:
+
+    {:admin "admin"}
+
+that is to say, the username is a keyword and the corresponding password is a string. Obviously, this is a temporary solution while in development which I will fix later.
 
 ## Todo
 
-Git integration!
+* Git integration! Smeagol doesn't have any inbuilt versioning or backup mechanism; it's intended that Git will be used as that mechanism. But it isn't implemented yet.
+* Image (and other media) upload.
+* Improved security.
+* Mechanism to add users through the user interface.
+* Mechanism to change passwords through the user interface.
 
 ## Editing the framing content
 

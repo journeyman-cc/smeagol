@@ -18,6 +18,13 @@ body {
   background:rgba(40,40,40,0.8);
 }
 
+#user {
+	font-height: 66%;
+	float: right;
+	padding: 0.1em 0.75em;
+    margin: 0;
+}
+
 /* only needed for fly-out menu effect on tablet and phone stylesheets */
 #nav-icon {
   display: none;
@@ -120,8 +127,13 @@ input {
   background-color: white;
 }
 
-input.submit {
+input.action {
   background-color: green;
+}
+
+input.action-dangerous {
+	color: white;
+	background-color: red;
 }
 
 input.required:after {
