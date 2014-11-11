@@ -32,7 +32,7 @@
   (let [params (keywordize-keys (:params request))
         content (or (:content params) "Introduction")]
     (spit file-path source-text)
-    (response/redirect (str "wiki?" content))
+    (response/redirect (str "/wiki?" content))
   ))
 
 (defn edit-page
@@ -76,7 +76,7 @@
                     :header (util/md->html "/content/_header.md")
                     :content (local-links (util/md->html file-name))
                     :user (session/get :user)})
-          true (response/redirect (str "edit?content=" content)))))
+          true (response/redirect (str "/edit?content=" content)))))
 
 (defn auth-page
   "Render the auth page"
@@ -91,11 +91,11 @@
       (= action "Logout!") 
       (do 
         (session/remove! :user)
-        (response/redirect "wiki"))
+        (response/redirect "/wiki"))
       (and username password (auth/authenticate username password))
       (do
         (session/put! :user username)
-        (response/redirect "wiki"))
+        (response/redirect "/wiki"))
       true
       (layout/render "auth.html"
                    {:title (if user (str "Logout " user) "Log in")
