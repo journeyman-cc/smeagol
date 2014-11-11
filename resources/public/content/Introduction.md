@@ -25,6 +25,12 @@ that is to say, the username is a keyword and the corresponding password is a st
 * Mechanism to add users through the user interface;
 * Mechanism to change passwords through the user interface;
 
+## License
+
+Copyright © 2014 Simon Brooke. Licensed under the GNU General Public License,
+version 2.0 or (at your option) any later version.
+
+
 ## Editing the framing content
 
 You can edit the [[\_left-bar]], the [[\_edit-left-bar]], and the [[\_header]].
