@@ -19,8 +19,9 @@ that is to say, the username is a keyword and the corresponding password is a st
 
 ## Todo
 
+* Currently, you need to do a 'git init' in the *resources/public/content* directory to initialise a git repository there - it should automatically create one if none exists, but does not currently do this;
 * Image (and other media) upload;
-* Improved editor. The editor is at present very primitive - right back from the beginnings of the Web. It would be nice to have a rich embedded editor like [Hallo](https://github.com/bergie/hallo) or [Aloha](http://aloha-editor.org/Content.Node/index.html) but I havenven't (yet) had time to integrate them!
+* Improved editor. The editor is at present very primitive - right back from the beginnings of the Web. It would be nice to have a rich embedded editor like [Hallo](https://github.com/bergie/hallo) or [Aloha](http://aloha-editor.org/Content.Node/index.html) but I haven't (yet) had time to integrate them!
 * Improved security. Having the passwords in plain text rather than encrypted is just basically poor; having the passwd file in *public* space is also poor (although I believe it cannot be accessed via HTTP). Essentially, authentication mechanisms should be pluggable, and at present they aren't; 
 * Mechanism to add users through the user interface;
 * Mechanism to change passwords through the user interface;
