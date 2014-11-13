@@ -2,11 +2,11 @@
   :description "A simple Git-backed Wiki inspired by Gollum"
   :url "http://example.com/FIXME"
   :dependencies [[org.clojure/clojure "1.6.0"]
-                 [lib-noir "0.9.4"]
+                 [lib-noir "0.9.4" :exclusions [org.clojure/core.memoize org.clojure/tools.reader]]
                  [ring-server "0.3.1"]
                  [selmer "0.7.2"]
-                 [com.taoensso/timbre "3.3.1"]
-                 [com.taoensso/tower "3.0.2"]
+                 [com.taoensso/timbre "3.3.1" :exclusions [org.clojure/tools.reader]]
+                 [com.taoensso/tower "3.0.2" :exclusions [com.taoensso/encore]]
                  [markdown-clj "0.9.55" :exclusions [com.keminglabs/cljx]]
                  [clj-jgit "0.8.1"]
                  [environ "1.0.0"]
@@ -16,10 +16,10 @@
 
   :repl-options {:init-ns smeagol.repl}
   :jvm-opts ["-server"]
-  :plugins [[lein-ring "0.8.13"]
+  :plugins [[lein-ring "0.8.13" :exclusions [org.clojure/clojure]]
             [lein-environ "1.0.0"]
-            [lein-ancient "0.5.5"]
-            [lein-marginalia "0.7.1"]]
+            [lein-ancient "0.5.5" :exclusions [org.clojure/clojure org.clojure/data.xml]]
+            [lein-marginalia "0.7.1" :exclusions [org.clojure/clojure]]]
   :ring {:handler smeagol.handler/app
          :init    smeagol.handler/init
          :destroy smeagol.handler/destroy}
