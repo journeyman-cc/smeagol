@@ -4,6 +4,10 @@ Smeagol is a simple Wiki engine inspired by [Gollum](https://github.com/gollum/g
 
 So at this stage Smeagol is a Wiki engine written in Clojure which uses Markdown as its text format, which does have user authentication, and which uses Git as its versioning and backup system.
 
+## DLL Hell
+
+Unfortunately, Smeagol currently uses **[clj-jgit](https://github.com/clj-jgit/clj-jgit)** for Git integration, and **clj-jgit** depends on an obsolete version (0.5.3) of **org.clojure/core.memoize**, whereas other components of the system rely on the current (0.5.6) version. This conflict currently makes it tricky to do an out-of-the-box build of Smeagol. You need to check out clj-jgit and build a custom build, depending on the current, not the obsolete, version of memoize. I'm working to fix this problem.
+
 ## Markup syntax
 
 Smeagol uses the Markdown format as provided by [markdown-clj](https://github.com/yogthos/markdown-clj), with the addition that anything enclosed in double square brackets, \[\[like this\]\], will be treated as a link into the wiki.

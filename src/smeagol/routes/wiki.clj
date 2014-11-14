@@ -100,8 +100,8 @@
         user (session/get :user)]
     (println (str "Action = " action))
     (cond
-      (= action "Logout!") 
-      (do 
+      (= action "Logout!")
+      (do
         (session/remove! :user)
         (response/redirect "/wiki"))
       (and username password (auth/authenticate username password))
