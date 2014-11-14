@@ -84,8 +84,8 @@
     (cond exists?
       (layout/render "wiki.html"
                    {:title content
-                    :left-bar (util/md->html "/content/_left-bar.md")
-                    :header (util/md->html "/content/_header.md")
+                    :left-bar (local-links (util/md->html "/content/_left-bar.md"))
+                    :header (local-links (util/md->html "/content/_header.md"))
                     :content (local-links (util/md->html file-name))
                     :user (session/get :user)})
           true (response/redirect (str "/edit?content=" content)))))
