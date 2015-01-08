@@ -27,6 +27,14 @@
             [smeagol.layout :as layout]
             [smeagol.util :as util]))
 
+
+(defn local-links
+  "Rewrite text in `html-src` surrounded by double square brackets as a local link into this wiki."
+  [html-src]
+  (clojure.string/replace html-src #"\[\[[^\[\]]*\]\]"
+                          #(let [text (clojure.string/replace %1 #"[\[\]]" "")]
+                             (str "<a href='wiki?content=" text "'>" text "</a>"))))
+
 (defn process-source
   "Process `source-text` and save it to the specified `file-path`, committing it
    to Git and finally redirecting to wiki-page."
@@ -60,18 +68,11 @@
           true
           (layout/render "edit.html"
                    {:title content
-                    :left-bar (util/md->html "/content/_edit-left-bar.md")
-                    :header (util/md->html "/content/_header.md")
+                    :left-bar (local-links (util/md->html "/content/_edit-left-bar.md"))
+                    :header (local-links (util/md->html "/content/_header.md"))
                     :content (if exists? (io/slurp-resource file-name) "")
                     :user (session/get :user)
                     :exists exists?}))))
-
-(defn local-links
-  "Rewrite text in `html-src` surrounded by double square brackets as a local link into this wiki."
-  [html-src]
-  (clojure.string/replace html-src #"\[\[[^\[\]]*\]\]"
-                          #(let [text (clojure.string/replace %1 #"[\[\]]" "")]
-                             (str "<a href='wiki?content=" text "'>" text "</a>"))))
 
 (defn wiki-page
   "Render the markdown page specified in this `request`, if any. If none found, redirect to edit-page"
@@ -98,7 +99,6 @@
         password (:password params)
         action (:action params)
         user (session/get :user)]
-    (println (str "Action = " action))
     (cond
       (= action "Logout!")
       (do
@@ -111,8 +111,8 @@
       true
       (layout/render "auth.html"
                    {:title (if user (str "Logout " user) "Log in")
-                    :left-bar (util/md->html "/content/_left-bar.md")
-                    :header (util/md->html "/content/_header.md")
+                    :left-bar (local-links (util/md->html "/content/_left-bar.md"))
+                    :header (local-links (util/md->html "/content/_header.md"))
                     :user user}))))
 
 (defn about-page []

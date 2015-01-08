@@ -7,7 +7,7 @@
 + \!\[image alt text\]\(http://url.of.image\)
 + \+ (at start of line) ordinary bulleted lists
 + \1\. (at start of line) numbered lists
-+ \**bold*\*
++ \*\***bold**\*\*
 + \__italic_\_
 
 More documentation [here](http://daringfireball.net/projects/markdown/syntax)

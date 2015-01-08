@@ -1,4 +1,4 @@
-/* 
+/*
  * Smeagol: a very simple Wiki engine
  * Copyright (C) 2014 Simon Brooke
 
@@ -14,10 +14,10 @@
 
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, 
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
  * USA.
  */
- 
+
 body {
   margin: 0;
   padding: 0;
@@ -42,7 +42,8 @@ body {
 	font-height: 66%;
 	float: right;
 	padding: 0.1em 0.75em;
-    margin: 0;
+  margin: 0;
+  color: silver;
 }
 
 /* only needed for fly-out menu effect on tablet and phone stylesheets */
@@ -94,6 +95,7 @@ li.nav-item a:active { background: gray; color: white; }
   border: thin solid silver;
   width: 80%;
   float: right;
+  padding-bottom: 5em;
 }
 
 
