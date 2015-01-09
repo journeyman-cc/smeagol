@@ -1,0 +1,32 @@
+{% extends "templates/base.html" %}
+{% block content %}
+    <div id="header" class="wiki">
+        <h1>{{title}}</h1>
+        {{header|safe}}
+    </div>
+    <div id="left-bar"  class="wiki">
+        {{left-bar|safe}}
+    </div>
+    <div id="content" class="wiki">
+        <table>
+            <tr>
+                <th>Who</th><th>When</th><th>What</th><th>Which</th>
+            </tr>
+            {% for entry in history %}
+            <tr>
+                <td>
+                    <a href="mailto:{{entry.email}}">{{entry.author}}</a>
+                </td>
+                <td>
+                    {{entry.time}}
+                </td>
+                <td>
+                    {{entry.message}}
+                </td>
+                <td>
+                    {{entry.id}}
+                </td>
+            </tr>
+        </table>
+    </div>
+{% endblock %}

@@ -25,7 +25,8 @@
             [noir.session :as session]
             [smeagol.authenticate :as auth]
             [smeagol.layout :as layout]
-            [smeagol.util :as util]))
+            [smeagol.util :as util]
+            [smeagol.history :as hist]))
 
 
 (defn local-links
@@ -90,6 +91,22 @@
                     :content (local-links (util/md->html file-name))
                     :user (session/get :user)})
           true (response/redirect (str "/edit?content=" content)))))
+
+(defn history-page
+  "Render the history for the markdown page specified in this `request`, if any. If none, error?"
+  [request]
+  (let [params (keywordize-keys (:params request))
+        content (or (:content params) "Introduction")
+        file-name (str "/content/" content ".md")
+        file-path (str (io/resource-path) file-name)
+        exists? (.exists (clojure.java.io/as-file file-path))]
+    (layout/render "history.html"
+                   {:title content
+                    :left-bar (local-links (util/md->html "/content/_left-bar.md"))
+                    :header (local-links (util/md->html "/content/_header.md"))
+                    :history (hist/find-history (io/resource-path) file-name)})))
+
+
 
 (defn auth-page
   "Render the auth page"
