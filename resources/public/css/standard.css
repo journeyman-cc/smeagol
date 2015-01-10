@@ -51,6 +51,10 @@ body {
   display: none;
 }
 
+#nav-menu {
+	margin: 0;
+}
+
 #nav ul li {
   padding: 0;
   margin: 0;
@@ -71,16 +75,19 @@ li.nav-item a:active { background: gray; color: white; }
 
 /* Overall container div, holds all content of page. Yes, I know it shouldn't have fixed width */
 #main-container{
-  clear: both;
-/*  width:100%; */
 }
 
 
 /* header for all pages in the Wiki - editable, provided by users. Within main-container */
 #header {
+  margin-top: 0;
   width:100%;
   background-color: gray;
   color: white;
+}
+
+#header h1 {
+  margin-top: 0;
 }
 
 /* left bar for all pages in the Wiki - editable, provided by users. Within main-container */
@@ -128,6 +135,13 @@ li.nav-item a:active { background: gray; color: white; }
  	border: thin solid white;
  	margin-top: 0;
  	margin-bottom: 0;
+}
+
+.minor-controls {
+	float: right;
+	padding: 0.1em 2em;
+	background-color: silver;
+	font-size: 66%;
 }
 
 .wiki {

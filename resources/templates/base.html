@@ -29,7 +29,16 @@
       </ul>
     </div>
 
+    <div id="header" class="wiki">
+        <h1>{{title}}</h1>
+        {{header|safe}}
+    </div>
+    <div id="left-bar"  class="wiki">
+        {{left-bar|safe}}
+    </div>
+
     <div id="main-container" class="container">
+	
 	  {% if message %}
 		<div id="message">
 			<p class="message">{{message}}</p>

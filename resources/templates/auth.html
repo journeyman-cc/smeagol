@@ -1,13 +1,6 @@
 {% extends "templates/base.html" %}
 {% block content %}
-    <div id="header" class="wiki">
-        <h1>{{title}}</h1>
-        {{header|safe}}
-    </div>
-    <div id="left-bar"  class="wiki">
-        {{left-bar|safe}}
-    </div>
-    <div id="content" class="wiki">    	
+    <div id="content" class="auth">    	
         <form action="{{servlet-context}}/auth" method="POST">
     		{% if user %}
             <p class="widget">

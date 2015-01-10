@@ -98,15 +98,14 @@
   "Render the history for the markdown page specified in this `request`, if any. If none, error?"
   [request]
   (let [params (keywordize-keys (:params request))
-        content (or (:content params) "Introduction")
-        file-name (str "/content/" content ".md")
-        file-path (str (io/resource-path) file-name)
-        exists? (.exists (clojure.java.io/as-file file-path))]
+        page (or (:page params) "Introduction")
+        file-name (str page ".md")
+        repo-path (str (io/resource-path) "/content/")]
     (layout/render "history.html"
-                   {:title content
+                   {:title (str "History of " page)
                     :left-bar (local-links (util/md->html "/content/_left-bar.md"))
                     :header (local-links (util/md->html "/content/_header.md"))
-                    :history (hist/find-history (io/resource-path) file-name)})))
+                    :history (hist/find-history repo-path file-name)})))
 
 (defn auth-page
   "Render the auth page"
@@ -141,6 +140,7 @@
   (GET "/" request (wiki-page request))
   (GET "/edit" request (route/restricted (edit-page request)))
   (POST "/edit" request (route/restricted (edit-page request)))
+  (GET "/history" request (history-page request))
   (GET "/auth" request (auth-page request))
   (POST "/auth" request (auth-page request))
   (GET "/about" [] (about-page)))

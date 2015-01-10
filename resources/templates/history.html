@@ -1,22 +1,12 @@
 {% extends "templates/base.html" %}
 {% block content %}
-    <div id="header" class="wiki">
-        <h1>{{title}}</h1>
-        {{header|safe}}
-    </div>
-    <div id="left-bar"  class="wiki">
-        {{left-bar|safe}}
-    </div>
-    <div id="content" class="wiki">
+   <div id="content" class="history">
         <table>
             <tr>
-                <th>Who</th><th>When</th><th>What</th><th>Which</th>
+                <th>When</th><th>What</th><th>Version</th><th>Changes</th>
             </tr>
             {% for entry in history %}
             <tr>
-                <td>
-                    <a href="mailto:{{entry.email}}">{{entry.author}}</a>
-                </td>
                 <td>
                     {{entry.time}}
                 </td>
@@ -24,9 +14,13 @@
                     {{entry.message}}
                 </td>
                 <td>
-                    {{entry.id}}
+                    <a href="history-version?id={{entry.id}}">Show version</a>
+                </td>
+                <td>
+                	<a href="history-changes?id={{entry.id}}">What's changed?</a>
                 </td>
             </tr>
+            {% endfor %}
         </table>
     </div>
 {% endblock %}

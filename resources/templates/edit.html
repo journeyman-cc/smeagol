@@ -1,13 +1,6 @@
 {% extends "templates/base.html" %}
 {% block content %}
-    <div id="header" class="wiki">
-        <h1>Editing {{title}}</h1>
-        {{header|safe}}
-    </div>
-    <div id="left-bar"  class="wiki">
-        {{left-bar|safe}}
-    </div>
-    <div id="content" class="wiki">
+    <div id="content" class="edit">
         <form action="{{servlet-context}}/edit" method="POST">
             <input type="hidden" name="content" value="{{title}}"/>
             <textarea name="src" id="src" rows="25" cols="80">{{content}}</textarea>
