@@ -23,6 +23,7 @@
             [noir.response :as response]
             [noir.util.route :as route]
             [noir.session :as session]
+            [taoensso.timbre :as timbre]
             [smeagol.authenticate :as auth]
             [smeagol.layout :as layout]
             [smeagol.util :as util]
@@ -49,6 +50,7 @@
         user (session/get :user)
         email (auth/get-email user)
         summary (:summary params)]
+    (timbre/info (str "Saving " user "'s changes (" summary ") to " file-name))
     (spit file-path source-text)
     (if (not exists?) (git/git-add git-repo file-name))
     (git/git-commit git-repo summary {:name user :email email})
@@ -106,12 +108,10 @@
                     :header (local-links (util/md->html "/content/_header.md"))
                     :history (hist/find-history (io/resource-path) file-name)})))
 
-
-
 (defn auth-page
   "Render the auth page"
   [request]
-  (let [params (keywordize-keys (:params request))
+  (let [params (keywordize-keys (:form-params request))
         username (:username params)
         password (:password params)
         action (:action params)
@@ -119,6 +119,7 @@
     (cond
       (= action "Logout!")
       (do
+        (timbre/info (str "User " user " logging out"))
         (session/remove! :user)
         (response/redirect "/wiki"))
       (and username password (auth/authenticate username password))

@@ -1,4 +1,7 @@
-(ns smeagol.authenticate (:require [noir.io :as io]))
+(ns smeagol.authenticate 
+  (:use clojure.walk)
+  (:require [taoensso.timbre :as timbre]
+            [noir.io :as io]))
 
 ;; Smeagol: a very simple Wiki engine
 ;; Copyright (C) 2014 Simon Brooke
@@ -20,9 +23,10 @@
 (defn authenticate
   "Return `true` if this `username`/`password` pair match, `false` otherwise"
   [username password]
-  (let [path (str (io/resource-path) "passwd")
+  (let [path (str (io/resource-path) "../passwd")
         users (read-string (slurp path))
         user (keyword username)]
+    (timbre/info (str "Authenticating " username " against " path))
     (.equals (:password (user users)) password)))
 
 (defn get-email
