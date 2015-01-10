@@ -1,6 +1,13 @@
 (ns smeagol.history
   (:require [clj-jgit.porcelain :as git]
-            [clj-jgit.querying :as q]))
+            [clj-jgit.internal :as i]
+            [clj-jgit.querying :as q])
+  (:import [org.eclipse.jgit.api Git]
+           [org.eclipse.jgit.lib Repository ObjectId]
+           [org.eclipse.jgit.revwalk RevCommit RevTree RevWalk]
+           [org.eclipse.jgit.treewalk AbstractTreeIterator CanonicalTreeParser]
+           [org.eclipse.jgit.treewalk.filter PathFilter]
+           [org.eclipse.jgit.diff DiffEntry DiffFormatter]))
 
 ;; Smeagol: a very simple Wiki engine
 ;; Copyright (C) 2014 Simon Brooke
@@ -39,3 +46,57 @@
       #(entry-contains % file-path)
       (map #(q/commit-info repository %)
            (git/git-log repository)))))
+
+
+(defn prepare-tree-parser
+  "As far as possible a straight translation of prepareTreeParser from
+   https://github.com/centic9/jgit-cookbook/blob/master/src/main/java/org/dstadler/jgit/porcelain/ShowFileDiff.java"
+  ^org.eclipse.jgit.treewalk.AbstractTreeIterator
+  [^Git repo ^String id]
+  (let [walk (i/new-rev-walk repo)
+        commit (i/bound-commit repo walk (ObjectId/fromString id))
+        tree (.parseTree walk (.getId (.getTree commit)))
+        result (CanonicalTreeParser.)
+        reader (.newObjectReader (.getRepository repo))]
+    (try
+      (.reset result reader (.getId tree))
+      (finally 
+        (.release reader)
+        (.dispose walk)))
+    result))
+
+(defn diff 
+  "Find the diff in the file at `file-path` within the repository at
+   `git-directory-path` between versions `older` and `newer` or between the specified
+   `version` and the current version of the file. Returns the diff as a string.
+
+   Based on JGit Cookbook ShowFileDiff.
+   TODO: This is certainly not very far wrong but is currently not working."
+  ([^String git-directory-path ^String file-path ^String version])
+  ([^String git-directory-path ^String file-path ^String older ^String newer]
+    (let [git-r (git/load-repo git-directory-path)
+          old-parse (prepare-tree-parser git-r older)
+          new-parse (prepare-tree-parser git-r newer)
+          out (java.io.ByteArrayOutputStream.)]
+      (map
+        #(let [formatter (DiffFormatter. out)]
+           (.setRepository formatter (.getRepository git-r))
+           (.format formatter %)
+           %)
+        (.call
+          (.setPathFilter 
+            (.setNewTree 
+              (.setOldTree 
+                (.diff git-r) 
+                old-parse) 
+              new-parse)
+            (PathFilter/create file-path))))
+      (.toString out)
+      )))
+
+(defn fetch-version
+  "Return (as a String) the text of this `version` of the file at this
+   `file-path` in the git directory at this `git-directory-path`."
+  [^String git-directory-path ^String file-path ^String version]
+  "TODO: Doesn't work yet")
+ 

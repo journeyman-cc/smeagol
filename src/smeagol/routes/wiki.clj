@@ -49,7 +49,7 @@
         git-repo (git/load-repo (str (io/resource-path) "/content/.git"))
         user (session/get :user)
         email (auth/get-email user)
-        summary (:summary params)]
+        summary (str user ": " (or (:summary params) "no summary"))]
     (timbre/info (str "Saving " user "'s changes (" summary ") to " file-name))
     (spit file-path source-text)
     (if (not exists?) (git/git-add git-repo file-name))
