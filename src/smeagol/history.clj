@@ -5,7 +5,7 @@
   (:import [org.eclipse.jgit.api Git]
            [org.eclipse.jgit.lib Repository ObjectId]
            [org.eclipse.jgit.revwalk RevCommit RevTree RevWalk]
-           [org.eclipse.jgit.treewalk AbstractTreeIterator CanonicalTreeParser]
+           [org.eclipse.jgit.treewalk TreeWalk AbstractTreeIterator CanonicalTreeParser]
            [org.eclipse.jgit.treewalk.filter PathFilter]
            [org.eclipse.jgit.diff DiffEntry DiffFormatter]))
 
@@ -84,19 +84,34 @@
            (.format formatter %)
            %)
         (.call
-          (.setPathFilter 
-            (.setNewTree 
-              (.setOldTree 
-                (.diff git-r) 
-                old-parse) 
-              new-parse)
-            (PathFilter/create file-path))))
-      (.toString out)
-      )))
+          (.setOutputStream
+            (.setPathFilter 
+              (.setNewTree 
+                (.setOldTree (.diff git-r) old-parse)
+                new-parse)
+              (PathFilter/create file-path))
+            out)))
+      (.toString out))))
 
 (defn fetch-version
   "Return (as a String) the text of this `version` of the file at this
-   `file-path` in the git directory at this `git-directory-path`."
+   `file-path` in the git directory at this `git-directory-path`.
+
+   Based on JGit Cookbook ReadFileFromCommit."
   [^String git-directory-path ^String file-path ^String version]
-  "TODO: Doesn't work yet")
+  (let [git-r (git/load-repo git-directory-path)
+        repo (.getRepository git-r)
+        walk (i/new-rev-walk git-r)
+        commit (i/bound-commit git-r walk (ObjectId/fromString version))
+        tree (.parseTree walk (.getId (.getTree commit)))
+        tw (TreeWalk. repo)
+        out (java.io.ByteArrayOutputStream.)]
+    (.addTree tw tree)
+    (.setRecursive tw true)
+    (.setFilter tw (PathFilter/create file-path))
+    (if (not (.next tw)) 
+      (throw (IllegalStateException. 
+               (str "Did not find expected file '" file-path "'"))))
+    (.copyTo (.open repo (.getObjectId tw 0)) out)
+    (.toString out)))
  
