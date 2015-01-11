@@ -1,0 +1,153 @@
+body {
+  font-family: sans-serif;
+  font-size: larger;
+}
+
+/* ids generally in document order */
+/* Overall container div, holds all content of page. Yes, I know it shouldn't have fixed width */
+#main-container{
+  clear: both;
+  width:100%;
+}
+
+/* footer of the document */
+#footer {
+  display: none;
+}
+
+#header {
+  width:100%;
+  padding: 0.25em 5% 0.25em 5%;
+  background-color: gray;
+  color: white;
+}
+
+#header h1 {
+	background-color: transparent;
+}
+
+#nav{
+  margin: 0;
+  padding: 0;
+  position: fixed;
+  z-index: 149;
+  background:rgba(40,40,40,0.8);
+  font-size: larger;
+}
+
+#nav:hover #nav-menu {
+	display: inline;
+}
+
+#nav-icon {
+  padding: 0.25em;
+}
+
+#nav-menu {
+  display: none;
+}
+
+#nav ul li {
+  padding: 0;
+  margin: 0;
+  display: inline;
+}
+
+#nav ul li a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  padding: 0.1em 0.75em;
+  margin: 0;
+}
+#nav ul li.active a { background: silver;}
+li.nav-item a:hover { background: rgb( 240, 240, 240) }
+li.nav-item a:active { background: gray; color: white; }
+
+/* left bar tends to get used for menus. As there isn't screen-width for two
+ * columns on a phone screen, let's try to spread it horizontally. Ultimately
+ * I should hide this and provide a fly-in control which allows it to be 
+ * dragged in from the left */
+#left-bar ul li {
+	display: inline;
+}
+
+#left-bar ul li::before {
+  content: "|| ";
+}
+
+.error {
+    background-color: red;
+    color: white;
+}
+
+/* there isn't enough room on a phone display for optional elements, and
+  load/save isn't going to work on a phone anyway */
+.nav-optional {
+  display: none;
+}
+
+.widget {
+  margin: 0;
+  padding: 0.25em 1em;
+  border: thin solid white;
+}
+
+div.error {
+  width: 100%;
+}
+
+form {
+  width: 100%;
+  background-color: silver;
+  border: thin solid silver;
+}
+
+h1 {
+  font-size: 300%;
+}
+
+h1, h2, h3, h4, h5 {
+  background-color: gray;
+  color: white;
+}
+
+p, pre, ul, ol, dl, h1, h2, h3, h4, h5 {
+  width: 100%;
+  padding: 0.25em 1em;
+}
+
+input {
+  background-color: white;
+}
+
+input.submit {
+  background-color: green;
+}
+
+input.required:after {
+  content: " \*";
+  color: red;
+}
+
+label {
+  min-width: 35%;
+}
+
+label, input {
+  padding: 0.25em 1em;
+  margin: 0 0.5em;
+}
+
+label {
+  border-right: thin solid gray;
+}
+
+menu li {
+  display: inline;
+}
+
+menu li::before {
+  content: "|| ";
+}
+
