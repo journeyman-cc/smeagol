@@ -70,9 +70,9 @@
    `git-directory-path` between versions `older` and `newer` or between the specified
    `version` and the current version of the file. Returns the diff as a string.
 
-   Based on JGit Cookbook ShowFileDiff.
-   TODO: This is certainly not very far wrong but is currently not working."
-  ([^String git-directory-path ^String file-path ^String version])
+   Based on JGit Cookbook ShowFileDiff."
+  ([^String git-directory-path ^String file-path ^String version]
+    "TODO: Doesn't work yet")
   ([^String git-directory-path ^String file-path ^String older ^String newer]
     (let [git-r (git/load-repo git-directory-path)
           old-parse (prepare-tree-parser git-r older)

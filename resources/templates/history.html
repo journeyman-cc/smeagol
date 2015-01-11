@@ -5,6 +5,11 @@
             <tr>
                 <th>When</th><th>What</th><th>Version</th><th>Changes</th>
             </tr>
+            <tr>
+            	<td>Now</td><td></td>
+            	<td><a href="wiki?content={{page}}">[current]</a></td>
+            	<td>[no changes]</td>
+            <tr>
             {% for entry in history %}
             <tr>
                 <td>
@@ -14,10 +19,10 @@
                     {{entry.message}}
                 </td>
                 <td>
-                    <a href="history-version?id={{entry.id}}">Show version</a>
+                    <a href="version?page={{page}}&amp;version={{entry.id}}">Show version</a>
                 </td>
                 <td>
-                	<a href="history-changes?id={{entry.id}}">What's changed?</a>
+                	<a href="diff?page={{page}}&amp;version={{entry.id}}">What's changed?</a>
                 </td>
             </tr>
             {% endfor %}

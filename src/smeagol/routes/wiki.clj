@@ -19,6 +19,7 @@
   (:use clojure.walk)
   (:require [compojure.core :refer :all]
             [clj-jgit.porcelain :as git]
+            [markdown.core :as md]
             [noir.io :as io]
             [noir.response :as response]
             [noir.util.route :as route]
@@ -70,7 +71,7 @@
     (cond src-text (process-source params)
           true
           (layout/render "edit.html"
-                   {:title content
+                   {:title (str "Edit " content)
                     :left-bar (local-links (util/md->html "/content/_edit-left-bar.md"))
                     :header (local-links (util/md->html "/content/_header.md"))
                     :content (if exists? (io/slurp-resource file-name) "")
@@ -88,6 +89,7 @@
     (cond exists?
       (layout/render "wiki.html"
                    {:title content
+                    :page content
                     :left-bar (local-links (util/md->html "/content/_left-bar.md"))
                     :header (local-links (util/md->html "/content/_header.md"))
                     :content (local-links (util/md->html file-name))
@@ -95,7 +97,8 @@
           true (response/redirect (str "/edit?content=" content)))))
 
 (defn history-page
-  "Render the history for the markdown page specified in this `request`, if any. If none, error?"
+  "Render the history for the markdown page specified in this `request`, 
+   if any. If none, error?"
   [request]
   (let [params (keywordize-keys (:params request))
         page (or (:page params) "Introduction")
@@ -103,9 +106,32 @@
         repo-path (str (io/resource-path) "/content/")]
     (layout/render "history.html"
                    {:title (str "History of " page)
+                    :page page
                     :left-bar (local-links (util/md->html "/content/_left-bar.md"))
                     :header (local-links (util/md->html "/content/_header.md"))
                     :history (hist/find-history repo-path file-name)})))
+
+(defn version-page
+  "Render a specific historical version of a page"
+  [request]
+  (let [params (keywordize-keys (:params request))
+        page (or (:page params) "Introduction")
+        version (:version params)
+        file-name (str page ".md")
+        repo-path (str (io/resource-path) "/content/")]
+    (layout/render "wiki.html"
+                   {:title (str "Version " version " of " page)
+                    :page page
+                    :left-bar (local-links 
+                                (util/md->html "/content/_left-bar.md"))
+                    :header (local-links 
+                              (util/md->html "/content/_header.md"))
+                    :content (local-links 
+                               (md/md-to-html-string 
+                                 (hist/fetch-version 
+                                   repo-path file-name version)))
+                    :user (session/get :user)})))
+    
 
 (defn auth-page
   "Render the auth page"
@@ -141,6 +167,7 @@
   (GET "/edit" request (route/restricted (edit-page request)))
   (POST "/edit" request (route/restricted (edit-page request)))
   (GET "/history" request (history-page request))
+  (GET "/version" request (version-page request))
   (GET "/auth" request (auth-page request))
   (POST "/auth" request (auth-page request))
   (GET "/about" [] (about-page)))
