@@ -34,7 +34,9 @@ that is to say, the username is a keyword and the corresponding password is a st
 ## License
 
 Copyright © 2014 Simon Brooke. Licensed under the GNU General Public License,
-version 2.0 or (at your option) any later version.
+version 2.0 or (at your option) any later version. If you wish to incorporate 
+parts of Smeagol into another open source project which uses a less restrictive
+license, please contact me.
 
 ## Prerequisites
 
