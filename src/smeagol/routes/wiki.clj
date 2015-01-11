@@ -26,10 +26,10 @@
             [noir.session :as session]
             [taoensso.timbre :as timbre]
             [smeagol.authenticate :as auth]
+            [smeagol.diff2html :as d2h]
             [smeagol.layout :as layout]
             [smeagol.util :as util]
             [smeagol.history :as hist]))
-
 
 (defn local-links
   "Rewrite text in `html-src` surrounded by double square brackets as a local link into this wiki."
@@ -131,7 +131,24 @@
                                  (hist/fetch-version 
                                    repo-path file-name version)))
                     :user (session/get :user)})))
-    
+
+(defn diff-page 
+  "Render a diff between two versions of a page" 
+  [request]
+  (let [params (keywordize-keys (:params request))
+        page (or (:page params) "Introduction")
+        version (:version params)
+        file-name (str page ".md")
+        repo-path (str (io/resource-path) "/content/")]
+    (layout/render "wiki.html"
+                   {:title (str "Changes since version " version " of " page)
+                    :page page
+                    :left-bar (local-links 
+                                (util/md->html "/content/_left-bar.md"))
+                    :header (local-links 
+                              (util/md->html "/content/_header.md"))
+                    :content (d2h/diff2html (hist/diff repo-path file-name version))
+                    :user (session/get :user)})))
 
 (defn auth-page
   "Render the auth page"
@@ -168,6 +185,7 @@
   (POST "/edit" request (route/restricted (edit-page request)))
   (GET "/history" request (history-page request))
   (GET "/version" request (version-page request))
+  (GET "/changes" request (diff-page request))
   (GET "/auth" request (auth-page request))
   (POST "/auth" request (auth-page request))
   (GET "/about" [] (about-page)))

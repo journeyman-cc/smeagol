@@ -72,7 +72,8 @@
 
    Based on JGit Cookbook ShowFileDiff."
   ([^String git-directory-path ^String file-path ^String version]
-    "TODO: Doesn't work yet")
+    (diff git-directory-path file-path version 
+          (:id (first (find-history git-directory-path file-path)))))
   ([^String git-directory-path ^String file-path ^String older ^String newer]
     (let [git-r (git/load-repo git-directory-path)
           old-parse (prepare-tree-parser git-r older)

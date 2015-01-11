@@ -12,7 +12,7 @@
             <tr>
             {% for entry in history %}
             <tr>
-                <td>
+                <td>S
                     {{entry.time}}
                 </td>
                 <td>
@@ -22,7 +22,7 @@
                     <a href="version?page={{page}}&amp;version={{entry.id}}">Show version</a>
                 </td>
                 <td>
-                	<a href="diff?page={{page}}&amp;version={{entry.id}}">What's changed?</a>
+                	<a href="changes?page={{page}}&amp;version={{entry.id}}">What's changed?</a>
                 </td>
             </tr>
             {% endfor %}
