@@ -19,7 +19,7 @@
       <img id="nav-icon" src="{{servlet-context}}/img/threelines.png" alt="Menu"/>
       <ul id="nav-menu" class="nav">
         <li class="{{wiki-selected}}"><a href="{{servlet-context}}/">Home</a></li>
-        <li class="{{edit-selected}}"><a href="{{servlet-context}}/edit?content={{title}}">Edit this page</a></li>
+        <li class="{{edit-selected}}"><a href="{{servlet-context}}/edit?page={{title}}">Edit this page</a></li>
         <li class="{{auth-selected}}"><a href="{{servlet-context}}/auth">
         	{% if user %}
         	Log out
@@ -38,7 +38,7 @@
     </div>
 
     <div id="main-container" class="container">
-	
+
 	  {% if message %}
 		<div id="message">
 			<p class="message">{{message}}</p>

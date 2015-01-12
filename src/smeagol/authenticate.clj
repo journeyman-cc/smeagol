@@ -1,4 +1,4 @@
-(ns smeagol.authenticate 
+(ns smeagol.authenticate
   (:use clojure.walk)
   (:require [taoensso.timbre :as timbre]
             [noir.io :as io]))
@@ -25,14 +25,14 @@
   [username password]
   (let [path (str (io/resource-path) "../passwd")
         users (read-string (slurp path))
-        user (keyword username)]
+        user ((keyword username) users)]
     (timbre/info (str "Authenticating " username " against " path))
-    (.equals (:password (user users)) password)))
+    (and user (.equals (:password user) password))))
 
 (defn get-email
   "Return the email address associated with this `username`."
   [username]
-  (let [path (str (io/resource-path) "passwd")
+  (let [path (str (io/resource-path) "../passwd")
         users (read-string (slurp path))
-        user (keyword username)]
-    (:email (user users))))
+        user ((keyword username) users)]
+    (if user (:email user))))

@@ -36,26 +36,26 @@
   [html-src]
   (clojure.string/replace html-src #"\[\[[^\[\]]*\]\]"
                           #(let [text (clojure.string/replace %1 #"[\[\]]" "")]
-                             (str "<a href='wiki?content=" text "'>" text "</a>"))))
+                             (str "<a href='wiki?page=" text "'>" text "</a>"))))
 
 (defn process-source
   "Process `source-text` and save it to the specified `file-path`, committing it
    to Git and finally redirecting to wiki-page."
   [params]
   (let [source-text (:src params)
-        content (:content params)
-        file-name (str content ".md")
+        page (:page params)
+        file-name (str  page ".md")
         file-path (str (io/resource-path) "/content/" file-name)
         exists? (.exists (clojure.java.io/as-file file-path))
         git-repo (git/load-repo (str (io/resource-path) "/content/.git"))
         user (session/get :user)
         email (auth/get-email user)
         summary (str user ": " (or (:summary params) "no summary"))]
-    (timbre/info (str "Saving " user "'s changes (" summary ") to " file-name))
+    (timbre/info (str "Saving " user "'s changes (" summary ") to " page))
     (spit file-path source-text)
     (if (not exists?) (git/git-add git-repo file-name))
     (git/git-commit git-repo summary {:name user :email email})
-    (response/redirect (str "/wiki?" content))
+    (response/redirect (str "/wiki?" page))
   ))
 
 (defn edit-page
@@ -64,17 +64,17 @@
   [request]
   (let [params (keywordize-keys (:params request))
         src-text (:src params)
-        content (:content params)
-        file-name (str "/content/" content ".md")
-        file-path (str (io/resource-path) file-name)
+        page (or (:page params) "Introduction")
+        file-path (str (io/resource-path) "content/" page ".md")
         exists? (.exists (clojure.java.io/as-file file-path))]
     (cond src-text (process-source params)
           true
           (layout/render "edit.html"
-                   {:title (str "Edit " content)
+                   {:title (str "Edit " page)
+                    :page page
                     :left-bar (local-links (util/md->html "/content/_edit-left-bar.md"))
                     :header (local-links (util/md->html "/content/_header.md"))
-                    :content (if exists? (io/slurp-resource file-name) "")
+                    :content (if exists? (io/slurp-resource (str "/content/" page ".md")) "")
                     :user (session/get :user)
                     :exists exists?}))))
 
@@ -82,22 +82,22 @@
   "Render the markdown page specified in this `request`, if any. If none found, redirect to edit-page"
   [request]
   (let [params (keywordize-keys (:params request))
-        content (or (:content params) "Introduction")
-        file-name (str "/content/" content ".md")
+        page (or (:content params) (:page params) "Introduction")
+        file-name (str "/content/" page ".md")
         file-path (str (io/resource-path) file-name)
         exists? (.exists (clojure.java.io/as-file file-path))]
     (cond exists?
       (layout/render "wiki.html"
-                   {:title content
-                    :page content
+                   {:title page
+                    :page page
                     :left-bar (local-links (util/md->html "/content/_left-bar.md"))
                     :header (local-links (util/md->html "/content/_header.md"))
                     :content (local-links (util/md->html file-name))
                     :user (session/get :user)})
-          true (response/redirect (str "/edit?content=" content)))))
+          true (response/redirect (str "/edit?page=" page)))))
 
 (defn history-page
-  "Render the history for the markdown page specified in this `request`, 
+  "Render the history for the markdown page specified in this `request`,
    if any. If none, error?"
   [request]
   (let [params (keywordize-keys (:params request))
@@ -122,18 +122,18 @@
     (layout/render "wiki.html"
                    {:title (str "Version " version " of " page)
                     :page page
-                    :left-bar (local-links 
+                    :left-bar (local-links
                                 (util/md->html "/content/_left-bar.md"))
-                    :header (local-links 
+                    :header (local-links
                               (util/md->html "/content/_header.md"))
-                    :content (local-links 
-                               (md/md-to-html-string 
-                                 (hist/fetch-version 
+                    :content (local-links
+                               (md/md-to-html-string
+                                 (hist/fetch-version
                                    repo-path file-name version)))
                     :user (session/get :user)})))
 
-(defn diff-page 
-  "Render a diff between two versions of a page" 
+(defn diff-page
+  "Render a diff between two versions of a page"
   [request]
   (let [params (keywordize-keys (:params request))
         page (or (:page params) "Introduction")
@@ -143,9 +143,9 @@
     (layout/render "wiki.html"
                    {:title (str "Changes since version " version " of " page)
                     :page page
-                    :left-bar (local-links 
+                    :left-bar (local-links
                                 (util/md->html "/content/_left-bar.md"))
-                    :header (local-links 
+                    :header (local-links
                               (util/md->html "/content/_header.md"))
                     :content (d2h/diff2html (hist/diff repo-path file-name version))
                     :user (session/get :user)})))

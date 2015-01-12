@@ -1,26 +1,26 @@
 {% extends "templates/base.html" %}
 {% block content %}
-    <div id="content" class="auth">    	
-        <form action="{{servlet-context}}/auth" method="POST">
-    		{% if user %}
-            <p class="widget">
-                <label for="submit">To finish editing</label>
-                <input name="action" id="action" type="submit" class="action-dangerous" value="Logout!"/>
-            </p>
-    		{% else %}
-        	<p class="widget">
-                <label for="username">Your username</label>
-                <input name="username" id="username" type="text"/>
-        	</p>
-        	<p class="widget">
-                <label for="password">Your password</label>
-                <input name="password" id="password" type="password"/>
-        	</p>
-            <p class="widget">
-                <label for="submit">To edit this wiki</label>
-                <input name="action" id="action" type="submit" class="action" value="Login!"/>
-            </p>
-            {% endif %}
-        </form>
-    </div>
+        <div id="content" class="auth">
+            <form action="{{servlet-context}}/auth" method="POST">
+                {% if user %}
+                <p class="widget">
+                    <label for="submit">To finish editing</label>
+                    <input name="action" id="action" type="submit" class="action-dangerous" value="Logout!"/>
+                </p>
+                {% else %}
+                <p class="widget">
+                    <label for="username">Your username</label>
+                    <input name="username" id="username" type="text"/>
+                </p>
+                <p class="widget">
+                    <label for="password">Your password</label>
+                    <input name="password" id="password" type="password"/>
+                </p>
+                <p class="widget">
+                    <label for="submit">To edit this wiki</label>
+                    <input name="action" id="action" type="submit" class="action" value="Login!"/>
+                </p>
+                {% endif %}
+            </form>
+        </div>
 {% endblock %}

@@ -1,18 +1,18 @@
 {% extends "templates/base.html" %}
 {% block content %}
-    <div id="content" class="edit">
-        <form action="{{servlet-context}}/edit" method="POST">
-            <input type="hidden" name="content" value="{{title}}"/>
-            <textarea name="src" id="src" rows="25" cols="80">{{content}}</textarea>
-        	<p class="widget">
-                <label for="summary">What have you changed?</label>
-                <input name="summary" id="summary" type="text" 
-                	value="{%if exists%}{%else%}New file {{title}}{%endif%}"/>
-        	</p>
-            <p class="widget">
-                <label for="submit">When you have finished editing</label>
-                <input name="submit" id="submit" type="submit" class="action" value="Save!"/>
-            </p>
-        </form>
-    </div>
+        <div id="content" class="edit">
+            <form action="{{servlet-context}}/edit" method="POST">
+                <input type="hidden" name="page" value="{{page}}"/>
+                <textarea name="src" id="src" rows="25" cols="80">{{content}}</textarea>
+                <p class="widget">
+                    <label for="summary">What have you changed?</label>
+                    <input name="summary" id="summary" type="text"
+                        value="{%if exists%}{%else%}New file {{title}}{%endif%}"/>
+                </p>
+                <p class="widget">
+                    <label for="submit">When you have finished editing</label>
+                    <input name="submit" id="submit" type="submit" class="action" value="Save!"/>
+                </p>
+            </form>
+        </div>
 {% endblock %}
