@@ -15,7 +15,7 @@ Smeagol uses the Markdown format as provided by [markdown-clj](https://github.co
 
 ## Security and authentication
 
-Currently security is now greatly improved. There is currently a file called *passwd* in the *resources* directory, which contains a clojure map which maps usernames to maps with plain-text passwords and emails thus:
+Security is now greatly improved. There is a file called *passwd* in the *resources* directory, which contains a clojure map which maps usernames to maps with plain-text passwords and emails thus:
 
     {:admin {:password "admin" :email "admin@localhost"}
      :adam {:password "secret" :email "adam@localhost"}}
