@@ -1,7 +1,8 @@
 (ns smeagol.authenticate
   (:use clojure.walk)
   (:require [taoensso.timbre :as timbre]
-            [noir.io :as io]))
+            [noir.io :as io]
+            [crypto.password.scrypt :as password]))
 
 ;; Smeagol: a very simple Wiki engine
 ;; Copyright (C) 2014 Simon Brooke
@@ -22,8 +23,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; All functions which relate to the passwd file are in this namespace, in order
-;; that it can reasonably simply swapped out for a more secure replacement
+;;  All functions which relate to the passwd file are in this namespace, in order
+;;  that it can reasonably simply swapped out for a more secure replacement.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -34,7 +35,10 @@
         users (read-string (slurp path))
         user ((keyword username) users)]
     (timbre/info (str "Authenticating " username " against " path))
-    (and user (.equals (:password user) password))))
+    (and user
+         (or
+          (.equals (:password user) password)
+          (password/check password (:password user))))))
 
 (defn get-email
   "Return the email address associated with this `username`."
@@ -46,7 +50,8 @@
 
 (defn change-pass
   "Change the password for the user with this `username` and `oldpass` to this `newpass`.
-  Return `true` if password was successfully changed."
+  Return `true` if password was successfully changed. Subsequent to user change, their
+  password will be encrypted."
   [username oldpass newpass]
   (timbre/info (format "Changing password for user %s" username))
   (let [path (str (io/resource-path) "../passwd")
@@ -56,9 +61,14 @@
         email (:email user)]
     (try
       (cond
-       (and user (.equals (:password user) oldpass))
+       (and user
+            (or
+             (.equals (:password user) oldpass)
+             (password/check oldpass (:password user))))
        (do
-         (spit path (assoc (dissoc users keywd) keywd {:password newpass :email email}))
+         (spit path
+               (assoc (dissoc users keywd) keywd
+                 {:password (password/encrypt newpass) :email email}))
          true))
       (catch Exception any
         (timbre/error

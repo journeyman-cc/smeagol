@@ -15,28 +15,28 @@ Smeagol uses the Markdown format as provided by [markdown-clj](https://github.co
 
 ## Security and authentication
 
-Currently security is very weak. There is currently a file called *passwd* in the *resources* directory, which contains a clojure map which maps usernames to maps with plain-text passwords and emails thus:
+Currently security is now greatly improved. There is currently a file called *passwd* in the *resources* directory, which contains a clojure map which maps usernames to maps with plain-text passwords and emails thus:
 
     {:admin {:password "admin" :email "admin@localhost"}
      :adam {:password "secret" :email "adam@localhost"}}
 
-that is to say, the username is a keyword and the corresponding password is a string. Obviously, this is a temporary solution while in development which I will fix later.
+that is to say, the username is a keyword and the corresponding password is a string. However, since version 0.5.0, users can now change their own passwords, and when the user changes their password their new password is encrypted using the [scrypt](http://www.tarsnap.com/scrypt.html) one-way encryption scheme. The password file is now no longer either in the *resources/public* directory so cannot be downloaded through the browser, and is no longer in the git archive to which the Wiki content is stored, so that even if that git archive is remotely clonable an attacker cannot get the password file that way.
+
+There's still no mechanism to add a new user to the system through the user interface; you do sill have to do that by editing the password file in an editor.
 
 ## Todo
 
 * Image (and other media) upload;
 * Improved editor. The editor is at present very primitive - right back from the beginnings of the Web. It would be nice to have a rich embedded editor like [Hallo](https://github.com/bergie/hallo) or [Aloha](http://aloha-editor.org/Content.Node/index.html) but I haven't (yet) had time to integrate them!
-* Improved security. Having the passwords in plain text rather than encrypted is just basically poor. Essentially, authentication mechanisms should be pluggable, and at present they aren't;
 * Transform diff output to HTML to show changes in a more user friendly format;
 * Mechanism to add users through the user interface;
-* Mechanism to change passwords through the user interface;
 
 ## License
 
-Copyright © 2014 Simon Brooke. Licensed under the GNU General Public License,
-version 2.0 or (at your option) any later version. If you wish to incorporate 
+Copyright © 2014-2015 Simon Brooke. Licensed under the GNU General Public License,
+version 2.0 or (at your option) any later version. If you wish to incorporate
 parts of Smeagol into another open source project which uses a less restrictive
-license, please contact me.
+license, please contact me; I'm open to dual licensing it.
 
 ## Prerequisites
 
@@ -52,7 +52,7 @@ To start a web server for the application, run:
 
 or more probably
 
-	nohup lein ring server > smeagol.log &
+	  nohup lein ring server > smeagol.log &
 
 Alternatively, if you want to deploy to a servlet container (which I would strongly recommend), the simplest thing is to run:
 

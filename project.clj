@@ -1,4 +1,4 @@
-(defproject smeagol "0.4.0-SNAPSHOT"
+(defproject smeagol "0.5.0-SNAPSHOT"
   :description "A simple Git-backed Wiki inspired by Gollum"
   :url "https://github.com/simon-brooke/smeagol"
   :dependencies [[org.clojure/clojure "1.6.0"]
@@ -9,6 +9,7 @@
                  [com.taoensso/timbre "3.3.1" :exclusions [org.clojure/tools.reader]]
                  [com.taoensso/tower "3.0.2" :exclusions [com.taoensso/encore]]
                  [markdown-clj "0.9.55" :exclusions [com.keminglabs/cljx]]
+                 [crypto-password "0.1.3"]
                  [clj-jgit "0.8.2"]
                  [environ "1.0.0"]
                  [im.chit/cronj "1.4.2"]

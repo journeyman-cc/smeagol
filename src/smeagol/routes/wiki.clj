@@ -16,8 +16,7 @@
 ;; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 (ns smeagol.routes.wiki
-  (:use clojure.walk
-        clojure.pprint)
+  (:use clojure.walk)
   (:require [compojure.core :refer :all]
             [clj-jgit.porcelain :as git]
             [markdown.core :as md]
@@ -154,7 +153,6 @@
 (defn auth-page
   "Render the auth page"
   [request]
-  (pprint request)
   (let [params (keywordize-keys (:form-params request))
         username (:username params)
         password (:password params)
