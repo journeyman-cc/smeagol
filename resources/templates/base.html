@@ -14,7 +14,7 @@
     <!-- navbar -->
     <div id="nav">
       {% if user %}
-      <p class="user" id="user">You are logged in as {{user}}</p>
+        <p class="user" id="user">You are logged in as {{user}} | <a href="passwd">change password</a></p>
       {% endif %}
       <img id="nav-icon" src="{{servlet-context}}/img/threelines.png" alt="Menu"/>
       <ul id="nav-menu" class="nav">

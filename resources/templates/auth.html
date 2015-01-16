@@ -2,6 +2,7 @@
 {% block content %}
         <div id="content" class="auth">
             <form action="{{servlet-context}}/auth" method="POST">
+                <input type="hidden" name="redirect-to" value="{{redirect-to}}"/>
                 {% if user %}
                 <p class="widget">
                     <label for="submit">To finish editing</label>
@@ -10,11 +11,11 @@
                 {% else %}
                 <p class="widget">
                     <label for="username">Your username</label>
-                    <input name="username" id="username" type="text"/>
+                    <input name="username" id="username" type="text" required/>
                 </p>
                 <p class="widget">
                     <label for="password">Your password</label>
-                    <input name="password" id="password" type="password"/>
+                    <input name="password" id="password" type="password" required/>
                 </p>
                 <p class="widget">
                     <label for="submit">To edit this wiki</label>

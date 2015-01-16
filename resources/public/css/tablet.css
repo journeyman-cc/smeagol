@@ -126,10 +126,15 @@ h1, h2, h3, h4, h5 {
   color: white;
 }
 
-p, pre, ul, ol, dl, h1, h2, h3, h4, h5 {
+p, pre, h1, h2, h3, h4, h5 {
   width: 100%;
   padding: 0.25em 1em;
 }
+
+dl, menu, ol, table, ul {
+  margin: 0.15em 3%;
+}
+
 
 input {
   background-color: white;
@@ -163,5 +168,26 @@ menu li {
 
 menu li::before {
   content: "|| ";
+}
+
+
+table {
+  border: 2px solid black;
+  border-collapse: collapse;
+}
+
+table.music-ruled tr:nth-child(odd) {
+	background-color: silver;
+}
+
+th, td {
+	text-align: left;
+  vertical-align: top;
+	padding: 0.15em 1.5em;
+  border: 1px solid gray;
+}
+
+th {
+  background-color: silver;
 }
 

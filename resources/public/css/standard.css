@@ -43,6 +43,10 @@ body {
 	float: right;
 	padding: 0.1em 0.75em;
   margin: 0;
+  color: white;
+}
+
+#user a {
   color: silver;
 }
 
@@ -110,13 +114,12 @@ li.nav-item a:active { background: gray; color: white; }
 #footer {
   clear: both;
   font-size: smaller;
-  padding: 0 2em;
   text-align: center;
   color:white;
   background:rgba(128,128,128,0.95);
   width: 100%;
   margin: 0;
-  padding: 0.1em 10%;
+/*  padding: 0.1em 10%; */
   bottom:0;
   position:fixed;
   z-index:150;
@@ -135,6 +138,7 @@ li.nav-item a:active { background: gray; color: white; }
  	border: thin solid white;
  	margin-top: 0;
  	margin-bottom: 0;
+  width: 100%;
 }
 
 .minor-controls {
@@ -142,6 +146,10 @@ li.nav-item a:active { background: gray; color: white; }
 	padding: 0.1em 2em;
 	background-color: silver;
 	font-size: 66%;
+}
+
+.message {
+  border: thin solid red;
 }
 
 .wiki {
@@ -156,8 +164,12 @@ form {
   border: thin solid silver;
 }
 
-div.content, form, p, pre, ul, ol, dl, menu, h1, h2, h3, h4, h5 {
-  padding: 0.25em 10%;
+div.content, form, p, pre, h1, h2, h3, h4, h5 {
+  padding: 0.25em 5%;
+}
+
+dl, menu, ol, table, ul {
+  margin: 0.25em 5%;
 }
 
 input {
@@ -179,7 +191,7 @@ input.required:after {
 }
 
 label {
-  width: 30em;
+  width: 20%;
   min-width: 20em;
   border-right: thin solid gray;
 }
@@ -192,12 +204,23 @@ menu li::before {
   content: "|| ";
 }
 
+table {
+  border: 2px solid black;
+  border-collapse: collapse;
+}
+
 table.music-ruled tr:nth-child(odd) {
 	background-color: silver;
 }
 
 th, td {
 	text-align: left;
-	padding: 0 0.25em;
+  vertical-align: top;
+	padding: 0.15em 1.5em;
+  border: 1px solid gray;
+}
+
+th {
+  background-color: silver;
 }
 

@@ -20,6 +20,13 @@
 ;; along with this program; if not, write to the Free Software
 ;; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; All functions which relate to the passwd file are in this namespace, in order
+;; that it can reasonably simply swapped out for a more secure replacement
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defn authenticate
   "Return `true` if this `username`/`password` pair match, `false` otherwise"
   [username password]
@@ -36,3 +43,25 @@
         users (read-string (slurp path))
         user ((keyword username) users)]
     (if user (:email user))))
+
+(defn change-pass
+  "Change the password for the user with this `username` and `oldpass` to this `newpass`.
+  Return `true` if password was successfully changed."
+  [username oldpass newpass]
+  (timbre/info (format "Changing password for user %s" username))
+  (let [path (str (io/resource-path) "../passwd")
+        users (read-string (slurp path))
+        keywd (keyword username)
+        user (if users (keywd users))
+        email (:email user)]
+    (try
+      (cond
+       (and user (.equals (:password user) oldpass))
+       (do
+         (spit path (assoc (dissoc users keywd) keywd {:password newpass :email email}))
+         true))
+      (catch Exception any
+        (timbre/error
+         (format "Changing password failed for user %s failed: %s (%s)"
+                 username (.getName (.getClass any)) (.getMessage any)))
+        false))))

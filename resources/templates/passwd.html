@@ -1,0 +1,23 @@
+{% extends "templates/base.html" %}
+{% block content %}
+        <div id="content" class="auth">
+            <form action="{{servlet-context}}/passwd" method="POST">
+                <p class="widget">
+                    <label for="password">Your password</label>
+                    <input name="oldpass" id="oldpass" type="password" required/>
+                </p>
+                <p class="widget">
+                    <label for="password">New password</label>
+                    <input name="pass1" id="pass1" type="password" required/>
+                </p>
+                <p class="widget">
+                    <label for="password">And again</label>
+                    <input name="pass2" id="pass2" type="password" required/>
+                </p>
+                <p class="widget">
+                    <label for="submit">To edit this wiki</label>
+                    <input name="action" id="action" type="submit" class="action" value="Login!"/>
+                </p>
+            </form>
+        </div>
+{% endblock %}
