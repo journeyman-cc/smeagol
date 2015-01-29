@@ -4,6 +4,7 @@
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/core.memoize "0.5.6"]
                  [lib-noir "0.9.4" :exclusions [org.clojure/tools.reader]]
+                 [com.cemerick/url "0.1.1"]
                  [ring-server "0.3.1"]
                  [selmer "0.7.2"]
                  [com.taoensso/timbre "3.3.1" :exclusions [org.clojure/tools.reader]]

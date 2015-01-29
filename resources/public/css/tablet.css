@@ -57,6 +57,7 @@ body {
 
 #nav-icon {
   padding: 0.25em;
+  float: left;
 }
 
 #nav-menu {

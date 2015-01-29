@@ -3,7 +3,6 @@
   <head>
     <title>{{title}}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>{{title}}</title>
     <link href="{{servlet-context}}/css/phone.css" media="only screen and (max-device-width: 480px)" rel="stylesheet" type="text/css" />
     <link href="{{servlet-context}}/css/tablet.css" media="only screen and (min-device-width: 481px) and (max-device-width: 1024px)" rel="stylesheet" type="text/css" />
     <link href="{{servlet-context}}/css/standard.css" media="screen and (min-device-width: 1025px)" rel="stylesheet" type="text/css" />
@@ -11,25 +10,25 @@
     <link href="{{servlet-context}}/css/states.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <!-- navbar -->
-    <div id="nav">
-      {% if user %}
-        <p class="user" id="user">You are logged in as {{user}} | <a href="passwd">change password</a></p>
-      {% endif %}
-      <img id="nav-icon" src="{{servlet-context}}/img/threelines.png" alt="Menu"/>
-      <ul id="nav-menu" class="nav">
-        <li class="{{wiki-selected}}"><a href="{{servlet-context}}/">Home</a></li>
-        <li class="{{edit-selected}}"><a href="{{servlet-context}}/edit?page={{title}}">Edit this page</a></li>
-        <li class="{{auth-selected}}"><a href="{{servlet-context}}/auth">
-        	{% if user %}
-        	Log out
-        	{% else %}
-        	Log in
-        	{% endif %}</a></li>
-      </ul>
-    </div>
 
     <div id="header" class="wiki">
+        <!-- navbar -->
+        <div id="nav">
+          {% if user %}
+            <p class="user" id="user">You are logged in as {{user}} | <a href="passwd">change password</a></p>
+          {% endif %}
+          <img id="nav-icon" src="{{servlet-context}}/img/threelines.png" alt="Menu"/>
+          <ul id="nav-menu" class="nav">
+            <li class="{{wiki-selected}}"><a href="{{servlet-context}}/">Home</a></li>
+            <li class="{{edit-selected}}"><a href="{{servlet-context}}/edit?page={{title}}">Edit this page</a></li>
+            <li class="{{auth-selected}}"><a href="{{servlet-context}}/auth">
+                {% if user %}
+                Log out
+                {% else %}
+                Log in
+                {% endif %}</a></li>
+          </ul>
+        </div>
         <h1>{{title}}</h1>
         {{header|safe}}
     </div>
@@ -56,10 +55,10 @@
     <div id="footer">
        <div id="credits">
            One Wiki to rule them all ||
-           <img height="16" width="16" align="top" src="img/smeagol.png"/>Smeagol wiki engine || Built with <a href="http://www.luminusweb.net/">LuminusWeb</a> ||
-           <img height="16" width="16" align="top" src="img/clojure-icon.gif"/> Powered by <a href="http://clojure.org">Clojure</a> ||
-           <img height="16" width="16" align="top" src="img/github-logo-transparent.png"/>Find me/fork me on <a href="https://github.com/simon-brooke/smeagol">Github</a> ||
-           <img height="16" width="16" align="top" src="img/gnu.small.png"/>Licensed under the <a href="http://www.gnu.org/licenses/gpl-2.0.html">GNU General Public License version 2.0</a>
+           <img height="16" width="16" alt="one wiki to rule them all" src="img/smeagol.png"/>Smeagol wiki engine || Built with <a href="http://www.luminusweb.net/">LuminusWeb</a> ||
+           <img height="16" width="16" alt="Clojure" src="img/clojure-icon.gif"/> Powered by <a href="http://clojure.org">Clojure</a> ||
+           <img height="16" width="16" alt="GitHub" src="img/github-logo-transparent.png"/>Find me/fork me on <a href="https://github.com/simon-brooke/smeagol">Github</a> ||
+           <img height="16" width="16" alt="Free Software Foundation" src="img/gnu.small.png"/>Licensed under the <a href="http://www.gnu.org/licenses/gpl-2.0.html">GNU General Public License version 2.0</a>
       </div>
     </div>
   </body>

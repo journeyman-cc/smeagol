@@ -1,13 +1,14 @@
 (ns smeagol.history
-  (:require [clj-jgit.porcelain :as git]
+  (:require [taoensso.timbre :as timbre]
+            [clj-jgit.porcelain :as git]
             [clj-jgit.internal :as i]
             [clj-jgit.querying :as q])
-  (:import [org.eclipse.jgit.api Git]
-           [org.eclipse.jgit.lib Repository ObjectId]
-           [org.eclipse.jgit.revwalk RevCommit RevTree RevWalk]
-           [org.eclipse.jgit.treewalk TreeWalk AbstractTreeIterator CanonicalTreeParser]
-           [org.eclipse.jgit.treewalk.filter PathFilter]
-           [org.eclipse.jgit.diff DiffEntry DiffFormatter]))
+  (:import  [org.eclipse.jgit.api Git]
+            [org.eclipse.jgit.lib Repository ObjectId]
+            [org.eclipse.jgit.revwalk RevCommit RevTree RevWalk]
+            [org.eclipse.jgit.treewalk TreeWalk AbstractTreeIterator CanonicalTreeParser]
+            [org.eclipse.jgit.treewalk.filter PathFilter]
+            [org.eclipse.jgit.diff DiffEntry DiffFormatter]))
 
 ;; Smeagol: a very simple Wiki engine
 ;; Copyright (C) 2014 Simon Brooke
@@ -30,6 +31,7 @@
   "If this `log-entry` contains a reference to this `file-path`, return the entry;
    else nil."
   [^String log-entry ^String file-path]
+  (timbre/info (format "searching '%s' for '%s'" log-entry file-path))
   (cond
     (not
       (empty?
@@ -60,19 +62,19 @@
         reader (.newObjectReader (.getRepository repo))]
     (try
       (.reset result reader (.getId tree))
-      (finally 
+      (finally
         (.release reader)
         (.dispose walk)))
     result))
 
-(defn diff 
+(defn diff
   "Find the diff in the file at `file-path` within the repository at
    `git-directory-path` between versions `older` and `newer` or between the specified
    `version` and the current version of the file. Returns the diff as a string.
 
    Based on JGit Cookbook ShowFileDiff."
   ([^String git-directory-path ^String file-path ^String version]
-    (diff git-directory-path file-path version 
+    (diff git-directory-path file-path version
           (:id (first (find-history git-directory-path file-path)))))
   ([^String git-directory-path ^String file-path ^String older ^String newer]
     (let [git-r (git/load-repo git-directory-path)
@@ -86,8 +88,8 @@
            %)
         (.call
           (.setOutputStream
-            (.setPathFilter 
-              (.setNewTree 
+            (.setPathFilter
+              (.setNewTree
                 (.setOldTree (.diff git-r) old-parse)
                 new-parse)
               (PathFilter/create file-path))
@@ -110,9 +112,8 @@
     (.addTree tw tree)
     (.setRecursive tw true)
     (.setFilter tw (PathFilter/create file-path))
-    (if (not (.next tw)) 
-      (throw (IllegalStateException. 
+    (if (not (.next tw))
+      (throw (IllegalStateException.
                (str "Did not find expected file '" file-path "'"))))
     (.copyTo (.open repo (.getObjectId tw 0)) out)
     (.toString out)))
- 

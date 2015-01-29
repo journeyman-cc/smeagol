@@ -19,7 +19,9 @@
   (:use clojure.walk)
   (:require [compojure.core :refer :all]
             [clj-jgit.porcelain :as git]
+            [cemerick.url :refer (url url-encode url-decode)]
             [markdown.core :as md]
+            [clojure.java.io :as cjio]
             [noir.io :as io]
             [noir.response :as response]
             [noir.util.route :as route]
@@ -35,8 +37,18 @@
   "Rewrite text in `html-src` surrounded by double square brackets as a local link into this wiki."
   [html-src]
   (clojure.string/replace html-src #"\[\[[^\[\]]*\]\]"
-                          #(let [text (clojure.string/replace %1 #"[\[\]]" "")]
-                             (str "<a href='wiki?page=" text "'>" text "</a>"))))
+                          #(let [text (clojure.string/replace %1 #"[\[\]]" "")
+                                 encoded (url-encode text)]
+                             (timbre/debug (format "URL encode: '%s' -> '%s'" text encoded))
+                             (format "<a href='wiki?page=%s'>%s</a>" encoded text))))
+
+(defn get-git-repo
+  "Get the git repository for my content, creating it if necessary"
+  []
+  (let [path (str (io/resource-path) "/content/")
+        repo (cjio/as-file (str path ".git"))]
+    (if (.exists repo) (git/load-repo repo)
+      (git/git-init path))))
 
 (defn process-source
   "Process `source-text` and save it to the specified `file-path`, committing it
@@ -47,15 +59,15 @@
         file-name (str  page ".md")
         file-path (str (io/resource-path) "/content/" file-name)
         exists? (.exists (clojure.java.io/as-file file-path))
-        git-repo (git/load-repo (str (io/resource-path) "/content/.git"))
+        git-repo (get-git-repo)
         user (session/get :user)
         email (auth/get-email user)
-        summary (str user ": " (or (:summary params) "no summary"))]
-    (timbre/info (str "Saving " user "'s changes (" summary ") to " page))
+        summary (format "%s: %s" user (or (:summary params) "no summary"))]
+    (timbre/info (format "Saving %s's changes ('%s') to %s" user summary page))
     (spit file-path source-text)
     (if (not exists?) (git/git-add git-repo file-name))
     (git/git-commit git-repo summary {:name user :email email})
-    (response/redirect (str "/wiki?page=" page))
+    (response/redirect (str "/wiki?page=" (url-encode page)))
     ))
 
 (defn edit-page
@@ -66,7 +78,8 @@
         src-text (:src params)
         page (or (:page params) "Introduction")
         file-path (str (io/resource-path) "content/" page ".md")
-        exists? (.exists (clojure.java.io/as-file file-path))]
+        exists? (.exists (cjio/as-file file-path))]
+    (if (not exists?) (timbre/info (format "File '%s' not found; creating a new file" file-path)))
     (cond src-text (process-source params)
           true
           (layout/render "edit.html"
@@ -82,7 +95,7 @@
   "Render the markdown page specified in this `request`, if any. If none found, redirect to edit-page"
   [request]
   (let [params (keywordize-keys (:params request))
-        page (or (:content params) (:page params) "Introduction")
+        page (or (:page params) "Introduction")
         file-name (str "/content/" page ".md")
         file-path (str (io/resource-path) file-name)
         exists? (.exists (clojure.java.io/as-file file-path))]
@@ -101,7 +114,7 @@
   if any. If none, error?"
   [request]
   (let [params (keywordize-keys (:params request))
-        page (or (:page params) "Introduction")
+        page (url-decode (or (:page params) "Introduction"))
         file-name (str page ".md")
         repo-path (str (io/resource-path) "/content/")]
     (layout/render "history.html"
@@ -115,7 +128,7 @@
   "Render a specific historical version of a page"
   [request]
   (let [params (keywordize-keys (:params request))
-        page (or (:page params) "Introduction")
+        page (url-decode (or (:page params) "Introduction"))
         version (:version params)
         file-name (str page ".md")
         repo-path (str (io/resource-path) "/content/")]
@@ -136,7 +149,7 @@
   "Render a diff between two versions of a page"
   [request]
   (let [params (keywordize-keys (:params request))
-        page (or (:page params) "Introduction")
+        page (url-decode (or (:page params) "Introduction"))
         version (:version params)
         file-name (str page ".md")
         repo-path (str (io/resource-path) "/content/")]

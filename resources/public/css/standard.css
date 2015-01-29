@@ -122,6 +122,7 @@ li.nav-item a:active { background: gray; color: white; }
 /*  padding: 0.1em 10%; */
   bottom:0;
   position:fixed;
+  vertical-align: top;
   z-index:150;
   _position:absolute;
   _top:expression(eval(document.documentElement.scrollTop+
