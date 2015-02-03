@@ -109,6 +109,42 @@ li.nav-item a:active { background: gray; color: white; }
   padding-bottom: 5em;
 }
 
+/* cookies information box, fixed, in right margin, just above footer */
+#cookies {
+	width: 30%;
+	float: right;
+  position: fixed;
+  bottom: 1.5em;
+  right: 0;
+	z-index: 150;
+  background: transparent;
+}
+
+/* about-cookies box: permanently visible part of cookies information box */
+#about-cookies {
+  clear: right;
+  width: 20%;
+  float: right;
+  text-align: right;
+  font-size: 66%;
+  padding: 0.25em 2em;
+  color: white;
+  background-color: maroon;
+}
+
+/* more-about-cookies box, normally hidden */
+#more-about-cookies {
+  display: none;
+	padding: 0.25em 2em;
+	color: maroon;
+  background:rgba(196,196,196,0.66);
+	border: thin solid maroon;
+}
+
+/* but magically appears on mouseover */
+#cookies:hover #more-about-cookies {
+	display: block;
+}
 
 /* footer of the page - not-editable, provided by Smeagol */
 #footer {
@@ -119,7 +155,7 @@ li.nav-item a:active { background: gray; color: white; }
   background:rgba(128,128,128,0.95);
   width: 100%;
   margin: 0;
-/*  padding: 0.1em 10%; */
+  padding: 0.25em 0;
   bottom:0;
   position:fixed;
   vertical-align: top;
