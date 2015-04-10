@@ -9,28 +9,6 @@ body {
   width:100%;
 }
 
-/* footer of the document */
-#footer {
-  clear: both;
-  font-size: smaller;
-  padding: 0 2em;
-  text-align: center;
-  color:white;
-  background:rgba(196,196,196,0.95);
-  width: 100%;
-  margin: 0;
-  bottom:0;
-  position:fixed;
-  z-index:150;
-  _position:absolute;
-  _top:expression(eval(document.documentElement.scrollTop+
-        (document.documentElement.clientHeight-this.offsetHeight)));
-}
-
-#footer:hover #credits {
-  font-size: normal;
-}
-
 #header {
   width:100%;
   padding: 0.25em 5% 0.25em 5%;
@@ -91,6 +69,64 @@ li.nav-item a:active { background: gray; color: white; }
   content: "|| ";
 }
 
+/* cookies information box, fixed, in right margin, just above footer */
+#cookies {
+	width: 30%;
+	float: right;
+  position: fixed;
+  bottom: 1.5em;
+  right: 0;
+	z-index: 150;
+  background: transparent;
+}
+
+/* about-cookies box: permanently visible part of cookies information box */
+#about-cookies {
+  clear: right;
+  width: 20%;
+  float: right;
+  text-align: right;
+  padding: 0.25em 2em;
+	color: white;
+  background:rgba(40,40,40,0.8);
+}
+
+/* more-about-cookies box, normally hidden */
+#more-about-cookies {
+  display: none;
+	padding: 0.25em 2em;
+	color: white;
+  background:rgba(40,40,40,0.8);
+	border-bottom: thin solid white;
+}
+
+/* but magically appears on mouseover */
+#cookies:hover #more-about-cookies {
+	display: block;
+}
+/* footer of the document */
+#footer {
+  clear: both;
+  font-size: smaller;
+  padding: 0 2em;
+  text-align: center;
+  color:white;
+  background:rgba(196,196,196,0.95);
+  width: 100%;
+  margin: 0;
+  bottom:0;
+  position:fixed;
+  z-index:150;
+  _position:absolute;
+  _top:expression(eval(document.documentElement.scrollTop+
+        (document.documentElement.clientHeight-this.offsetHeight)));
+}
+
+#footer:hover #credits {
+  font-size: normal;
+}
+
+
 .error {
     background-color: red;
     color: white;
@@ -98,6 +134,12 @@ li.nav-item a:active { background: gray; color: white; }
 
 .minor-controls {
 	float: right;
+	padding: 0.1em 2em;
+	color: white;
+  background:rgba(40,40,40,0.8);
+}
+.minor-controls a {
+  color: white;
 }
 
 /* there isn't enough room on a tablet display for optional elements, and
