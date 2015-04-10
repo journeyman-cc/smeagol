@@ -106,7 +106,8 @@
                           :left-bar (local-links (util/md->html "/content/_left-bar.md"))
                           :header (local-links (util/md->html "/content/_header.md"))
                           :content (local-links (util/md->html file-name))
-                          :user (session/get :user)})
+                          :user (session/get :user)
+                          :version (System/getProperty "smeagol.version")})
           true (response/redirect (str "/edit?page=" page)))))
 
 (defn history-page
