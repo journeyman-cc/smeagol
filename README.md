@@ -28,7 +28,6 @@ There's still no mechanism to add a new user to the system through the user inte
 
 * Image (and other media) upload;
 * Improved editor. The editor is at present very primitive - right back from the beginnings of the Web. It would be nice to have a rich embedded editor like [Hallo](https://github.com/bergie/hallo) or [Aloha](http://aloha-editor.org/Content.Node/index.html) but I haven't (yet) had time to integrate them!
-* Transform diff output to HTML to show changes in a more user friendly format;
 * Mechanism to add users through the user interface;
 
 ## License
