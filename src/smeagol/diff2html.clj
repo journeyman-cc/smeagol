@@ -47,7 +47,6 @@
 (defn diff2html
   "Convert this string, assumed to be in diff format, to HTML."
   [^String diff-text]
-  ;; TODO doesn't work yet
   (apply str
          (flatten
            (list "<div class='change'>"
