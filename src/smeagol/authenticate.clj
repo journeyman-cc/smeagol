@@ -1,7 +1,6 @@
 (ns ^{:doc "Authentication functions."
       :author "Simon Brooke"}
   smeagol.authenticate
-  (:use clojure.walk)
   (:require [taoensso.timbre :as timbre]
             [noir.io :as io]
             [crypto.password.scrypt :as password]))
