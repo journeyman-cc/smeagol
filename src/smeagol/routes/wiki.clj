@@ -1,23 +1,8 @@
-;; Smeagol: a very simple Wiki engine
-;; Copyright (C) 2014 Simon Brooke
-
-;; This program is free software; you can redistribute it and/or
-;; modify it under the terms of the GNU General Public License
-;; as published by the Free Software Foundation; either version 2
-;; of the License, or (at your option) any later version.
-
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
-
-;; You should have received a copy of the GNU General Public License
-;; along with this program; if not, write to the Free Software
-;; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-
-(ns smeagol.routes.wiki
-  (:use clojure.walk)
-  (:require [compojure.core :refer :all]
+(ns ^{:doc "Render all the main pages of a very simple Wiki engine."
+      :author "Simon Brooke"}
+  smeagol.routes.wiki
+  (:require [clojure.walk :refer :all]
+            [compojure.core :refer :all]
             [clj-jgit.porcelain :as git]
             [cemerick.url :refer (url url-encode url-decode)]
             [markdown.core :as md]
@@ -33,14 +18,38 @@
             [smeagol.util :as util]
             [smeagol.history :as hist]))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;
+;;;; Smeagol: a very simple Wiki engine.
+;;;;
+;;;; This program is free software; you can redistribute it and/or
+;;;; modify it under the terms of the GNU General Public License
+;;;; as published by the Free Software Foundation; either version 2
+;;;; of the License, or (at your option) any later version.
+;;;;
+;;;; This program is distributed in the hope that it will be useful,
+;;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;;;; GNU General Public License for more details.
+;;;;
+;;;; You should have received a copy of the GNU General Public License
+;;;; along with this program; if not, write to the Free Software
+;;;; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
+;;;; USA.
+;;;;
+;;;; Copyright (C) 2014 Simon Brooke
+;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defn local-links
   "Rewrite text in `html-src` surrounded by double square brackets as a local link into this wiki."
-  [html-src]
+  [^String html-src]
   (clojure.string/replace html-src #"\[\[[^\[\]]*\]\]"
                           #(let [text (clojure.string/replace %1 #"[\[\]]" "")
                                  encoded (url-encode text)]
                              (timbre/debug (format "URL encode: '%s' -> '%s'" text encoded))
                              (format "<a href='wiki?page=%s'>%s</a>" encoded text))))
+
 
 (defn get-git-repo
   "Get the git repository for my content, creating it if necessary"
@@ -49,6 +58,7 @@
         repo (cjio/as-file (str path ".git"))]
     (if (.exists repo) (git/load-repo repo)
       (git/git-init path))))
+
 
 (defn process-source
   "Process `source-text` and save it to the specified `file-path`, committing it
@@ -69,6 +79,7 @@
     (git/git-commit git-repo summary {:name user :email email})
     (response/redirect (str "/wiki?page=" (url-encode page)))
     ))
+
 
 (defn edit-page
   "Render a page in a text-area for editing. This could have been done in the same function as wiki-page,
@@ -91,6 +102,7 @@
                           :user (session/get :user)
                           :exists exists?}))))
 
+
 (defn wiki-page
   "Render the markdown page specified in this `request`, if any. If none found, redirect to edit-page"
   [request]
@@ -110,6 +122,7 @@
                           :version (System/getProperty "smeagol.version")})
           true (response/redirect (str "/edit?page=" page)))))
 
+
 (defn history-page
   "Render the history for the markdown page specified in this `request`,
   if any. If none, error?"
@@ -124,6 +137,7 @@
                     :left-bar (local-links (util/md->html "/content/_left-bar.md"))
                     :header (local-links (util/md->html "/content/_header.md"))
                     :history (hist/find-history repo-path file-name)})))
+
 
 (defn version-page
   "Render a specific historical version of a page"
@@ -146,6 +160,7 @@
                                 repo-path file-name version)))
                     :user (session/get :user)})))
 
+
 (defn diff-page
   "Render a diff between two versions of a page"
   [request]
@@ -163,6 +178,7 @@
                              (util/md->html "/content/_header.md"))
                     :content (d2h/diff2html (hist/diff repo-path file-name version))
                     :user (session/get :user)})))
+
 
 (defn auth-page
   "Render the auth page"
@@ -191,6 +207,7 @@
                      :header (local-links (util/md->html "/content/_header.md"))
                      :user user}))))
 
+
 (defn passwd-page
   "Render a page to change the user password"
   [request]
@@ -212,6 +229,7 @@
                     :left-bar (local-links (util/md->html "/content/_left-bar.md"))
                     :header (local-links (util/md->html "/content/_header.md"))
                     :message message})))
+
 
 (defroutes wiki-routes
   (GET "/wiki" request (wiki-page request))

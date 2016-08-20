@@ -1,4 +1,6 @@
-(ns smeagol.history
+(ns ^{:doc "Explore the history of a page."
+      :author "Simon Brooke"}
+  smeagol.history
   (:require [taoensso.timbre :as timbre]
             [clj-jgit.porcelain :as git]
             [clj-jgit.internal :as i]
@@ -10,22 +12,28 @@
             [org.eclipse.jgit.treewalk.filter PathFilter]
             [org.eclipse.jgit.diff DiffEntry DiffFormatter]))
 
-;; Smeagol: a very simple Wiki engine
-;; Copyright (C) 2014 Simon Brooke
-
-;; This program is free software; you can redistribute it and/or
-;; modify it under the terms of the GNU General Public License
-;; as published by the Free Software Foundation; either version 2
-;; of the License, or (at your option) any later version.
-
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
-
-;; You should have received a copy of the GNU General Public License
-;; along with this program; if not, write to the Free Software
-;; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;
+;;;; Smeagol: a very simple Wiki engine.
+;;;;
+;;;; This program is free software; you can redistribute it and/or
+;;;; modify it under the terms of the GNU General Public License
+;;;; as published by the Free Software Foundation; either version 2
+;;;; of the License, or (at your option) any later version.
+;;;;
+;;;; This program is distributed in the hope that it will be useful,
+;;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;;;; GNU General Public License for more details.
+;;;;
+;;;; You should have received a copy of the GNU General Public License
+;;;; along with this program; if not, write to the Free Software
+;;;; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
+;;;; USA.
+;;;;
+;;;; Copyright (C) 2014 Simon Brooke
+;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn entry-contains
   "If this `log-entry` contains a reference to this `file-path`, return the entry;
@@ -39,6 +47,7 @@
           #(= (first %) file-path)
       (:changed_files log-entry))))
     log-entry))
+
 
 (defn find-history [^String git-directory-path ^String file-path]
   "Return the log entries in the repository at this `git-directory-path`
@@ -66,6 +75,7 @@
         (.release reader)
         (.dispose walk)))
     result))
+
 
 (defn diff
   "Find the diff in the file at `file-path` within the repository at
@@ -95,6 +105,7 @@
               (PathFilter/create file-path))
             out)))
       (.toString out))))
+
 
 (defn fetch-version
   "Return (as a String) the text of this `version` of the file at this

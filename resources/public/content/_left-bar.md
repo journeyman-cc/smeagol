@@ -1,1 +1,18 @@
-This is the left bar. There's nothing in it yet. You could [edit](edit?page=_left-bar) it to provide internal navigation or branding.
+## Topic areas
+
+* [[Agriculture]]
+* [[Broadband]]
+* [[Employment and Industry]]
+* [[Energy and Fuel]]
+* [[Housing]]
+* [[Land Ownership]]
+* [[Land Reform]]
+* [[Land Taxation]]
+* [[Local Government]]
+* [[Transport]]
+
+## About
+
+* [[Authors]]
+* [[Editing Guidelines]]
+
