@@ -1,1 +1,1 @@
-**Levellers** | A wiki for collaboratively developing left-wing policy for rural Scotland.
+This is the header. There isn't yet much in it. You could [edit](edit?page=_header) it to provide internal navigation or branding.
