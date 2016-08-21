@@ -1,9 +1,11 @@
 {% extends "templates/base.html" %}
+
 {% block content %}
     <div id="content" class="wiki">
-    	<div class="minor-controls">
-    		<a href="history?page={{page}}">History</a>
-    	</div>
+    	<ul class="minor-controls">
+        <li><a href="{{servlet-context}}/edit?page={{title}}">Edit this page</a></li>
+    		<li><a href="history?page={{page}}">History</a></li>
+    	</ul>
         {{content|safe}}
     </div>
 {% endblock %}

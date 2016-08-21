@@ -57,4 +57,4 @@ Alternatively, if you want to deploy to a servlet container (which I would stron
 
 
 ## Editing the framing content
-You can edit the [[\_left-bar]], the [[\_edit-left-bar]], and the [[\_header]].
+You can edit the [stylesheet](/edit-css?page=stylesheet), the [[\_left-bar]], the [[\_edit-left-bar]], and the [[\_header]].

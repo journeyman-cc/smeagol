@@ -2,11 +2,12 @@
       :author "Simon Brooke"}
   smeagol.routes.wiki
   (:require [clojure.walk :refer :all]
+            [clojure.java.io :as cjio]
+            [clojure.string :as cs]
             [compojure.core :refer :all]
             [clj-jgit.porcelain :as git]
             [cemerick.url :refer (url url-encode url-decode)]
             [markdown.core :as md]
-            [clojure.java.io :as cjio]
             [noir.io :as io]
             [noir.response :as response]
             [noir.util.route :as route]
@@ -44,11 +45,14 @@
 (defn local-links
   "Rewrite text in `html-src` surrounded by double square brackets as a local link into this wiki."
   [^String html-src]
-  (clojure.string/replace html-src #"\[\[[^\[\]]*\]\]"
+  (cs/replace html-src #"\[\[[^\[\]]*\]\]"
                           #(let [text (clojure.string/replace %1 #"[\[\]]" "")
-                                 encoded (url-encode text)]
-                             (timbre/debug (format "URL encode: '%s' -> '%s'" text encoded))
-                             (format "<a href='wiki?page=%s'>%s</a>" encoded text))))
+                                 encoded (url-encode text)
+                                 ;; I use '\_' to represent '_' in wiki markup, because
+                                 ;; '_' is meaningful in Markdown. However, this needs to
+                                 ;; be stripped out when interpreting local links.
+                                 munged (cs/replace encoded #"%26%2395%3B" "_")]
+                             (format "<a href='wiki?page=%s'>%s</a>" munged text))))
 
 
 (defn get-git-repo
@@ -63,10 +67,10 @@
 (defn process-source
   "Process `source-text` and save it to the specified `file-path`, committing it
   to Git and finally redirecting to wiki-page."
-  [params]
+  [params suffix]
   (let [source-text (:src params)
         page (:page params)
-        file-name (str  page ".md")
+        file-name (str page suffix)
         file-path (str (io/resource-path) "/content/" file-name)
         exists? (.exists (clojure.java.io/as-file file-path))
         git-repo (get-git-repo)
@@ -77,30 +81,43 @@
     (spit file-path source-text)
     (if (not exists?) (git/git-add git-repo file-name))
     (git/git-commit git-repo summary {:name user :email email})
-    (response/redirect (str "/wiki?page=" (url-encode page)))
-    ))
+    (response/redirect
+      (str
+        "/wiki?page="
+        (if
+          (= suffix ".md")
+          (url-encode page)
+          "Introduction")))))
 
 
 (defn edit-page
   "Render a page in a text-area for editing. This could have been done in the same function as wiki-page,
   and that would have been neat, but I couldn't see how to establish security if that were done."
+  ([request]
+   (edit-page request "Introduction" ".md" "edit.html" "/content/_edit-left-bar.md"))
+  ([request default suffix template left-bar]
+   (let [params (keywordize-keys (:params request))
+         src-text (:src params)
+         page (or (:page params) default)
+         file-path (str (io/resource-path) "content/" page suffix)
+         exists? (.exists (cjio/as-file file-path))]
+     (if (not exists?) (timbre/info (format "File '%s' not found; creating a new file" file-path)))
+     (cond src-text (process-source params suffix)
+           true
+           (layout/render template
+                          {:title (str "Edit " page)
+                           :page page
+                           :left-bar (local-links (util/md->html left-bar))
+                           :header (local-links (util/md->html "/content/_header.md"))
+                           :content (if exists? (io/slurp-resource (str "/content/" page suffix)) "")
+                           :user (session/get :user)
+                           :exists exists?})))))
+
+
+(defn edit-css-page
+  "Render a stylesheet in a text-area for editing.."
   [request]
-  (let [params (keywordize-keys (:params request))
-        src-text (:src params)
-        page (or (:page params) "Introduction")
-        file-path (str (io/resource-path) "content/" page ".md")
-        exists? (.exists (cjio/as-file file-path))]
-    (if (not exists?) (timbre/info (format "File '%s' not found; creating a new file" file-path)))
-    (cond src-text (process-source params)
-          true
-          (layout/render "edit.html"
-                         {:title (str "Edit " page)
-                          :page page
-                          :left-bar (local-links (util/md->html "/content/_edit-left-bar.md"))
-                          :header (local-links (util/md->html "/content/_header.md"))
-                          :content (if exists? (io/slurp-resource (str "/content/" page ".md")) "")
-                          :user (session/get :user)
-                          :exists exists?}))))
+   (edit-page request "stylesheet" ".css" "edit-css.html" "/content/_edit-left-bar.md"))
 
 
 (defn wiki-page
@@ -236,6 +253,8 @@
   (GET "/" request (wiki-page request))
   (GET "/edit" request (route/restricted (edit-page request)))
   (POST "/edit" request (route/restricted (edit-page request)))
+  (GET "/edit-css" request (route/restricted (edit-css-page request)))
+  (POST "/edit-css" request (route/restricted (edit-css-page request)))
   (GET "/history" request (history-page request))
   (GET "/version" request (version-page request))
   (GET "/changes" request (diff-page request))
