@@ -1,4 +1,9 @@
 {% extends "templates/base.html" %}
+{% block extra-headers %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+    <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+{% endblock %}
+
 {% block content %}
         <div id="content" class="edit">
             <form action="{{servlet-context}}/edit" method="POST">
@@ -15,4 +20,7 @@
                 </p>
             </form>
         </div>
+        <script>
+          var simplemde = new SimpleMDE();
+        </script>
 {% endblock %}
