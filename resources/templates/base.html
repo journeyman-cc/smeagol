@@ -8,6 +8,8 @@
     <link href="{{servlet-context}}/css/standard.css" media="screen and (min-device-width: 1025px)" rel="stylesheet" type="text/css" />
     <link href="{{servlet-context}}/css/print.css" media="print" rel="stylesheet" type="text/css" />
     <link href="{{servlet-context}}/css/states.css" rel="stylesheet" type="text/css" />
+    {% block extra-headers %}
+    {% endblock %}
   </head>
   <body>
 
@@ -49,8 +51,8 @@
 		</div>
 	  {% endif %}
 
-      {% block content %}
-      {% endblock %}
+    {% block content %}
+    {% endblock %}
     </div>
     <div id="cookies">
         <div id="more-about-cookies">
