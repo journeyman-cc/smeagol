@@ -18,7 +18,7 @@ Security is now greatly improved. There is a file called *passwd* in the *resour
 
 that is to say, the username is a keyword and the corresponding password is a string. However, since version 0.5.0, users can now change their own passwords, and when the user changes their password their new password is encrypted using the [scrypt](http://www.tarsnap.com/scrypt.html) one-way encryption scheme. The password file is now no longer either in the *resources/public* directory so cannot be downloaded through the browser, nor in the git archive to which the Wiki content is stored, so that even if that git archive is remotely clonable an attacker cannot get the password file that way.
 
-There's still no mechanism to add a new user to the system through the user interface; you do sill have to do that by editing the password file in an editor.
+There's still no mechanism to add a new user to the system through the user interface; you do still have to do that by editing the password file in an editor.
 
 ## Images
 Smeagol does not currently have any mechanism to upload images. You can, however, link to images already available on the web, like this:
