@@ -51,17 +51,19 @@ parts of Smeagol into another open source project which uses a less restrictive
 license, please contact me; I'm open to dual licensing it.
 
 ## Prerequisites
-You will need [Leiningen][1] 2.0 or above installed.
+You will need [Leiningen](https://github.com/technomancy/leiningen) 2.0 or above installed.
 
-[1]: https://github.com/technomancy/leiningen
+You will need [node](https://nodejs.org/en/) and [bower](https://bower.io/) installed.
 
 ## Running
 To start a web server for the application, run:
 
+    lein bower install
     lein ring server
 
 Alternatively, if you want to deploy to a servlet container (which I would strongly recommend), the simplest thing is to run:
 
+    lein bower install
     lein ring uberwar
 
 (a command which I'm sure Smeagol would entirely appreciate) and deploy the resulting war file.

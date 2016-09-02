@@ -28,10 +28,10 @@
   :jvm-opts ["-server"]
   :plugins [[lein-ring "0.8.13" :exclusions [org.clojure/clojure]]
             [lein-environ "1.0.0"]
+            [lein-bower "0.5.1"]
             [lein-ancient "0.5.5" :exclusions [org.clojure/clojure org.clojure/data.xml]]
-            [lein-marginalia "0.7.1" :exclusions [org.clojure/clojure]]
-            [lein-npm "0.6.2"]]
-  :npm {:dependencies [[simplemde "1.11.2"]]}
+            [lein-marginalia "0.7.1" :exclusions [org.clojure/clojure]]]
+  :bower-dependencies [[simplemde "1.11.2"]]
   :ring {:handler smeagol.handler/app
          :init    smeagol.handler/init
          :destroy smeagol.handler/destroy}

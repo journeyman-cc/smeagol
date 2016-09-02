@@ -51,9 +51,9 @@ with the line
     <img height="16" width="16" alt="The Web Engineering Factory &amp; Toolworks" src="img/weft.logo.64.png"> Developed by <a href="http://www.weft.scot/">WEFT</a>
 
 ## Prerequisites
-You will need [Leiningen][1] 2.0 or above installed.
+You will need [Leiningen](https://github.com/technomancy/leiningen) 2.0 or above installed.
 
-[1]: https://github.com/technomancy/leiningen
+You will need [node](https://nodejs.org/en/) and [bower](https://bower.io/) installed.
 
 ## Running
 To start a web server for the application, run:
