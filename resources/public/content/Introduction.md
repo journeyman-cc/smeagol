@@ -23,11 +23,26 @@ There's still no mechanism to add a new user to the system through the user inte
 ## Images
 Smeagol does not currently have any mechanism to upload images. You can, however, link to images already available on the web, like this:
 
-![](http://vignette3.wikia.nocookie.net/lotr/images/e/e1/Gollum_Render.png/revision/latest?cb=20141218075509)
+![Smeagol](http://vignette3.wikia.nocookie.net/lotr/images/e/e1/Gollum_Render.png/revision/latest?cb=20141218075509)
 
 ## Todo
-* Image (and other media) upload;
 * Mechanism to add users through the user interface;
+
+## Advertisement
+If you like what you see here, I am available for work on open source Clojure projects. Contact me vis [WEFT](http://www.weft.scot/).
+
+### Phoning home
+Smeagol currently requests the WEFT logo in the page footer from my home site. This is mainly so I can get a feel for how many people are using the product. If you object to this, edit the file
+
+    resources/templates/base.html
+
+and replace the line
+
+    <img height="16" width="16" alt="The Web Engineering Factory &amp; Toolworks" src="http://www.weft.scot/images/weft.logo.64.png"> Developed by <a href="http://www.weft.scot/">WEFT</a>
+
+with the line
+
+    <img height="16" width="16" alt="The Web Engineering Factory &amp; Toolworks" src="img/weft.logo.64.png"> Developed by <a href="http://www.weft.scot/">WEFT</a>
 
 ## License
 Copyright © 2014-2015 Simon Brooke. Licensed under the GNU General Public License,
@@ -44,10 +59,6 @@ You will need [Leiningen][1] 2.0 or above installed.
 To start a web server for the application, run:
 
     lein ring server
-
-or more probably
-
-	  nohup lein ring server > smeagol.log &
 
 Alternatively, if you want to deploy to a servlet container (which I would strongly recommend), the simplest thing is to run:
 

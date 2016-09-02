@@ -1,4 +1,7 @@
 # Welcome to Smeagol!
+
+![One wiki to rule them all](http://www.weft.scot/images/smeagol.png)
+
 Smeagol is a simple Wiki engine inspired by [Gollum](https://github.com/gollum/gollum/wiki). Gollum is a Wiki engine written in Ruby, which uses a number of simple text formats including [Markdown](http://daringfireball.net/projects/markdown/), and which uses [Git](http://git-scm.com/) to provide versioning and backup. I needed a new Wiki for a project and thought Gollum would be ideal - but unfortunately it doesn't provide user authentication, which I needed, and it was simpler for me to reimplement the bits I did need in Clojure than to modify Gollum.
 
 So at this stage Smeagol is a Wiki engine written in Clojure which uses Markdown as its text format, which does have user authentication, and which uses Git as its versioning and backup system.
@@ -23,10 +26,9 @@ There's still no mechanism to add a new user to the system through the user inte
 ## Images
 Smeagol does not currently have any mechanism to upload images. You can, however, link to images already available on the web, like this:
 
-![](http://vignette3.wikia.nocookie.net/lotr/images/e/e1/Gollum_Render.png/revision/latest?cb=20141218075509)
+![Smeagol](http://vignette3.wikia.nocookie.net/lotr/images/e/e1/Gollum_Render.png/revision/latest?cb=20141218075509)
 
 ## Todo
-* Image (and other media) upload;
 * Mechanism to add users through the user interface;
 
 ## License
@@ -34,6 +36,19 @@ Copyright © 2014-2015 Simon Brooke. Licensed under the GNU General Public Licen
 version 2.0 or (at your option) any later version. If you wish to incorporate
 parts of Smeagol into another open source project which uses a less restrictive
 license, please contact me; I'm open to dual licensing it.
+
+### Phoning home
+Smeagol currently requests the WEFT logo in the page footer from my home site. This is mainly so I can get a feel for how many people are using the product. If you object to this, simply edit the file
+
+    resources/templates/base.html
+
+and replace the line
+
+    <img height="16" width="16" alt="The Web Engineering Factory &amp; Toolworks" src="http://www.weft.scot/images/weft.logo.64.png"> Developed by <a href="http://www.weft.scot/">WEFT</a>
+
+with the line
+
+    <img height="16" width="16" alt="The Web Engineering Factory &amp; Toolworks" src="img/weft.logo.64.png"> Developed by <a href="http://www.weft.scot/">WEFT</a>
 
 ## Prerequisites
 You will need [Leiningen][1] 2.0 or above installed.
@@ -45,16 +60,9 @@ To start a web server for the application, run:
 
     lein ring server
 
-or more probably
-
-	  nohup lein ring server > smeagol.log &
-
 Alternatively, if you want to deploy to a servlet container (which I would strongly recommend), the simplest thing is to run:
 
     lein ring uberwar
 
 (a command which I'm sure Smeagol would entirely appreciate) and deploy the resulting war file.
 
-
-## Editing the framing content
-You can edit the [stylesheet](/edit-css?page=stylesheet), the [[\_left-bar]], the [[\_edit-left-bar]], and the [[\_header]].

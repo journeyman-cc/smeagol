@@ -9,8 +9,7 @@
     {% endblock %}
   </head>
   <body>
-
-    <div id="header" class="wiki">
+    <header class="wiki">
         <!-- navbar -->
         <div id="nav">
           {% if user %}
@@ -29,9 +28,9 @@
         </div>
         <h1>{{title}}</h1>
         {{header|safe}}
-    </div>
-    <div id="left-bar"  class="wiki">
-        {{left-bar|safe}}
+    </header>
+    <div id="side-bar"  class="wiki">
+        {{side-bar|safe}}
     </div>
 
     <div id="main-container" class="container">
@@ -60,15 +59,21 @@
         About cookies
       </div>
     </div>
-    <div id="footer">
+    <footer>
        <div id="credits">
+         <div>
            One Wiki to rule them all ||
-           <img height="16" width="16" alt="one wiki to rule them all" src="img/smeagol.png"/>Smeagol wiki engine {{version}} || Built with <a href="http://www.luminusweb.net/">LuminusWeb</a> ||
+           <img height="16" width="16" alt="one wiki to rule them all" src="img/smeagol.png"/>Smeagol wiki engine {{version}} ||
+           <img height="16" width="16" alt="The Web Engineering Factory &amp; Toolworks" src="http://www.weft.scot/images/weft.logo.64.png"> Developed by <a href="http://www.weft.scot/">WEFT</a>
+         </div>
+         <div>
+           Built with <a href="http://www.luminusweb.net/">LuminusWeb</a> ||
            <img height="16" width="16" alt="Clojure" src="img/clojure-icon.gif"/> Powered by <a href="http://clojure.org">Clojure</a> ||
            <img height="16" width="16" alt="GitHub" src="img/github-logo-transparent.png"/>Find me/fork me on <a href="https://github.com/simon-brooke/smeagol">Github</a> ||
            <img height="16" width="16" alt="Free Software Foundation" src="img/gnu.small.png"/>Licensed under the <a href="http://www.gnu.org/licenses/gpl-2.0.html">GNU General Public License version 2.0</a>
+         </div>
       </div>
-    </div>
+    <footer>
   </body>
 </html>
 

@@ -94,8 +94,8 @@
   "Render a page in a text-area for editing. This could have been done in the same function as wiki-page,
   and that would have been neat, but I couldn't see how to establish security if that were done."
   ([request]
-   (edit-page request "Introduction" ".md" "edit.html" "/content/_edit-left-bar.md"))
-  ([request default suffix template left-bar]
+   (edit-page request "Introduction" ".md" "edit.html" "/content/_edit-side-bar.md"))
+  ([request default suffix template side-bar]
    (let [params (keywordize-keys (:params request))
          src-text (:src params)
          page (or (:page params) default)
@@ -107,7 +107,7 @@
            (layout/render template
                           {:title (str "Edit " page)
                            :page page
-                           :left-bar (local-links (util/md->html left-bar))
+                           :side-bar (local-links (util/md->html side-bar))
                            :header (local-links (util/md->html "/content/_header.md"))
                            :content (if exists? (io/slurp-resource (str "/content/" page suffix)) "")
                            :user (session/get :user)
@@ -117,7 +117,7 @@
 (defn edit-css-page
   "Render a stylesheet in a text-area for editing.."
   [request]
-   (edit-page request "stylesheet" ".css" "edit-css.html" "/content/_edit-left-bar.md"))
+   (edit-page request "stylesheet" ".css" "edit-css.html" "/content/_edit-side-bar.md"))
 
 
 (defn wiki-page
@@ -132,7 +132,7 @@
           (layout/render "wiki.html"
                          {:title page
                           :page page
-                          :left-bar (local-links (util/md->html "/content/_left-bar.md"))
+                          :side-bar (local-links (util/md->html "/content/_side-bar.md"))
                           :header (local-links (util/md->html "/content/_header.md"))
                           :content (local-links (util/md->html file-name))
                           :user (session/get :user)
@@ -151,7 +151,7 @@
     (layout/render "history.html"
                    {:title (str "History of " page)
                     :page page
-                    :left-bar (local-links (util/md->html "/content/_left-bar.md"))
+                    :side-bar (local-links (util/md->html "/content/_side-bar.md"))
                     :header (local-links (util/md->html "/content/_header.md"))
                     :history (hist/find-history repo-path file-name)})))
 
@@ -167,8 +167,8 @@
     (layout/render "wiki.html"
                    {:title (str "Version " version " of " page)
                     :page page
-                    :left-bar (local-links
-                               (util/md->html "/content/_left-bar.md"))
+                    :side-bar (local-links
+                               (util/md->html "/content/_side-bar.md"))
                     :header (local-links
                              (util/md->html "/content/_header.md"))
                     :content (local-links
@@ -189,8 +189,8 @@
     (layout/render "wiki.html"
                    {:title (str "Changes since version " version " of " page)
                     :page page
-                    :left-bar (local-links
-                               (util/md->html "/content/_left-bar.md"))
+                    :side-bar (local-links
+                               (util/md->html "/content/_side-bar.md"))
                     :header (local-links
                              (util/md->html "/content/_header.md"))
                     :content (d2h/diff2html (hist/diff repo-path file-name version))
@@ -220,7 +220,7 @@
      (layout/render "auth.html"
                     {:title (if user (str "Logout " user) "Log in")
                      :redirect-to ((:headers request) "referer")
-                     :left-bar (local-links (util/md->html "/content/_left-bar.md"))
+                     :side-bar (local-links (util/md->html "/content/_side-bar.md"))
                      :header (local-links (util/md->html "/content/_header.md"))
                      :user user}))))
 
@@ -243,7 +243,7 @@
                  true "Your password was not changed")] ;; but I don't know why...
     (layout/render "passwd.html"
                    {:title (str "Change passord for " user)
-                    :left-bar (local-links (util/md->html "/content/_left-bar.md"))
+                    :side-bar (local-links (util/md->html "/content/_side-bar.md"))
                     :header (local-links (util/md->html "/content/_header.md"))
                     :message message})))
 

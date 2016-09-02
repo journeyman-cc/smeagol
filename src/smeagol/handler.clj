@@ -12,7 +12,8 @@
             [ring.middleware.defaults :refer [site-defaults]]
             [compojure.route :as route]
             [taoensso.timbre :as timbre]
-            [taoensso.timbre.appenders.rotor :as rotor]
+            [taoensso.timbre.appenders.core :as appenders]
+            [taoensso.timbre.appenders.3rd-party.rotor :as rotor]
             [selmer.parser :as parser]
             [environ.core :refer [env]]
             [cronj.core :as cronj]))
@@ -54,17 +55,15 @@
    put any initialization code here"
   []
   (timbre/set-config!
-    [:appenders :rotor]
-    {:min-level :info
+    {:min-level :debug
      :enabled? true
-     :async? false ; should be always false for rotor
-     :max-message-per-msecs nil
-     :fn rotor/appender-fn})
-
-  (timbre/set-config!
-    [:shared-appender-config :rotor]
-    {:path "smeagol.log" :max-size (* 512 1024) :backlog 10})
-
+     :output-fn timbre/default-output-fn})
+  (timbre/merge-config!
+    {:appenders
+     {:rotor (rotor/rotor-appender
+               {:path "smeagol.log"
+                :max-size (* 512 1024)
+                :backlog 10})}})
   (if (env :dev) (parser/cache-off!))
   ;;start the expired session cleanup job
   (cronj/start! session-manager/cleanup-job)
