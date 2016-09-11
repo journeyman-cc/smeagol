@@ -10,30 +10,27 @@
   </head>
   <body>
     <header class="wiki">
-        <!-- navbar -->
-        <div id="nav">
-          {% if user %}
-            <p class="user" id="user">You are logged in as {{user}} | <a href="passwd">change password</a></p>
+      <!-- navbar -->
+      <div id="nav">
+        {% if user %}
+        <p class="user" id="user">You are logged in as {{user}} | <a href="passwd">change password</a></p>
+        {% endif %}
+        <img id="nav-icon" src="{{servlet-context}}/img/threelines.png" alt="Menu"/>
+        <ul id="nav-menu" class="nav">
+          <li class="{{wiki-selected}}"><a href="{{servlet-context}}/">Home</a></li>
+          {% if admin %}
+          <li class="{{admin-selected}}"><a href="{{servlet-context}}/edit-users">Edit users</a></li>
           {% endif %}
-          <img id="nav-icon" src="{{servlet-context}}/img/threelines.png" alt="Menu"/>
-          <ul id="nav-menu" class="nav">
-            <li class="{{wiki-selected}}"><a href="{{servlet-context}}/">Home</a></li>
-            <li class="{{auth-selected}}"><a href="{{servlet-context}}/auth">
-                {% if user %}
-                Log out
-                {% else %}
-                Log in
-                {% endif %}</a></li>
-          </ul>
-        </div>
-        <h1>{{title}}</h1>
-        {{header|safe}}
-    </header>
-    <div id="side-bar"  class="wiki">
-        {{side-bar|safe}}
-    </div>
-
-    <div id="main-container" class="container">
+          <li class="{{auth-selected}}"><a href="{{servlet-context}}/auth">
+            {% if user %}
+            Log out
+            {% else %}
+            Log in
+            {% endif %}</a></li>
+        </ul>
+      </div>
+      <h1>{{title}}</h1>
+      {{header|safe}}
       {% if message %}
       <div id="message">
         <p class="message">{{message}}</p>
@@ -44,7 +41,12 @@
         <p class="error">{{error}}</p>
       </div>
       {% endif %}
+    </header>
+    <div id="side-bar"  class="wiki">
+        {{side-bar|safe}}
+    </div>
 
+    <div id="main-container" class="container">
       {% block content %}
       {% endblock %}
     </div>
@@ -62,8 +64,8 @@
     <footer>
        <div id="credits">
          <div>
-           One Wiki to rule them all ||
-           <img height="16" width="16" alt="one wiki to rule them all" src="img/smeagol.png"/>Smeagol wiki engine {{version}} ||
+           <img height="16" width="16" alt="one wiki to rule them all" src="img/smeagol.png"/>One Wiki to rule them all ||
+           Smeagol wiki engine {{version}} ||
            <img height="16" width="16" alt="The Web Engineering Factory &amp; Toolworks" src="http://www.weft.scot/images/weft.logo.64.png"> Developed by <a href="http://www.weft.scot/">WEFT</a>
          </div>
          <div>

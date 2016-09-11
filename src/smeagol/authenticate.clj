@@ -33,28 +33,50 @@
 ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; the relative path to the password file.
+(def password-file-path (str (io/resource-path) "../passwd"))
+
+
+(defn- get-users
+  "Get the whole content of the password file as a clojure map"
+  []
+  (read-string (slurp password-file-path)))
+
+
 (defn authenticate
   "Return `true` if this `username`/`password` pair match, `false` otherwise"
   [username password]
-  (let [path (str (io/resource-path) "../passwd")
-        users (read-string (slurp path))
-        user ((keyword username) users)]
-    (timbre/info (str "Authenticating " username " against " path))
+  (let [user ((keyword username) (get-users))]
+    (timbre/info (str "Authenticating " username " against " password-file-path))
     (and user
+         (:password user)
          (or
           (.equals (:password user) password)
           (password/check password (:password user))))))
 
+
 (defn get-email
   "Return the email address associated with this `username`."
   [username]
-  (let [path (str (io/resource-path) "../passwd")
-        users (read-string (slurp path))
-        user ((keyword username) users)]
-    (if user (:email user))))
+  (if username
+    (let [user ((keyword username)  (get-users))]
+      (:email user))))
 
-;;; TODO: worth locking the passwd file to prevent corruption if two simultaneous threads
-;;; try to write it. See http://stackoverflow.com/questions/6404717/idiomatic-file-locking-in-clojure
+
+(defn get-admin
+  "Return a flag indicating whether the user with this username is an administrator."
+  [username]
+  (if username
+    (let [user ((keyword username)  (get-users))]
+      (:admin user))))
+
+(defn evaluate-password
+  "Evaluate whether this proposed password is suitable for use."
+  ([pass1 pass2]
+   (and pass1 (>= (count pass1) 8) (.equals pass1 pass2)))
+  ([password]
+   (evaluate-password password password)))
+
 
 (defn change-pass
   "Change the password for the user with this `username` and `oldpass` to this `newpass`.
@@ -62,24 +84,89 @@
   password will be encrypted."
   [username oldpass newpass]
   (timbre/info (format "Changing password for user %s" username))
-  (let [path (str (io/resource-path) "../passwd")
-        users (read-string (slurp path))
+  (let [users (get-users)
         keywd (keyword username)
-        user (if users (keywd users))
+        user (keywd users)
         email (:email user)]
     (try
       (cond
-       (and user
-            (or
-             (.equals (:password user) oldpass)
-             (password/check oldpass (:password user))))
-       (do
-         (spit path
-               (assoc (dissoc users keywd) keywd
-                 {:password (password/encrypt newpass) :email email}))
-         true))
+        (and user
+             (or
+               (.equals (:password user) oldpass)
+               (password/check oldpass (:password user))))
+        (do
+          (locking password-file-path
+            (spit password-file-path
+                  (merge users
+                         {keywd
+                          (merge user
+                                 {:password (password/encrypt newpass)})})))
+        (timbre/info (str "Successfully changed password for user " username))
+          true))
       (catch Exception any
         (timbre/error
-         (format "Changing password failed for user %s failed: %s (%s)"
-                 username (.getName (.getClass any)) (.getMessage any)))
+          (format "Changing password failed for user %s failed: %s (%s)"
+                  username (.getName (.getClass any)) (.getMessage any)))
+        false))))
+
+
+(defn list-users
+  "Return, as strings, the names of the currently known users."
+  []
+  (map name (keys (get-users))))
+
+
+(defn fetch-user-details
+  "Return the map of features of this user, if any."
+  [username]
+  (if
+    (and username (> (count (str username)) 0))
+    ((keyword username) (get-users))))
+
+
+(defn add-user
+  "Add a user to the passwd file with this username, initial password and email address and admin flag."
+  [username newpass email admin]
+  (let [users (get-users)
+        user ((keyword username) users)
+        password (if
+                   (and newpass (evaluate-password newpass))
+                   (password/encrypt newpass))
+        details {:email email
+                 :admin (if
+                          (and (string? admin) (> (count admin) 0))
+                          true
+                          false)}
+        ;; if we have a valid password we want to include it in the details to update.
+        full-details (if password
+                       (merge details {:password password})
+                       details)]
+    (try
+      (locking password-file-path
+        (spit password-file-path
+              (merge users
+                     {(keyword username) (merge user full-details)}))
+        (timbre/info (str "Successfully added user " username))
+        true)
+      (catch Exception any
+        (timbre/error
+          (format "Adding user %s failed: %s (%s)"
+                  username (.getName (.getClass any)) (.getMessage any)))
+        false))))
+
+
+(defn delete-user
+  "Delete the user with this `username` from the password file."
+  [username]
+  (let [users (get-users)]
+    (try
+      (locking password-file-path
+        (spit password-file-path
+              (dissoc users (keyword username)))
+        (timbre/info (str "Successfully deleted user " username))
+        true)
+      (catch Exception any
+        (timbre/error
+          (format "Deleting user %s failed: %s (%s)"
+                  username (.getName (.getClass any)) (.getMessage any)))
         false))))

@@ -1,8 +1,12 @@
 (ns ^{:doc "Miscellaneous utility functions supporting Smeagol."
       :author "Simon Brooke"}
   smeagol.util
-  (:require [noir.io :as io]
-            [markdown.core :as md]))
+  (:require [clojure.string :as cs]
+            [cemerick.url :refer (url url-encode url-decode)]
+            [noir.io :as io]
+            [noir.session :as session]
+            [markdown.core :as md]
+            [smeagol.authenticate :as auth]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;
@@ -31,3 +35,28 @@
   "reads a markdown file from public/md and returns an HTML string"
   [filename]
   (md/md-to-html-string (io/slurp-resource filename)))
+
+
+(defn local-links
+  "Rewrite text in `html-src` surrounded by double square brackets as a local link into this wiki."
+  [^String html-src]
+  (cs/replace html-src #"\[\[[^\[\]]*\]\]"
+              #(let [text (clojure.string/replace %1 #"[\[\]]" "")
+                     encoded (url-encode text)
+                     ;; I use '\_' to represent '_' in wiki markup, because
+                     ;; '_' is meaningful in Markdown. However, this needs to
+                     ;; be stripped out when interpreting local links.
+                     munged (cs/replace encoded #"%26%2395%3B" "_")]
+                 (format "<a href='wiki?page=%s'>%s</a>" munged text))))
+
+
+(defn standard-params
+  "Return a map of standard parameters to pass to the template renderer."
+  [request]
+  (let [user (session/get :user)]
+    {:user user
+     :admin (auth/get-admin user)
+     :side-bar (local-links (md->html "/content/_side-bar.md"))
+     :header (local-links (md->html "/content/_header.md"))
+     :version (System/getProperty "smeagol.version")}))
+

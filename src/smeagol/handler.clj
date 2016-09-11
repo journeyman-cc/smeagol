@@ -54,10 +54,6 @@
    an app server such as Tomcat
    put any initialization code here"
   []
-  (timbre/set-config!
-    {:min-level :debug
-     :enabled? true
-     :output-fn timbre/default-output-fn})
   (timbre/merge-config!
     {:appenders
      {:rotor (rotor/rotor-appender
