@@ -1,0 +1,12 @@
+{% extends "templates/base.html" %}
+
+{% block content %}
+        <div id="content">
+          <ul>
+            {% for user in users %}
+            <li><a href="edit-user?target={{user}}">{{user}}</a></li>
+            {% endfor %}
+            <li><a href="edit-user">Add new user</a></li>
+          </ul>
+        </div>
+{% endblock %}

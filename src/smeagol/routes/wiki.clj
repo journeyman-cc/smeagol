@@ -64,6 +64,17 @@
       (git/git-init path))))
 
 
+(defn standard-params
+  "Return a map of standard parameters to pass to the template renderer."
+  [request]
+  (let [user (session/get :user)]
+    {:user user
+     :admin (auth/get-admin user)
+     :side-bar (local-links (util/md->html "/content/_side-bar.md"))
+     :header (local-links (util/md->html "/content/_header.md"))
+     :version (System/getProperty "smeagol.version")}))
+
+
 (defn process-source
   "Process `source-text` and save it to the specified `file-path`, committing it
   to Git and finally redirecting to wiki-page."
@@ -100,24 +111,61 @@
          src-text (:src params)
          page (or (:page params) default)
          file-path (str (io/resource-path) "content/" page suffix)
-         exists? (.exists (cjio/as-file file-path))]
+         exists? (.exists (cjio/as-file file-path))
+         user (session/get :user)]
      (if (not exists?) (timbre/info (format "File '%s' not found; creating a new file" file-path)))
      (cond src-text (process-source params suffix)
            true
            (layout/render template
-                          {:title (str "Edit " page)
-                           :page page
-                           :side-bar (local-links (util/md->html side-bar))
-                           :header (local-links (util/md->html "/content/_header.md"))
-                           :content (if exists? (io/slurp-resource (str "/content/" page suffix)) "")
-                           :user (session/get :user)
-                           :exists exists?})))))
+                          (merge (standard-params request)
+                                 {:title (str "Edit " page)
+                                  :page page
+                                  :side-bar (local-links (util/md->html side-bar))
+                                  :content (if exists? (io/slurp-resource (str "/content/" page suffix)) "")
+                                  :exists exists?}))))))
 
 
 (defn edit-css-page
   "Render a stylesheet in a text-area for editing.."
   [request]
    (edit-page request "stylesheet" ".css" "edit-css.html" "/content/_edit-side-bar.md"))
+
+
+(defn edit-users
+  "Put a list of users on-screen for editing."
+  [request]
+  (let [params (keywordize-keys (:params request))
+        user (session/get :user)]
+    (layout/render "edit-users.html"
+                   (merge (standard-params request)
+                          {:title "Select user to edit"
+                           :users (auth/list-users)}))))
+
+
+(defn edit-user
+  "Put an individual user's details on screen for editing."
+  [request]
+  (let [params (keywordize-keys (:params request))
+        target (:target params)
+        pass1 (:pass1 params)
+        password (if (and pass1 (auth/evaluate-password pass1 (:pass2 params))) pass1)
+        stored (if (:email params)
+                 (auth/add-user target password (:email params) (:admin params)))
+        message (if stored (str "User " target " was stored successfully."))
+        error (if (and (:email params) (not stored))
+                                    (str "User " target " was not stored."))
+        details (auth/fetch-user-details target)]
+    (if message
+      (timbre/info message))
+    (if error
+      (timbre/warn error))
+    (layout/render "edit-user.html"
+                   (merge (standard-params request)
+                          {:title (str "Edit user " target)
+                           :message message
+                           :error error
+                           :target target
+                           :details details}))))
 
 
 (defn wiki-page
@@ -130,14 +178,12 @@
         exists? (.exists (clojure.java.io/as-file file-path))]
     (cond exists?
           (layout/render "wiki.html"
-                         {:title page
-                          :page page
-                          :side-bar (local-links (util/md->html "/content/_side-bar.md"))
-                          :header (local-links (util/md->html "/content/_header.md"))
-                          :content (local-links (util/md->html file-name))
-                          :user (session/get :user)
-                          :version (System/getProperty "smeagol.version")})
-          true (response/redirect (str "/edit?page=" page)))))
+                         (merge (standard-params request)
+                                {:title page
+                                 :page page
+                                 :content (local-links (util/md->html file-name))
+                                 :editable true}))
+          true (response/redirect (str "edit?page=" page)))))
 
 
 (defn history-page
@@ -149,11 +195,10 @@
         file-name (str page ".md")
         repo-path (str (io/resource-path) "/content/")]
     (layout/render "history.html"
-                   {:title (str "History of " page)
-                    :page page
-                    :side-bar (local-links (util/md->html "/content/_side-bar.md"))
-                    :header (local-links (util/md->html "/content/_header.md"))
-                    :history (hist/find-history repo-path file-name)})))
+                   (merge (standard-params request)
+                          {:title (str "History of " page)
+                           :page page
+                           :history (hist/find-history repo-path file-name)}))))
 
 
 (defn version-page
@@ -165,17 +210,13 @@
         file-name (str page ".md")
         repo-path (str (io/resource-path) "/content/")]
     (layout/render "wiki.html"
-                   {:title (str "Version " version " of " page)
-                    :page page
-                    :side-bar (local-links
-                               (util/md->html "/content/_side-bar.md"))
-                    :header (local-links
-                             (util/md->html "/content/_header.md"))
-                    :content (local-links
-                              (md/md-to-html-string
-                               (hist/fetch-version
-                                repo-path file-name version)))
-                    :user (session/get :user)})))
+                   (merge (standard-params request)
+                          {:title (str "Version " version " of " page)
+                           :page page
+                           :content (local-links
+                                      (md/md-to-html-string
+                                        (hist/fetch-version
+                                          repo-path file-name version)))}))))
 
 
 (defn diff-page
@@ -187,14 +228,10 @@
         file-name (str page ".md")
         repo-path (str (io/resource-path) "/content/")]
     (layout/render "wiki.html"
-                   {:title (str "Changes since version " version " of " page)
-                    :page page
-                    :side-bar (local-links
-                               (util/md->html "/content/_side-bar.md"))
-                    :header (local-links
-                             (util/md->html "/content/_header.md"))
-                    :content (d2h/diff2html (hist/diff repo-path file-name version))
-                    :user (session/get :user)})))
+                   (merge (standard-params request)
+                          {:title (str "Changes since version " version " of " page)
+                           :page page
+                           :content (d2h/diff2html (hist/diff repo-path file-name version))}))))
 
 
 (defn auth-page
@@ -218,11 +255,12 @@
        (response/redirect redirect-to))
      true
      (layout/render "auth.html"
+                   (merge (standard-params request)
                     {:title (if user (str "Logout " user) "Log in")
                      :redirect-to ((:headers request) "referer")
                      :side-bar (local-links (util/md->html "/content/_side-bar.md"))
                      :header (local-links (util/md->html "/content/_header.md"))
-                     :user user}))))
+                     :user user})))))
 
 
 (defn passwd-page
@@ -233,19 +271,19 @@
         pass1 (:pass1 params)
         pass2 (:pass2 params)
         user (session/get :user)
-        length (if pass1 (count pass1) 0)
         message (cond
-                 (nil? oldpass) nil
-                 (and pass1 (>= length 8) (.equals pass1 pass2) (auth/change-pass user oldpass pass2))
-                 "Your password was changed"
-                 (< length 8) "You proposed password wasn't long enough: 8 characters required"
-                 (not (= pass1 pass2)) "Your proposed passwords don't match"
-                 true "Your password was not changed")] ;; but I don't know why...
+                  (nil? oldpass) nil
+                  (and (auth/evaluate-password pass1 pass2) (auth/change-pass user oldpass pass2))
+                  "Your password was changed"
+                  (< (count pass1) 8) "You proposed password wasn't long enough: 8 characters required"
+                  (not (= pass1 pass2)) "Your proposed passwords don't match"
+                  true "Your password was not changed")] ;; but I don't know why...
     (layout/render "passwd.html"
-                   {:title (str "Change passord for " user)
-                    :side-bar (local-links (util/md->html "/content/_side-bar.md"))
-                    :header (local-links (util/md->html "/content/_header.md"))
-                    :message message})))
+                   (merge (standard-params request)
+                          {:title (str "Change passord for " user)
+                           :side-bar (local-links (util/md->html "/content/_side-bar.md"))
+                           :header (local-links (util/md->html "/content/_header.md"))
+                           :message message}))))
 
 
 (defroutes wiki-routes
@@ -255,6 +293,9 @@
   (POST "/edit" request (route/restricted (edit-page request)))
   (GET "/edit-css" request (route/restricted (edit-css-page request)))
   (POST "/edit-css" request (route/restricted (edit-css-page request)))
+  (GET "/edit-users" request (route/restricted (edit-users request)))
+  (GET "/edit-user" request (route/restricted (edit-user request)))
+  (POST "/edit-user" request (route/restricted (edit-user request)))
   (GET "/history" request (history-page request))
   (GET "/version" request (version-page request))
   (GET "/changes" request (diff-page request))

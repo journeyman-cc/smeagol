@@ -2,10 +2,12 @@
 
 {% block content %}
     <div id="content" class="wiki">
+      {% if editable %}
     	<ul class="minor-controls">
         <li><a href="{{servlet-context}}/edit?page={{title}}">Edit this page</a></li>
     		<li><a href="history?page={{page}}">History</a></li>
     	</ul>
-        {{content|safe}}
+      {% endif %}
+      {{content|safe}}
     </div>
 {% endblock %}

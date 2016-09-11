@@ -20,12 +20,26 @@
  USA.
 
  # The Stylesheet
+
+ ## html elements generally in alphabetic order
  */
 
 body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
+}
+
+del {
+  color: red;
+}
+
+div.content, form, p, pre, h1, h2, h3, h4, h5 {
+  padding: 0.25em 5%;
+}
+
+dl, menu, ol, table, ul {
+  margin: 0.25em 5%;
 }
 
 /* footer of the page - not-editable, provided by Smeagol */
@@ -52,6 +66,9 @@ footer div {
   padding: 0.1em;
 }
 
+form {
+  border: thin solid silver;
+}
 
 /* header for all pages in the Wiki - editable, provided by users. */
 header {
@@ -69,7 +86,66 @@ header img {
   float: right;
 }
 
-/* ids generally in document order */
+input {
+  background-color: white;
+}
+
+input.action {
+  background-color: green;
+}
+
+input.action-dangerous {
+	color: white;
+	background-color: red;
+}
+
+input.required:after {
+  content: " \*";
+  color: red;
+}
+
+ins {
+  color: green;
+}
+
+label {
+  width: 20%;
+  min-width: 20em;
+  border-right: thin solid gray;
+  display: inline-block;
+}
+
+menu li {
+  display: inline;
+}
+
+menu li::before {
+  content: "|| ";
+}
+
+table {
+  border: 2px solid black;
+  border-collapse: collapse;
+}
+
+table.music-ruled tr:nth-child(odd) {
+	background-color: silver;
+}
+
+th, td {
+	text-align: left;
+  vertical-align: top;
+	padding: 0.15em 1.5em;
+  border: 1px solid gray;
+}
+
+th {
+  background-color: silver;
+}
+
+/*
+ ## ids generally in document order
+ */
 
 /* top-of-page navigation, not editable, provided by Smeagol */
 #nav{
@@ -180,22 +256,22 @@ li.nav-item a:active { background: gray; color: white; }
 	display: block;
 }
 
-
-
 .change {
   background-color: rgb( 223, 223, 223);
   border: thin solid silver;
 }
 
-
 .error {
   width: 100%;
   background-color: red;
   color: white;
+  border: thin solid maroon;
 }
 
 .message {
-  border: thin solid red;
+  color: darkgreen;
+  background-color: silver;
+  border: thin solid lime;
 }
 
 .minor-controls {
@@ -231,77 +307,5 @@ li.nav-item a:active { background: gray; color: white; }
 
 .wiki {
   margin: 0;
-}
-
-form {
-  border: thin solid silver;
-}
-
-del {
-  color: red;
-}
-
-div.content, form, p, pre, h1, h2, h3, h4, h5 {
-  padding: 0.25em 5%;
-}
-
-dl, menu, ol, table, ul {
-  margin: 0.25em 5%;
-}
-
-input {
-  background-color: white;
-}
-
-input.action {
-  background-color: green;
-}
-
-input.action-dangerous {
-	color: white;
-	background-color: red;
-}
-
-input.required:after {
-  content: " \*";
-  color: red;
-}
-
-ins {
-  color: green;
-}
-
-label {
-  width: 20%;
-  min-width: 20em;
-  border-right: thin solid gray;
-}
-
-menu li {
-  display: inline;
-}
-
-menu li::before {
-  content: "|| ";
-}
-
-table {
-  border: 2px solid black;
-  border-collapse: collapse;
-}
-
-table.music-ruled tr:nth-child(odd) {
-	background-color: silver;
-}
-
-th, td {
-	text-align: left;
-  vertical-align: top;
-	padding: 0.15em 1.5em;
-  border: 1px solid gray;
-}
-
-th {
-  background-color: silver;
 }
 
