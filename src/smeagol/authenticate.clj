@@ -101,6 +101,7 @@
                          {keywd
                           (merge user
                                  {:password (password/encrypt newpass)})})))
+        (timbre/info (str "Successfully changed password for user " username))
           true))
       (catch Exception any
         (timbre/error
@@ -145,11 +146,27 @@
         (spit password-file-path
               (merge users
                      {(keyword username) (merge user full-details)}))
+        (timbre/info (str "Successfully added user " username))
         true)
       (catch Exception any
         (timbre/error
-          (format "Changing password failed for user %s failed: %s (%s)"
+          (format "Adding user %s failed: %s (%s)"
                   username (.getName (.getClass any)) (.getMessage any)))
         false))))
 
 
+(defn delete-user
+  "Delete the user with this `username` from the password file."
+  [username]
+  (let [users (get-users)]
+    (try
+      (locking password-file-path
+        (spit password-file-path
+              (dissoc users (keyword username)))
+        (timbre/info (str "Successfully deleted user " username))
+        true)
+      (catch Exception any
+        (timbre/error
+          (format "Deleting user %s failed: %s (%s)"
+                  username (.getName (.getClass any)) (.getMessage any)))
+        false))))
