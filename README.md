@@ -1,5 +1,3 @@
-# Welcome to Smeagol!
-
 ![One wiki to rule them all](https://www.weft.scot/images/smeagol.png)
 
 # Welcome to Smeagol!
