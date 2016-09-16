@@ -126,7 +126,7 @@
                                    :page page
                                    :content (util/local-links (util/md->html file-name))
                                    :editable true})))
-          true (response/redirect (str "edit?page=" page)))))
+          true (response/redirect (str "/edit?page=" page)))))
 
 
 (defn history-page
