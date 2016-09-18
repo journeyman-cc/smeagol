@@ -66,7 +66,7 @@
         summary (format "%s: %s" user (or (:summary params) "no summary"))]
     (timbre/info (format "Saving %s's changes ('%s') to %s" user summary page))
     (spit file-path source-text)
-    (if (not exists?) (git/git-add git-repo file-name))
+    (git/git-add git-repo file-name)
     (git/git-commit git-repo summary {:name user :email email})
     (response/redirect
       (str
