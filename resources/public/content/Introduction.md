@@ -23,8 +23,14 @@ Smeagol does not currently have any mechanism to upload images. You can, however
 
 ![Smeagol](http://vignette3.wikia.nocookie.net/lotr/images/e/e1/Gollum_Render.png/revision/latest?cb=20141218075509)
 
-## Todo
-* Mechanism to add users through the user interface;
+
+## Troubleshooting
+### History
+If the history mechanism does not seem to be working, or the git repository does not seem to be updating, login to your server box as the user under whose account the web app runs, go to the directory WEB-INF/classes/public/content and try
+
+    git commit -a
+
+If you get error messages, fix them. The most likely thing is that the web app doesn't have sufficient authority to commit.
 
 ## Advertisement
 If you like what you see here, I am available for work on open source Clojure projects. Contact me vis [WEFT](http://www.weft.scot/).
