@@ -124,6 +124,7 @@
                            (merge (util/standard-params request)
                                   {:title page
                                    :page page
+                                   :side-bar (util/local-links (util/md->html "/content/_side-bar.md"))
                                    :content (util/local-links (util/md->html file-name))
                                    :editable true})))
           true (response/redirect (str "/edit?page=" page)))))

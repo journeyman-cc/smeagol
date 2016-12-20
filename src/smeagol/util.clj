@@ -37,17 +37,23 @@
   (md/md-to-html-string (io/slurp-resource filename)))
 
 
+;; Error to show if text to be rendered is nil.
+(def no-text-error "No text: does the file exist?")
+
+
 (defn local-links
   "Rewrite text in `html-src` surrounded by double square brackets as a local link into this wiki."
   [^String html-src]
-  (cs/replace html-src #"\[\[[^\[\]]*\]\]"
-              #(let [text (clojure.string/replace %1 #"[\[\]]" "")
-                     encoded (url-encode text)
-                     ;; I use '\_' to represent '_' in wiki markup, because
-                     ;; '_' is meaningful in Markdown. However, this needs to
-                     ;; be stripped out when interpreting local links.
-                     munged (cs/replace encoded #"%26%2395%3B" "_")]
-                 (format "<a href='wiki?page=%s'>%s</a>" munged text))))
+  (if html-src
+    (cs/replace html-src #"\[\[[^\[\]]*\]\]"
+                #(let [text (clojure.string/replace %1 #"[\[\]]" "")
+                       encoded (url-encode text)
+                       ;; I use '\_' to represent '_' in wiki markup, because
+                       ;; '_' is meaningful in Markdown. However, this needs to
+                       ;; be stripped out when interpreting local links.
+                       munged (cs/replace encoded #"%26%2395%3B" "_")]
+                   (format "<a href='wiki?page=%s'>%s</a>" munged text)))
+    no-text-error))
 
 
 (defn standard-params
