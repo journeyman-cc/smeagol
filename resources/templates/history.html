@@ -5,11 +5,6 @@
             <tr>
                 <th>When</th><th>What</th><th>Version</th><th>Changes</th>
             </tr>
-            <tr>
-            	<td>Now</td><td></td>
-            	<td><a href="wiki?content={{page}}">[current]</a></td>
-            	<td>[no changes]</td>
-            <tr>
             {% for entry in history %}
             <tr>
                 <td>S
@@ -22,7 +17,7 @@
                     <a href="version?page={{page}}&amp;version={{entry.id}}">Show version</a>
                 </td>
                 <td>
-                	<a href="changes?page={{page}}&amp;version={{entry.id}}">What's changed?</a>
+                	<a href="changes?page={{page}}&amp;version={{entry.id}}">What's changed since?</a>
                 </td>
             </tr>
             {% endfor %}
