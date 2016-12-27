@@ -1,4 +1,4 @@
-(defproject smeagol "0.5.1-SNAPSHOT"
+(defproject smeagol "0.5.2-SNAPSHOT"
   :description "A simple Git-backed Wiki inspired by Gollum"
   :url "https://github.com/simon-brooke/smeagol"
   :dependencies [[org.clojure/clojure "1.7.0"]
@@ -16,7 +16,7 @@
                                                     com.sun.jmx/jmxri]]
                  [com.taoensso/timbre "4.7.4" :exclusions [org.clojure/tools.reader]]
                  [com.taoensso/tower "3.0.2" :exclusions [com.taoensso/encore]]
-                 [markdown-clj "0.9.89" :exclusions [com.keminglabs/cljx]]
+                 [markdown-clj "0.9.91" :exclusions [com.keminglabs/cljx]]
                  [crypto-password "0.2.0"]
                  [clj-jgit "0.8.9"]
                  [environ "1.1.0"]
@@ -30,8 +30,11 @@
             [lein-environ "1.0.0"]
             [lein-bower "0.5.1"]
             [lein-ancient "0.5.5" :exclusions [org.clojure/clojure org.clojure/data.xml]]
-            [lein-marginalia "0.7.1" :exclusions [org.clojure/clojure]]]
+            [lein-marginalia "0.7.1" :exclusions [org.clojure/clojure]]
+            [io.sarnowski/lein-docker "1.1.0"]]
   :bower-dependencies [[simplemde "1.11.2"]]
+  :docker {:image-name "simonbrooke/smeagol"
+         :dockerfile "Dockerfile"}
   :ring {:handler smeagol.handler/app
          :init    smeagol.handler/init
          :destroy smeagol.handler/destroy}
