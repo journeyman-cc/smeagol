@@ -28,7 +28,7 @@ Smeagol does not currently have any mechanism to upload images. You can, however
 * Mechanism to add users through the user interface;
 
 ## Advertisement
-If you like what you see here, I am available for work on open source Clojure projects. Contact me vis [WEFT](http://www.weft.scot/).
+If you like what you see here, I am available for work on open source Clojure projects. Contact me via [WEFT](http://www.weft.scot/).
 
 ### Phoning home
 Smeagol currently requests the WEFT logo in the page footer from my home site. This is mainly so I can get a feel for how many people are using the product. If you object to this, edit the file
