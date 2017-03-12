@@ -225,6 +225,7 @@
                            :header (util/local-links (util/md->html "/content/_header.md"))
                            :message (if changed? (:chpass-success layout/config))
                            :error (cond
+                                    (nil? oldpass) nil
                                     changed? nil
                                     (< (count pass1) 8) (:chpass-too-short layout/config)
                                     (not (= pass1 pass2)) (:chpass-bad-match layout/config)
