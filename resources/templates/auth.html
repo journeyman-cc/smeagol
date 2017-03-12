@@ -5,21 +5,21 @@
                 <input type="hidden" name="redirect-to" value="{{redirect-to}}"/>
                 {% if user %}
                 <p class="widget">
-                    <label for="submit">To finish editing</label>
-                    <input name="action" id="action" type="submit" class="action-dangerous" value="Logout!"/>
+                    <label for="submit">{{config.save-prompt}}</label>
+                    <input name="action" id="action" type="submit" class="action-dangerous" value="{{config.logout-label}}"/>
                 </p>
                 {% else %}
                 <p class="widget">
-                    <label for="username">Your username</label>
+                    <label for="username">{{config.your-uname-prompt}}</label>
                     <input name="username" id="username" type="text" required/>
                 </p>
                 <p class="widget">
-                    <label for="password">Your password</label>
+                    <label for="password">{{config.old-pass-prompt}}</label>
                     <input name="password" id="password" type="password" required/>
                 </p>
                 <p class="widget">
-                    <label for="submit">To edit this wiki</label>
-                    <input name="action" id="action" type="submit" class="action" value="Login!"/>
+                    <label for="submit">{{config.login-prompt}}</label>
+                    <input name="action" id="action" type="submit" class="action" value="{{config.login-label}}"/>
                 </p>
                 {% endif %}
             </form>

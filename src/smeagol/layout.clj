@@ -4,6 +4,7 @@
   smeagol.layout
   (:require [selmer.parser :as parser]
             [clojure.string :as s]
+            [noir.io :as io]
             [ring.util.response :refer [content-type response]]
             [compojure.response :refer [Renderable]]
             [environ.core :refer [env]]))
@@ -33,6 +34,10 @@
 
 (def template-path "templates/")
 
+;; the relative path to the config file.
+(def config-file-path (str (io/resource-path) "../config.edn"))
+
+(def config (read-string (slurp config-file-path)))
 
 (deftype RenderableTemplate [template params]
   Renderable
@@ -40,6 +45,7 @@
     (content-type
       (->> (assoc params
                   (keyword (s/replace template #".html" "-selected")) "active"
+                  :config config
                   :dev (env :dev)
                   :servlet-context
                   (if-let [context (:servlet-context request)]

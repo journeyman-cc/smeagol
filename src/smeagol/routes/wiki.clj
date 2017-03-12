@@ -74,14 +74,14 @@
         (if
           (= suffix ".md")
           (url-encode page)
-          "Introduction")))))
+          (:default-page-title layout/config))))))
 
 
 (defn edit-page
   "Render a page in a text-area for editing. This could have been done in the same function as wiki-page,
   and that would have been neat, but I couldn't see how to establish security if that were done."
   ([request]
-   (edit-page request "Introduction" ".md" "edit.html" "/content/_edit-side-bar.md"))
+   (edit-page request (:default-page-title layout/config) ".md" "edit.html" "/content/_edit-side-bar.md"))
   ([request default suffix template side-bar]
    (let [params (keywordize-keys (:params request))
          src-text (:src params)
@@ -96,7 +96,7 @@
            true
            (layout/render template
                           (merge (util/standard-params request)
-                                 {:title (str "Edit " page)
+                                 {:title (str (:edit-title-prefix layout/config) " " page)
                                   :page page
                                   :side-bar (util/local-links (util/md->html side-bar))
                                   :content (if exists? (io/slurp-resource (str "/content/" page suffix)) "")
@@ -106,14 +106,14 @@
 (defn edit-css-page
   "Render a stylesheet in a text-area for editing.."
   [request]
-   (edit-page request "stylesheet" ".css" "edit-css.html" "/content/_edit-side-bar.md"))
+  (edit-page request "stylesheet" ".css" "edit-css.html" "/content/_edit-side-bar.md"))
 
 
 (defn wiki-page
   "Render the markdown page specified in this `request`, if any. If none found, redirect to edit-page"
   [request]
   (let [params (keywordize-keys (:params request))
-        page (or (:page params) "Introduction")
+        page (or (:page params) (:default-page-title layout/config))
         file-name (str "/content/" page ".md")
         file-path (str (io/resource-path) file-name)
         exists? (.exists (clojure.java.io/as-file file-path))]
@@ -135,7 +135,7 @@
   if any. If none, error?"
   [request]
   (let [params (keywordize-keys (:params request))
-        page (url-decode (or (:page params) "Introduction"))
+        page (url-decode (or (:page params) (:default-page-title layout/config)))
         file-name (str page ".md")
         repo-path (str (io/resource-path) "/content/")]
     (layout/render "history.html"
@@ -149,13 +149,13 @@
   "Render a specific historical version of a page"
   [request]
   (let [params (keywordize-keys (:params request))
-        page (url-decode (or (:page params) "Introduction"))
+        page (url-decode (or (:page params) (:default-page-title layout/config)))
         version (:version params)
         file-name (str page ".md")
         repo-path (str (io/resource-path) "/content/")]
     (layout/render "wiki.html"
                    (merge (util/standard-params request)
-                          {:title (str "Version " version " of " page)
+                          {:title (str (:vers-col-hdr layout/config) " " version " of " page)
                            :page page
                            :content (util/local-links
                                       (md/md-to-html-string
@@ -167,13 +167,13 @@
   "Render a diff between two versions of a page"
   [request]
   (let [params (keywordize-keys (:params request))
-        page (url-decode (or (:page params) "Introduction"))
+        page (url-decode (or (:page params) (:default-page-title layout/config)))
         version (:version params)
         file-name (str page ".md")
         repo-path (str (io/resource-path) "/content/")]
     (layout/render "wiki.html"
                    (merge (util/standard-params request)
-                          {:title (str "Changes since version " version " of " page)
+                          {:title (str (:diff-title-prefix layout/config)" " version " of " page)
                            :page page
                            :content (d2h/diff2html (hist/diff repo-path file-name version))}))))
 
@@ -188,7 +188,7 @@
         user (session/get :user)
         redirect-to (or (:redirect-to params) "/wiki")]
     (cond
-     (= action "Logout!")
+     (= action (:logout-label layout/config))
      (do
        (timbre/info (str "User " user " logging out"))
        (session/remove! :user)
@@ -200,7 +200,7 @@
      true
      (layout/render "auth.html"
                    (merge (util/standard-params request)
-                    {:title (if user (str "Logout " user) "Log in")
+                    {:title (if user (str (:logout-link layout/config) " " user) (:login-link layout/config))
                      :redirect-to ((:headers request) "referer")
                      :side-bar (util/local-links (util/md->html "/content/_side-bar.md"))
                      :header (util/local-links (util/md->html "/content/_header.md"))
@@ -215,19 +215,20 @@
         pass1 (:pass1 params)
         pass2 (:pass2 params)
         user (session/get :user)
-        message (cond
-                  (nil? oldpass) nil
-                  (and (auth/evaluate-password pass1 pass2) (auth/change-pass user oldpass pass2))
-                  "Your password was changed"
-                  (< (count pass1) 8) "You proposed password wasn't long enough: 8 characters required"
-                  (not (= pass1 pass2)) "Your proposed passwords don't match"
-                  true "Your password was not changed")] ;; but I don't know why...
+        changed? (and
+                   (auth/evaluate-password pass1 pass2)
+                   (auth/change-pass user oldpass pass2))]
     (layout/render "passwd.html"
                    (merge (util/standard-params request)
-                          {:title (str "Change passord for " user)
+                          {:title (str (:chpass-title-prefix layout/config) " " user)
                            :side-bar (util/local-links (util/md->html "/content/_side-bar.md"))
                            :header (util/local-links (util/md->html "/content/_header.md"))
-                           :message message}))))
+                           :message (if changed? (:chpass-success layout/config))
+                           :error (cond
+                                    changed? nil
+                                    (< (count pass1) 8) (:chpass-too-short layout/config)
+                                    (not (= pass1 pass2)) (:chpass-bad-match layout/config)
+                                    true (:chpass-fail layout/config))}))))
 
 
 (defroutes wiki-routes

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>{{title}}</title>
+    <title>{{config.site-title}}: {{title}}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link href="{{servlet-context}}/content/stylesheet.css" media="screen and (min-device-width: 1025px)" rel="stylesheet" type="text/css" />
     <link href="{{servlet-context}}/css/print.css" media="print" rel="stylesheet" type="text/css" />
@@ -13,23 +13,23 @@
       <!-- navbar -->
       <div id="nav">
         {% if user %}
-        <p class="user" id="user">You are logged in as {{user}} | <a href="passwd">change password</a></p>
+        <p class="user" id="user">{{config.logged-in-as}} {{user}} | <a href="passwd">{{config.change-pass-link}}</a></p>
         {% endif %}
         <img id="nav-icon" src="{{servlet-context}}/img/threelines.png" alt="Menu"/>
         <ul id="nav-menu" class="nav">
-          <li class="{{wiki-selected}}"><a href="{{servlet-context}}/">Home</a></li>
+          <li class="{{wiki-selected}}"><a href="{{servlet-context}}/">{{config.home-link}}</a></li>
           {% if admin %}
-          <li class="{{admin-selected}}"><a href="{{servlet-context}}/edit-users">Edit users</a></li>
+          <li class="{{admin-selected}}"><a href="{{servlet-context}}/edit-users">{{config.edit-users-link}}</a></li>
           {% endif %}
           <li class="{{auth-selected}}"><a href="{{servlet-context}}/auth">
             {% if user %}
-            Log out
+            {{config.logout-link}}
             {% else %}
-            Log in
+            {{config.login-link}}
             {% endif %}</a></li>
         </ul>
       </div>
-      <h1>{{title}}</h1>
+      <h1>{{config.site-title}}: {{title}}</h1>
       {{header|safe}}
       {% if message %}
       <div id="message">
@@ -52,13 +52,10 @@
     </div>
     <div id="cookies">
       <div id="more-about-cookies">
-        This website stores session information as a 'cookie' on your browser. This helps us show you the content
-        you want to see. This cookie does not identify you, and cannot be read by other websites. It is deleted by
-        your browser as soon as you leave this site. This website does not use any third party cookies, so your
-        visit here cannot be tracked by other websites.
+        {{config.cookies-more}}
       </div>
       <div id="about-cookies">
-        About cookies
+        {{config.cookies-about}}
       </div>
     </div>
     <footer>

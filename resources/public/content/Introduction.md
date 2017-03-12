@@ -24,9 +24,6 @@ Smeagol does not currently have any mechanism to upload images. You can, however
 
 ![Smeagol](http://vignette3.wikia.nocookie.net/lotr/images/e/e1/Gollum_Render.png/revision/latest?cb=20141218075509)
 
-## Todo
-* Mechanism to add users through the user interface;
-
 ## Advertisement
 If you like what you see here, I am available for work on open source Clojure projects. Contact me via [WEFT](http://www.weft.scot/).
 
