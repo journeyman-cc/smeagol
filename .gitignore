@@ -7,6 +7,7 @@ pom.xml.asc
 /target/
 /checkouts/
 /resources/public/content/.git
+/resources/public/vendor
 .lein-deps-sum
 .lein-repl-history
 .lein-plugins/
