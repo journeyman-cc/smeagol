@@ -4,16 +4,16 @@
         <div id="content">
           <table>
             <tr>
-              <th>Edit</th><th>Delete</th>
+              <th>{{config.edit-col-hdr}}</th><th>{{config.del-col-hdr}}</th>
             </tr>
             {% for user in users %}
             <tr>
-              <td><a href="edit-user?target={{user}}">Edit {{user}}</a></td>
-              <td><a href="delete-user?target={{user}}">Delete {{user}}</a></td>
+              <td><a href="edit-user?target={{user}}">{{config.edit-col-hdr}} {{user}}</a></td>
+              <td><a href="delete-user?target={{user}}">{{config.del-col-hdr}} {{user}}</a></td>
             </tr>
             {% endfor %}
             <tr>
-              <td><a href="edit-user">Add new user</a></td>
+              <td><a href="edit-user">{{config.add-user-label}}</a></td>
               <td></td>
             </tr>
           </table>
