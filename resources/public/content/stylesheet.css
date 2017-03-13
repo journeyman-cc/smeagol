@@ -82,6 +82,12 @@ header h1 {
   margin-top: 0;
 }
 
+img {
+  border: 0;
+  padding: 0;
+  vertical-align: middle;
+}
+
 input {
   background-color: white;
 }
@@ -302,7 +308,13 @@ th {
 
 /* tablets, primarily. Adapted to touch; targets are larger */
 @media all and (min-device-width: 769px) and (max-device-width: 1024px) {
-/* content of the current in the Wiki - editable, provided by users. Within main-container */
+  h1 {
+    /* I wouldn't normally use a px value, but the menu icon is 49px wide */
+    padding: 0.25em 5%;
+    padding-left: 100px;
+  }
+
+  /* content of the current page in the Wiki - editable, provided by users. Within main-container */
   #content {
     border: thin solid silver;
     width: 80%;
@@ -315,39 +327,48 @@ th {
     padding: 0;
     position: fixed;
     z-index: 149;
-    background:rgba(40,40,40,0.8);
-    font-size: larger;
+    color: silver;
+    background:rgba(40,40,40,0.9);
   }
 
-  #nav:hover #nav-menu {
-    display: inline;
-  }
-
-  #nav-icon {
-    padding: 0.25em;
-    float: left;
-  }
-
-  #nav-menu {
-    display: none;
-  }
-
-  #nav ul li {
-    padding: 0;
-    margin: 0;
-    display: inline;
-  }
-
-  #nav ul li a {
+  #nav a {
     color: white;
     text-decoration: none;
     font-weight: bold;
-    padding: 0.1em 0.75em;
-    margin: 0;
   }
+
+  #nav:hover #nav-menu {
+    display: block;
+    list-style-type: none;
+    width: 100%;
+  }
+
+  #nav-icon {
+    padding: 0;
+  }
+
+  #nav-menu, #phone-side-bar {
+    display: none;
+  }
+
+  #nav menu li {
+    padding: 0.5em;
+    margin: 0.5 em;
+    font-size: 150%;
+  }
+
+  #nav menu li a {
+  }
+
   #nav ul li.active a { background: silver;}
   li.nav-item a:hover { background: rgb( 240, 240, 240) }
   li.nav-item a:active { background: gray; color: white; }
+
+  #nav menu #user {
+    text-decoration: none;
+    font-weight: bold;
+    margin: 0;
+  }
 }
 
 /* phones, and, indeed, smaller phones. Adapted to touch; display radically
@@ -360,6 +381,7 @@ th {
   h1 {
     /* I wouldn't normally use a px value, but the menu icon is 49px wide */
     padding: 0.25em 5%;
+    padding-left: 100px;
     text-align: right;
   }
 
@@ -388,7 +410,6 @@ th {
     z-index: 149;
     color: silver;
     background:rgba(40,40,40,0.9);
-    font-size: 200%;
   }
 
   #nav a {
