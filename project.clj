@@ -32,7 +32,7 @@
             [lein-ancient "0.5.5" :exclusions [org.clojure/clojure org.clojure/data.xml]]
             [lein-marginalia "0.7.1" :exclusions [org.clojure/clojure]]
             [io.sarnowski/lein-docker "1.1.0"]]
-  :bower-dependencies [[simplemde "1.11.2"]]
+  :bower-dependencies [[simplemde "1.11.2"]["bootstrap" "3.3.7"]]
   :docker {:image-name "simonbrooke/smeagol"
          :dockerfile "Dockerfile"}
   :ring {:handler smeagol.handler/app

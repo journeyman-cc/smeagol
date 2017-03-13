@@ -19,10 +19,10 @@
           <li class="{{edit-users-selected}}"><a href="{{servlet-context}}/edit-users">{{config.edit-users-link}}</a></li>
           {% endif %}
           {% if user %}
-          <li class="{{auth-selected}}"><a href="{{servlet-context}}/auth">
-            {{config.logout-link}}</a></li>
           <li class="{{passwd-selected}}"><a href="passwd">{{config.change-pass-link}}</a></li>
           <li class="user" id="user">{{config.logged-in-as}} {{user}}</li>
+          <li class="{{auth-selected}}"><a href="{{servlet-context}}/auth">
+            {{config.logout-link}}</a></li>
           {% else %}
           <li class="{{auth-selected}}"><a href="{{servlet-context}}/auth">
             {{config.login-link}}</a></li>
