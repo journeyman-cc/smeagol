@@ -3,7 +3,9 @@
   <head>
     <title>{{config.site-title}}: {{title}}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <link href="{{servlet-context}}/content/stylesheet.css" media="screen and (min-device-width: 1025px)" rel="stylesheet" type="text/css" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="{{servlet-context}}/content/stylesheet.css" media="screen" rel="stylesheet" type="text/css" />
     <link href="{{servlet-context}}/css/print.css" media="print" rel="stylesheet" type="text/css" />
     {% block extra-headers %}
     {% endblock %}
@@ -12,22 +14,36 @@
     <header class="wiki">
       <!-- navbar -->
       <div id="nav">
-        {% if user %}
-        <p class="user" id="user">{{config.logged-in-as}} {{user}} | <a href="passwd">{{config.change-pass-link}}</a></p>
-        {% endif %}
-        <img id="nav-icon" src="{{servlet-context}}/img/threelines.png" alt="Menu"/>
-        <ul id="nav-menu" class="nav">
+        <img id="nav-icon" src="{{servlet-context}}/img/three-lines.png" alt="Menu"/>
+        <menu id="nav-menu">
           <li class="{{wiki-selected}}"><a href="{{servlet-context}}/">{{config.home-link}}</a></li>
           {% if admin %}
-          <li class="{{admin-selected}}"><a href="{{servlet-context}}/edit-users">{{config.edit-users-link}}</a></li>
+          <li class="{{edit-users-selected}}"><a href="{{servlet-context}}/edit-users">{{config.edit-users-link}}</a></li>
           {% endif %}
+          {% if user %}
+          <li class="{{passwd-selected}}"><a href="passwd">{{config.change-pass-link}}</a></li>
+          <li class="user" id="user">{{config.logged-in-as}} {{user}}</li>
           <li class="{{auth-selected}}"><a href="{{servlet-context}}/auth">
-            {% if user %}
-            {{config.logout-link}}
-            {% else %}
-            {{config.login-link}}
-            {% endif %}</a></li>
-        </ul>
+            {{config.logout-link}}</a></li>
+          {% else %}
+          <li class="{{auth-selected}}"><a href="{{servlet-context}}/auth">
+            {{config.login-link}}</a></li>
+          {% endif %}
+        </menu>
+        <div id="phone-side-bar"  class="wiki">
+            {{side-bar|safe}}
+          <div id="phone-credits">
+            <p>
+              <img height="16" width="16" alt="one wiki to rule them all"
+                   src="img/smeagol.png"/>One Wiki to rule them all ||
+              Smeagol wiki engine {{version}} ||
+              <img height="16" width="16"
+                   alt="The Web Engineering Factory &amp; Toolworks"
+                  src="http://www.weft.scot/images/weft.logo.64.png">
+              Developed by <a href="http://www.weft.scot/">WEFT</a>
+            </p>
+          </div>
+        </div>
       </div>
       <h1>{{config.site-title}}: {{title}}</h1>
       {{header|safe}}
