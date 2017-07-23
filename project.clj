@@ -3,26 +3,28 @@
   :url "https://github.com/simon-brooke/smeagol"
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [org.clojure/core.memoize "0.5.9"]
-                 [com.taoensso/encore "2.80.0"]
+                 [com.taoensso/encore "2.91.1"]
                  [lib-noir "0.9.9" :exclusions [org.clojure/tools.reader]]
                  [com.cemerick/url "0.1.1"]
                  [ring-server "0.4.0"]
-                 [selmer "1.0.7"]
-                 [org.clojure/tools.logging "0.3.1"]
-                 [org.slf4j/slf4j-log4j12 "1.7.21"]
-                 [log4j/log4j "1.2.17" :exclusions [javax.mail/mail
-                                                    javax.jms/jms
-                                                    com.sun.jmdk/jmxtools
-                                                    com.sun.jmx/jmxri]]
-                 [com.taoensso/timbre "4.7.4" :exclusions [org.clojure/tools.reader]]
+                 [selmer "1.10.9"]
+
+                 [org.clojure/tools.logging "0.4.0"]
+                 [com.taoensso/timbre "4.10.0"]
+                 [com.fzakaria/slf4j-timbre "0.3.7"]
+                 [org.slf4j/slf4j-api "1.7.25"]
+                 [org.slf4j/log4j-over-slf4j "1.7.25"]
+                 [org.slf4j/jul-to-slf4j "1.7.25"]
+                 [org.slf4j/jcl-over-slf4j "1.7.25"]
+
                  [com.taoensso/tower "3.0.2" :exclusions [com.taoensso/encore]]
-                 [markdown-clj "0.9.89" :exclusions [com.keminglabs/cljx]]
+                 [markdown-clj "0.9.99" :exclusions [com.keminglabs/cljx]]
                  [crypto-password "0.2.0"]
                  [clj-jgit "0.8.9"]
                  [environ "1.1.0"]
                  [im.chit/cronj "1.4.4"]
                  [noir-exception "0.2.5"]
-                 [prone "1.1.1"]]
+                 [prone "1.1.4"]]
 
   :repl-options {:init-ns smeagol.repl}
   :jvm-opts ["-server"]
@@ -44,8 +46,8 @@
                        :stacktraces?  false
                        :auto-reload?  false}}
    :dev {:dependencies [[ring-mock "0.1.5"]
-                        [ring/ring-devel "1.5.0"]
-                        [pjstadig/humane-test-output "0.8.1"]]
+                        [ring/ring-devel "1.6.2"]
+                        [pjstadig/humane-test-output "0.8.2"]]
          :injections [(require 'pjstadig.humane-test-output)
                       (pjstadig.humane-test-output/activate!)]
          :env {:dev true}}}
