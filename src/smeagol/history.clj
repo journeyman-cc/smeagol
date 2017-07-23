@@ -49,9 +49,10 @@
     log-entry))
 
 
-(defn find-history [^String git-directory-path ^String file-path]
+(defn find-history
   "Return the log entries in the repository at this `git-directory-path`
    which refer to changes to the file at this `file-path`."
+  [^String git-directory-path ^String file-path]
   (let [repository (git/load-repo git-directory-path)]
     (filter
       #(entry-contains % file-path)
