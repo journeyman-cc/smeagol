@@ -1,31 +1,29 @@
 {% extends "templates/base.html" %}
 {% block content %}
    <div id="content" class="history">
-        <table>
-            <tr>
-                <th>When</th><th>What</th><th>Version</th><th>Changes</th>
-            </tr>
-            <tr>
-            	<td>Now</td><td></td>
-            	<td><a href="wiki?content={{page}}">[current]</a></td>
-            	<td>[no changes]</td>
-            <tr>
-            {% for entry in history %}
-            <tr>
-                <td>S
-                    {{entry.time}}
-                </td>
-                <td>
-                    {{entry.message}}
-                </td>
-                <td>
-                    <a href="version?page={{page}}&amp;version={{entry.id}}">Show version</a>
-                </td>
-                <td>
-                	<a href="changes?page={{page}}&amp;version={{entry.id}}">What's changed?</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
+     <table class="music-ruled">
+       <tr>
+         <th>{{config.when-col-hdr}}</th>
+         <th>{{config.what-col-hdr}}</th>
+         <th>{{config.vers-col-hdr}}</th>
+         <th>{{config.change-col-hdr}}</th>
+       </tr>
+       {% for entry in history %}
+       <tr>
+         <td>S
+           {{entry.time}}
+         </td>
+         <td>
+           {{entry.message}}
+         </td>
+         <td>
+           <a href="version?page={{page}}&amp;version={{entry.id}}">Show version</a>
+         </td>
+         <td>
+           <a href="changes?page={{page}}&amp;version={{entry.id}}">What's changed since?</a>
+         </td>
+       </tr>
+       {% endfor %}
+     </table>
     </div>
 {% endblock %}

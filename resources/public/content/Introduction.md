@@ -1,14 +1,15 @@
+![One wiki to rule them all](https://www.weft.scot/images/smeagol.png)
+
 # Welcome to Smeagol!
 Smeagol is a simple Wiki engine inspired by [Gollum](https://github.com/gollum/gollum/wiki). Gollum is a Wiki engine written in Ruby, which uses a number of simple text formats including [Markdown](http://daringfireball.net/projects/markdown/), and which uses [Git](http://git-scm.com/) to provide versioning and backup. I needed a new Wiki for a project and thought Gollum would be ideal - but unfortunately it doesn't provide user authentication, which I needed, and it was simpler for me to reimplement the bits I did need in Clojure than to modify Gollum.
 
 So at this stage Smeagol is a Wiki engine written in Clojure which uses Markdown as its text format, which does have user authentication, and which uses Git as its versioning and backup system.
 
 ## Status
-Smeagol is now a fully working small Wiki engine, and meets my own immediate needs. There are some obvious
-things which could be improved - see **TODO** list below - but it works now and doesn't seem to have any major problems.
+Smeagol is now a fully working small Wiki engine, and meets my own immediate needs.
 
 ## Markup syntax
-Smeagol uses the Markdown format as provided by [markdown-clj](https://github.com/yogthos/markdown-clj), with the addition that anything enclosed in double square brackets, \[\[like this\]\], will be treated as a link into the wiki itself. Here's an example [[Internal Link]].
+Smeagol uses the Markdown format as provided by [markdown-clj](https://github.com/yogthos/markdown-clj), with the addition that anything enclosed in double square brackets, \[\[like this\]\], will be treated as a link into the wiki itself.
 
 ## Security and authentication
 Security is now greatly improved. There is a file called *passwd* in the *resources* directory, which contains a clojure map which maps usernames to maps with plain-text passwords and emails thus:
@@ -23,11 +24,8 @@ Smeagol does not currently have any mechanism to upload images. You can, however
 
 ![Smeagol](http://vignette3.wikia.nocookie.net/lotr/images/e/e1/Gollum_Render.png/revision/latest?cb=20141218075509)
 
-## Todo
-* Mechanism to add users through the user interface;
-
 ## Advertisement
-If you like what you see here, I am available for work on open source Clojure projects. Contact me vis [WEFT](http://www.weft.scot/).
+If you like what you see here, I am available for work on open source Clojure projects. Contact me via [WEFT](http://www.weft.scot/).
 
 ### Phoning home
 Smeagol currently requests the WEFT logo in the page footer from my home site. This is mainly so I can get a feel for how many people are using the product. If you object to this, edit the file
@@ -66,6 +64,25 @@ Alternatively, if you want to deploy to a servlet container (which I would stron
 
 (a command which I'm sure Smeagol would entirely appreciate) and deploy the resulting war file.
 
+## Experimental Docker image
 
-## Editing the framing content
-You can edit the [stylesheet](/edit-css?page=stylesheet), the [[\_left-bar]], the [[\_edit-left-bar]], and the [[\_header]].
+You can now run Smeagol as a [Docker](http://www.docker.com) image. To run my Docker image, use
+
+    docker run simonbrooke/smeagol
+
+Smeagol will run, obviously, on the IP address of your Docker image, on port 8080. To find the IP address, start the image using the command above and then use
+
+    docker inspect --format '{{ .NetworkSettings.IPAddress }}' $(docker ps -q)
+
+Suppose this prints '10.10.10.10', then the URL to browse to will be http://10.10.10.10:8080/smeagol/
+
+This image is _experimental_, but it does seem to work fairly well. What it does **not** yet do, however, is push the git repository to a remote location, so when you tear the Docker image down your edits will be lost. My next objective for this image is for it to have a cammand line parameter being the git address of a repository from which it can initialise the Wiki content, and to which it will periodically push local changes to the Wiki content.
+
+To build your own Docker image, run:
+
+    lein clean
+    lein bower install
+    lein ring uberwar
+    lein docker build
+
+This will build a new Docker image locally; you can, obviously, push it to your own Docker repository if you wish.

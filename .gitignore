@@ -7,9 +7,13 @@ pom.xml.asc
 /target/
 /checkouts/
 /resources/public/content/.git
+/resources/public/vendor
 .lein-deps-sum
 .lein-repl-history
 .lein-plugins/
 .lein-failures
 .lein-env
-
+.nrepl-port
+smeagol.log*
+/node_modules/
+.DS_Store
