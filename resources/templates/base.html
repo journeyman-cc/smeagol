@@ -5,11 +5,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="{{servlet-context}}/vendor/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="{{servlet-context}}/content/stylesheet.css" media="screen" rel="stylesheet" type="text/css" />
     <link href="{{servlet-context}}/css/print.css" media="print" rel="stylesheet" type="text/css" />
-    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     {% block extra-headers %}
     {% endblock %}
   </head>
@@ -18,7 +15,7 @@
       <!-- navbar -->
       <div id="nav">
         <img id="nav-icon" src="{{servlet-context}}/img/three-lines.png" alt="Menu"/>
-        <menu id="nav-menu" class="nav">
+        <menu id="nav-menu">
           <li class="{{wiki-selected}}"><a href="{{servlet-context}}/">{{config.home-link}}</a></li>
           {% if admin %}
           <li class="{{edit-users-selected}}"><a href="{{servlet-context}}/edit-users">{{config.edit-users-link}}</a></li>
@@ -35,17 +32,17 @@
         </menu>
         <div id="phone-side-bar"  class="wiki">
             {{side-bar|safe}}
-        <div id="phone-credits">
-          <p>
-           <img height="16" width="16" alt="one wiki to rule them all"
-                src="img/smeagol.png"/>One Wiki to rule them all ||
-           Smeagol wiki engine {{version}} ||
-           <img height="16" width="16"
-                alt="The Web Engineering Factory &amp; Toolworks"
-                src="http://www.weft.scot/images/weft.logo.64.png">
-            Developed by <a href="http://www.weft.scot/">WEFT</a>
-          </p>
-         </div>
+          <div id="phone-credits">
+            <p>
+              <img height="16" width="16" alt="one wiki to rule them all"
+                   src="img/smeagol.png"/>One Wiki to rule them all ||
+              Smeagol wiki engine {{version}} ||
+              <img height="16" width="16"
+                   alt="The Web Engineering Factory &amp; Toolworks"
+                  src="http://www.weft.scot/images/weft.logo.64.png">
+              Developed by <a href="http://www.weft.scot/">WEFT</a>
+            </p>
+          </div>
         </div>
       </div>
       <h1>{{config.site-title}}: {{title}}</h1>
