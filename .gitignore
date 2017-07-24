@@ -13,3 +13,6 @@ pom.xml.asc
 .lein-failures
 .lein-env
 
+
+/node_modules/
+/resources/public/vendor/
