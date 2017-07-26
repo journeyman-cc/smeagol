@@ -1,30 +1,30 @@
-(defproject smeagol "0.5.0-rc3"
+(defproject smeagol "0.5.1-SNAPSHOT"
   :description "A simple Git-backed Wiki inspired by Gollum"
   :url "https://github.com/simon-brooke/smeagol"
-  :dependencies [[org.clojure/clojure "1.7.0"]
+  :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/core.memoize "0.5.9"]
-                 [com.taoensso/encore "2.91.1"]
-                 [lib-noir "0.9.9" :exclusions [org.clojure/tools.reader]]
-                 [com.cemerick/url "0.1.1"]
-                 [ring-server "0.4.0"]
-                 [selmer "1.10.9"]
-
+                 [org.clojure/data.json "0.2.6"]
                  [org.clojure/tools.logging "0.4.0"]
-                 [com.taoensso/timbre "4.10.0"]
+                 [clj-jgit "0.8.9"]
+                 [clj-yaml "0.4.0"]
+                 [com.cemerick/url "0.1.1"]
                  [com.fzakaria/slf4j-timbre "0.3.7"]
+                 [com.taoensso/encore "2.91.1"]
+                 [com.taoensso/timbre "4.10.0"]
+                 [com.taoensso/tower "3.0.2" :exclusions [com.taoensso/encore]]
+                 [crypto-password "0.2.0"]
+                 [environ "1.1.0"]
+                 [im.chit/cronj "1.4.4"]
+                 [lib-noir "0.9.9" :exclusions [org.clojure/tools.reader]]
+                 [markdown-clj "0.9.99" :exclusions [com.keminglabs/cljx]]
+                 [noir-exception "0.2.5"]
                  [org.slf4j/slf4j-api "1.7.25"]
                  [org.slf4j/log4j-over-slf4j "1.7.25"]
                  [org.slf4j/jul-to-slf4j "1.7.25"]
                  [org.slf4j/jcl-over-slf4j "1.7.25"]
-
-                 [com.taoensso/tower "3.0.2" :exclusions [com.taoensso/encore]]
-                 [markdown-clj "0.9.99" :exclusions [com.keminglabs/cljx]]
-                 [crypto-password "0.2.0"]
-                 [clj-jgit "0.8.9"]
-                 [environ "1.1.0"]
-                 [im.chit/cronj "1.4.4"]
-                 [noir-exception "0.2.5"]
-                 [prone "1.1.4"]]
+                 [prone "1.1.4"]
+                 [ring-server "0.4.0"]
+                 [selmer "1.10.9"]]
 
   :repl-options {:init-ns smeagol.repl}
   :jvm-opts ["-server"]

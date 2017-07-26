@@ -24,8 +24,39 @@ Smeagol does not currently have any mechanism to upload images. You can, however
 
 ![Smeagol](http://vignette3.wikia.nocookie.net/lotr/images/e/e1/Gollum_Render.png/revision/latest?cb=20141218075509)
 
+## Now with data visualisation
+
+Inspired by [visdown](http://visdown.amitkaps.com/) and [vega-lite](https://vega.github.io/vega-lite/docs/), you can now embed visualisations into Smeagol pages, like this:
+
+### Flight punctuality at London airports
+
+Example cribbed in its entirety from [here](http://visdown.amitkaps.com/london):
+```vis
+data:
+  url: "data/london.csv"
+transform:
+ -
+  filter: datum.year == 2016
+mark: rect
+encoding:
+  x:
+    type: nominal
+    field: source
+  y:
+    type: nominal
+    field: dest
+  color:
+    type: quantitative
+    field: flights
+    aggregate: sum
+```
+
+Note that this visualisation will not be rendered in the GitHub wiki, as it doesn't have Smeagol's data visualisation magic. This is what it should look like:
+
+![Example visualisation](https://github.com/simon-brooke/smeagol/blob/develop/resources/public/data/london.png?raw=true)
+
 ## Advertisement
-If you like what you see here, I am available for work on open source Clojure projects. Contact me via [WEFT](http://www.weft.scot/).
+If you like what you see here, I am available for work on open source Clojure projects.
 
 ### Phoning home
 Smeagol currently requests the WEFT logo in the page footer from my home site. This is mainly so I can get a feel for how many people are using the product. If you object to this, edit the file
