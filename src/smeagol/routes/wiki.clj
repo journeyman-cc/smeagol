@@ -14,6 +14,7 @@
             [taoensso.timbre :as timbre]
             [smeagol.authenticate :as auth]
             [smeagol.diff2html :as d2h]
+            [smeagol.formatting :refer [md->html]]
             [smeagol.layout :as layout]
             [smeagol.util :as util]
             [smeagol.history :as hist]
@@ -98,7 +99,7 @@
                           (merge (util/standard-params request)
                                  {:title (str (:edit-title-prefix layout/config) " " page)
                                   :page page
-                                  :side-bar (util/local-links (util/md->html side-bar))
+                                  :side-bar (md->html (io/slurp-resource side-bar))
                                   :content (if exists? (io/slurp-resource (str "/content/" page suffix)) "")
                                   :exists exists?}))))))
 
@@ -124,8 +125,7 @@
                            (merge (util/standard-params request)
                                   {:title page
                                    :page page
-                                   :side-bar (util/local-links (util/md->html "/content/_side-bar.md"))
-                                   :content (util/local-links (util/md->html file-name))
+                                   :content (md->html (io/slurp-resource file-name))
                                    :editable true})))
           true (response/redirect (str "/edit?page=" page)))))
 
@@ -138,11 +138,12 @@
         page (url-decode (or (:page params) (:default-page-title layout/config)))
         file-name (str page ".md")
         repo-path (str (io/resource-path) "/content/")]
+    (timbre/info (format "Showing history of page '%s'" page))
     (layout/render "history.html"
                    (merge (util/standard-params request)
                           {:title (str "History of " page)
                            :page page
-                           :history (hist/find-history repo-path file-name)}))))
+                           :history (md->html (hist/find-history repo-path file-name))}))))
 
 
 (defn version-page
@@ -152,15 +153,14 @@
         page (url-decode (or (:page params) (:default-page-title layout/config)))
         version (:version params)
         file-name (str page ".md")
-        repo-path (str (io/resource-path) "/content/")]
+        repo-path (str (io/resource-path) "/content/")
+        content (hist/fetch-version repo-path file-name version)]
+    (timbre/info (format "Showing version '%s' of page '%s'" version page))
     (layout/render "wiki.html"
                    (merge (util/standard-params request)
                           {:title (str (:vers-col-hdr layout/config) " " version " of " page)
                            :page page
-                           :content (util/local-links
-                                      (md/md-to-html-string
-                                        (hist/fetch-version
-                                          repo-path file-name version)))}))))
+                           :content (md->html content)}))))
 
 
 (defn diff-page
@@ -171,6 +171,7 @@
         version (:version params)
         file-name (str page ".md")
         repo-path (str (io/resource-path) "/content/")]
+    (timbre/info (format "Showing diff between version '%s' of page '%s' and current" version page))
     (layout/render "wiki.html"
                    (merge (util/standard-params request)
                           {:title (str (:diff-title-prefix layout/config)" " version " of " page)
@@ -201,10 +202,7 @@
      (layout/render "auth.html"
                    (merge (util/standard-params request)
                     {:title (if user (str (:logout-link layout/config) " " user) (:login-link layout/config))
-                     :redirect-to ((:headers request) "referer")
-                     :side-bar (util/local-links (util/md->html "/content/_side-bar.md"))
-                     :header (util/local-links (util/md->html "/content/_header.md"))
-                     :user user})))))
+                     :redirect-to ((:headers request) "referer")})))))
 
 
 (defn passwd-page
@@ -221,8 +219,6 @@
     (layout/render "passwd.html"
                    (merge (util/standard-params request)
                           {:title (str (:chpass-title-prefix layout/config) " " user)
-                           :side-bar (util/local-links (util/md->html "/content/_side-bar.md"))
-                           :header (util/local-links (util/md->html "/content/_header.md"))
                            :message (if changed? (:chpass-success layout/config))
                            :error (cond
                                     (nil? oldpass) nil

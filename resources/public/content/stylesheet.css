@@ -197,6 +197,11 @@ th {
   border: thin solid silver;
 }
 
+
+.data-visualisation {
+  padding: 0.25em 5%;
+}
+
 .error {
   width: 100%;
   background-color: red;
@@ -229,6 +234,10 @@ th {
   float: right;
   padding: 0.25em 2em;
   color: white;
+}
+
+.vega-bindings, .vega-actions {
+  font-size: 66%;
 }
 
 .warn {
