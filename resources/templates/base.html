@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="{{servlet-context}}/content/stylesheet.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="{{servlet-context}}/css/print.css" media="print" rel="stylesheet" type="text/css" />
     {% block extra-headers %}
     {% endblock %}
   </head>
@@ -20,6 +21,7 @@
           <li class="{{edit-users-selected}}"><a href="{{servlet-context}}/edit-users">{{config.edit-users-link}}</a></li>
           {% endif %}
           {% if user %}
+          <li class="{{upload-selected}}"><a href="upload">{{config.file-upload-title}}</a></li>
           <li class="{{passwd-selected}}"><a href="passwd">{{config.change-pass-link}}</a></li>
           <li class="user" id="user">{{config.logged-in-as}} {{user}}</li>
           <li class="{{auth-selected}}"><a href="{{servlet-context}}/auth">
@@ -90,4 +92,3 @@
     <footer>
   </body>
 </html>
-

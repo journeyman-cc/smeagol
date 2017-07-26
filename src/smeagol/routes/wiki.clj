@@ -3,6 +3,7 @@
   smeagol.routes.wiki
   (:require [clojure.walk :refer :all]
             [clojure.java.io :as cjio]
+            [clojure.string :as cs]
             [cemerick.url :refer (url url-encode url-decode)]
             [compojure.core :refer :all]
             [clj-jgit.porcelain :as git]
@@ -17,6 +18,7 @@
             [smeagol.formatting :refer [md->html]]
             [smeagol.layout :as layout]
             [smeagol.util :as util]
+            [smeagol.uploads :as ul]
             [smeagol.history :as hist]
             [smeagol.routes.admin :as admin]))
 
@@ -145,6 +147,28 @@
                            :page page
                            :history (md->html (hist/find-history repo-path file-name))}))))
 
+(defn upload-page
+  "Render a form to allow the upload of a file."
+  [request]
+  (let [params (keywordize-keys (:params request))
+        data-path (str (io/resource-path) "/uploads/")
+        upload (:upload params)
+        uploaded (if upload (ul/store-upload params))]
+    (layout/render "upload.html"
+                   (merge (util/standard-params request)
+                          {:title (:file-upload-title layout/config)
+                           :uploaded uploaded
+                           :is-image (and
+                                       uploaded
+                                       (or
+                                         (cs/ends-with? uploaded ".gif")
+                                         (cs/ends-with? uploaded ".jpg")
+                                         (cs/ends-with? uploaded ".jpeg")
+                                         (cs/ends-with? uploaded ".png")
+                                         (cs/ends-with? uploaded ".GIF")
+                                         (cs/ends-with? uploaded ".JPG")
+                                         (cs/ends-with? uploaded ".PNG")))}))))
+
 
 (defn version-page
   "Render a specific historical version of a page"
@@ -246,4 +270,5 @@
   (POST "/auth" request (auth-page request))
   (GET "/passwd" request (passwd-page request))
   (POST "/passwd" request (passwd-page request))
-  )
+  (GET "/upload" request (route/restricted (upload-page request)))
+  (POST "/upload" request (route/restricted (upload-page request))))

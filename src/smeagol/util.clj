@@ -2,6 +2,7 @@
       :author "Simon Brooke"}
   smeagol.util
   (:require [noir.session :as session]
+            [noir.io :as io]
             [smeagol.authenticate :as auth]
             [smeagol.formatting :refer [md->html]]))
 
