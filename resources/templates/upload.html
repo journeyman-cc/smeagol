@@ -1,0 +1,34 @@
+{% extends "templates/base.html" %}
+{% block content %}
+        Uploaded: {{uploaded}}; is-image: {{is-image}}
+        <div id="content" class="auth">
+        {% if uploaded %}
+          {% if is-image %}
+            <img alt="Uploaded image" src="uploads/{{uploaded}}"/>
+
+            <p>
+              {{config.file-upload-link-text}}:
+
+              <code>![Uploaded image](uploads/{{uploaded}})</code>
+            </p>
+          {% else %}
+            <p>
+              {{config.file-upload-link-text}}:
+
+              <code>[Uploaded file](uploads/{{uploaded}})</code>
+            </p>
+          {% endif %}
+        {% else %}
+            <form action="{{servlet-context}}/upload" enctype="multipart/form-data" method="POST">
+                <p class="widget">
+                    <label for="upload">{{config.file-upload-prompt}}</label>
+                    <input name="upload" id="upload" type="file" required/>
+                </p>
+                <p class="widget">
+                    <label for="submit">{{config.save-prompt}}</label>
+                    <input name="submit" id="submit" type="submit" class="action" value="{{config.save-label}}"/>
+                </p>
+            </form>
+        {% endif %}
+        </div>
+{% endblock %}

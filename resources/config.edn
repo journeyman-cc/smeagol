@@ -65,6 +65,10 @@
  :edit-users-title      "Select user to edit"
                                         ;; title of edit users page
  :email-prompt          "Email address" ;; text of the email widget prompt on edit user page
+ :file-upload-link-text "You may link to this file using a link of the form"
+                                        ;; Text introducing the link to an uploaded file
+ :file-upload-prompt    "File to upload" ;; prompt string for the file upload widget
+ :file-upload-title     "Upload a file" ;; title for the file upload page
  :is-admin-prompt       "Is administrator?"
  :home-link             "Home"          ;; text of the home link on the menu
  :login-label           "Log in!"       ;; text of the login widget on the login page
