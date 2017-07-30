@@ -33,7 +33,10 @@
             [lein-bower "0.5.1"]
             [lein-ancient "0.5.5" :exclusions [org.clojure/clojure org.clojure/data.xml]]
             [lein-marginalia "0.7.1" :exclusions [org.clojure/clojure]]]
-  :bower-dependencies [[simplemde "1.11.2"]]
+  :bower-dependencies [[simplemde "1.11.2"]
+                       ;; [vega-embed "3.0.0-beta.19"] vega-embed currently not loaded from Bower because of
+                       ;; dependency conflict which will hopefully be resolved soon.
+                       [vega-lite "2.0.0-beta.10"]]
   :ring {:handler smeagol.handler/app
          :init    smeagol.handler/init
          :destroy smeagol.handler/destroy}

@@ -87,7 +87,11 @@
   ([index result fragments processed]
    (cond
      (empty? fragments)
-     (assoc result :text (local-links (md/md-to-html-string (cs/join "\n\n" (reverse processed)))))
+     (assoc result :text
+       (local-links
+         (md/md-to-html-string
+           (cs/join "\n\n" (reverse processed))
+           :heading-anchors true)))
      (clojure.string/starts-with? (first fragments) "vis")
      (let [kw (keyword (str "visualisation-" index))]
        (process-text

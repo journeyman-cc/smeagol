@@ -1,7 +1,7 @@
 {% extends "templates/base.html" %}
 {% block extra-headers %}
-    <link rel="stylesheet" href="{{servlet-context}}/vendor/simplemde/dist/simplemde.min.css">
-    <script src="{{servlet-context}}/vendor/simplemde/dist/simplemde.min.js"></script>
+{% style "/vendor/simplemde/dist/simplemde.min.css" %}
+{% script "/vendor/simplemde/dist/simplemde.min.js" %}
 {% endblock %}
 
 {% block content %}
