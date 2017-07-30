@@ -73,6 +73,12 @@
       (assoc (yaml/parse-string yaml-src) (keyword "$schema") "https://vega.github.io/schema/vega-lite/v2.json"))
     ";\nvega.embed('#vis" index "', vl" index ");\n//]]\n</script>"))
 
+(defn process-mermaid
+  "Lightly mung the mermaid specification."
+  [^String graph-spec ^Integer index]
+  (str "<div class=\"mermaid data-visualisation\">\n"
+       graph-spec
+       "\n</div>"))
 
 (defn process-text
   "Process this `text`, assumed to be markdown potentially containing both local links
@@ -92,6 +98,7 @@
          (md/md-to-html-string
            (cs/join "\n\n" (reverse processed))
            :heading-anchors true)))
+    ;;; TODO: refactor; generalise extension architecture
      (clojure.string/starts-with? (first fragments) "vis")
      (let [kw (keyword (str "visualisation-" index))]
        (process-text
@@ -104,6 +111,21 @@
              kw
              (yaml->vis
                (subs (first fragments) 3)
+               index)))
+         (rest fragments)
+         (cons kw processed)))
+     (clojure.string/starts-with? (first fragments) "mermaid")
+     (let [kw (keyword (str "visualisation-" index))]
+       (process-text
+         (+ index 1)
+         (assoc
+           result
+           :visualisations
+           (assoc
+             (:visualisations result)
+             kw
+             (process-mermaid
+               (subs (first fragments) 7)
                index)))
          (rest fragments)
          (cons kw processed)))

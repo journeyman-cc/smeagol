@@ -57,6 +57,33 @@ Note that this visualisation will not be rendered in the GitHub wiki, as it does
 
 ![Example visualisation](https://github.com/simon-brooke/smeagol/blob/develop/resources/public/data/london.png?raw=true)
 
+## Now with embedded graphs
+
+Graphs can now be embedded in a page using the [Mermaid](http://knsv.github.io/mermaid/index.html) graph description language. The graph description should start with a line comprising three back-ticks and then the
+word 'mermaid', and end with a line comprising just three backticks.
+
+Here's an example culled from the Mermaid documentation.
+
+### GANTT Chart
+
+```mermaid
+gantt
+        dateFormat  YYYY-MM-DD
+        title Adding GANTT diagram functionality to mermaid
+        section A section
+        Completed task            :done,    des1, 2014-01-06,2014-01-08
+        Active task               :active,  des2, 2014-01-09, 3d
+        Future task               :         des3, after des2, 5d
+        Future task2               :         des4, after des3, 5d
+        section Critical tasks
+        Completed task in the critical line :crit, done, 2014-01-06,24h
+        Implement parser and jison          :crit, done, after des1, 2d
+        Create tests for parser             :crit, active, 3d
+        Future task in critical line        :crit, 5d
+        Create tests for renderer           :2d
+        Add to mermaid                      :1d
+```
+
 ## Advertisement
 If you like what you see here, I am available for work on open source Clojure projects.
 

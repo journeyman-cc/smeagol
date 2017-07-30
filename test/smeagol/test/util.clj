@@ -1,7 +1,7 @@
 (ns smeagol.test.util
   (:use clojure.test
         ring.mock.request
-        smeagol.util))
+        smeagol.formatting))
 
 (deftest test-local-links
   (testing "Rewriting of local links"
