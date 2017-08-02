@@ -61,35 +61,43 @@
     no-text-error))
 
 
-(defn yaml->vis
-  "Transcode this YAML fragment into the source for a Vega visualisation with this index."
-  [^String yaml-src ^Integer index]
+(defn yaml->json
+  "Rewrite this string, assumed to be in YAML format, as JSON."
+  [^String yaml-src]
+  (json/write-str (yaml/parse-string yaml-src)))
+
+
+(defn process-vega
+  "Process this `vega-source` string, assumed to be in YAML format, into a specification
+   of a Vega chart, and add the plumbing to render it."
+  [^String vega-src ^Integer index]
   (str
     "<div class='data-visualisation' id='vis" index "'></div>\n"
     "<script>\n//<![CDATA[\nvar vl"
     index
     " = "
-    (json/write-str
-      (assoc (yaml/parse-string yaml-src) (keyword "$schema") "https://vega.github.io/schema/vega-lite/v2.json"))
+    (yaml->json (str "$schema: https://vega.github.io/schema/vega-lite/v2.json\n" vega-src))
     ";\nvega.embed('#vis" index "', vl" index ");\n//]]\n</script>"))
 
+
 (defn process-mermaid
-  "Lightly mung the mermaid specification."
+  "Lightly mung this `graph-spec`, assumed to be a mermaid specification."
   [^String graph-spec ^Integer index]
   (str "<div class=\"mermaid data-visualisation\">\n"
        graph-spec
        "\n</div>"))
+
 
 (defn process-text
   "Process this `text`, assumed to be markdown potentially containing both local links
   and YAML visualisation specifications, and return a map comprising JSON visualisation
   specification, and HTML text with markers for where those should be reinserted.
 
-  The map has two top-level keys: `:visualisations`, a map of constructed keywords to
-  visualisation specifications, and `:text`, an HTML text string with the keywords
-  present where the corresponding visualisation should be inserted."
+  The map has two top-level keys: `:inclusions`, a map of constructed keywords to
+  inclusion specifications, and `:text`, an HTML text string with the keywords
+  present where the corresponding inclusion should be inserted."
   ([text]
-   (process-text 0 {:visualisations {}} (cs/split text #"```") '()))
+   (process-text 0 {:inclusions {}} (cs/split text #"```") '()))
   ([index result fragments processed]
    (cond
      (empty? fragments)
@@ -100,29 +108,29 @@
            :heading-anchors true)))
     ;;; TODO: refactor; generalise extension architecture
      (clojure.string/starts-with? (first fragments) "vis")
-     (let [kw (keyword (str "visualisation-" index))]
+     (let [kw (keyword (str "inclusion-" index))]
        (process-text
          (+ index 1)
          (assoc
            result
-           :visualisations
+           :inclusions
            (assoc
-             (:visualisations result)
+             (:inclusions result)
              kw
-             (yaml->vis
+             (process-vega
                (subs (first fragments) 3)
                index)))
          (rest fragments)
          (cons kw processed)))
      (clojure.string/starts-with? (first fragments) "mermaid")
-     (let [kw (keyword (str "visualisation-" index))]
+     (let [kw (keyword (str "inclusion-" index))]
        (process-text
          (+ index 1)
          (assoc
            result
-           :visualisations
+           :inclusions
            (assoc
-             (:visualisations result)
+             (:inclusions result)
              kw
              (process-mermaid
                (subs (first fragments) 7)
@@ -133,27 +141,27 @@
      (process-text (+ index 1) result (rest fragments) (cons (first fragments) processed)))))
 
 
-(defn reintegrate-visualisations
+(defn reintegrate-inclusions
   "Given a map of the form produced by `process-text`, return a string of HTML text
-  with the visualisations (if any) reintegrated."
+  with the inclusions (if any) reintegrated."
   ([processed-text]
-   (reintegrate-visualisations (:visualisations processed-text) (:text processed-text)))
-  ([visualisations text]
-   (let [ks (keys visualisations)]
-     (if (empty? (keys visualisations))
+   (reintegrate-inclusions (:inclusions processed-text) (:text processed-text)))
+  ([inclusions text]
+   (let [ks (keys inclusions)]
+     (if (empty? (keys inclusions))
        text
        (let [kw (first ks)]
-         (reintegrate-visualisations
-           (dissoc visualisations kw)
+         (reintegrate-inclusions
+           (dissoc inclusions kw)
            (cs/replace
              text
              (str kw)
-             (cs/replace (kw visualisations) "\\/" "/"))))))))
+             (cs/replace (kw inclusions) "\\/" "/"))))))))
 
 
 (defn md->html
   "Take this markdown source, and return HTML."
   [md-src]
-  (reintegrate-visualisations (process-text md-src)))
+  (reintegrate-inclusions (process-text md-src)))
 
 
