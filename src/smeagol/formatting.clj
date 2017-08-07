@@ -6,6 +6,7 @@
             [noir.io :as io]
             [noir.session :as session]
             [markdown.core :as md]
+            [taoensso.timbre :as timbre]
             [smeagol.authenticate :as auth]
             [clj-yaml.core :as yaml]
             [clojure.data.json :as json]))
@@ -35,7 +36,7 @@
 ;;;;
 ;;;; Right, doing the data visualisation thing is tricky. Doing it in the
 ;;;; pipeline doesn't work, because the md-to-html-string filter messes up
-;;;; both YAML and JSON notation. So we need to extract the visualisation YAML
+;;;; both YAML and JSON notation. So we need to extract the visualisation
 ;;;; fragments from the Markdown text and replace them with tokens we will
 ;;;; recognise afterwards, perform md-to-html-string, and then replace our
 ;;;; tokens with the transformed visualisation specification.
@@ -88,6 +89,63 @@
        "\n</div>"))
 
 
+;; TODO: This isn't (yet) exactly what I want. The formatters ought to be configurable
+;; without editing the Smeagol code directly. But it's a long way in the right direction.
+(def ^:dynamic *formatters*
+  {"vega" process-vega
+   "vis" process-vega
+   "mermaid" process-mermaid})
+
+
+(defn get-first-token
+  "Return the first space-separated token of this `string`."
+  [^String string]
+  (if string (first (cs/split string #"[^a-zA-Z0-9]+"))))
+
+
+(defn- process-markdown-fragment
+  "Within the context of `process-text`, process a fragment believed to be markdown.
+
+  As with `process-text`, this function returns a map with two top-level keys:
+  `:inclusions`, a map of constructed keywords to inclusion specifications,
+  and `:text`, an HTML text string with the keywords present where the
+  corresponding inclusion should be inserted."
+  [index result fragments processed]
+  (process-text
+   (+ index 1)
+   result
+   (rest fragments)
+   (cons (first fragments) processed)))
+
+
+(defn- apply-formatter
+  "Within the context of `process-text`, process a fragment for which an explicit
+  §formatter has been identified.
+
+  As with `process-text`, this function returns a map with two top-level keys:
+  `:inclusions`, a map of constructed keywords to inclusion specifications,
+  and `:text`, an HTML text string with the keywords present where the
+  corresponding inclusion should be inserted."
+  [index result fragments processed fragment token formatter]
+  (let
+    [kw (keyword (str "inclusion-" index))]
+      (process-text
+       (+ index 1)
+       (assoc
+         result
+         :inclusions
+         (assoc
+           (:inclusions result)
+           kw
+           (apply
+            formatter
+            (list
+             (subs fragment (count token))
+             index))))
+       (rest fragments)
+       (cons kw processed))))
+
+
 (defn process-text
   "Process this `text`, assumed to be markdown potentially containing both local links
   and YAML visualisation specifications, and return a map comprising JSON visualisation
@@ -99,46 +157,20 @@
   ([text]
    (process-text 0 {:inclusions {}} (cs/split text #"```") '()))
   ([index result fragments processed]
-   (cond
-     (empty? fragments)
-     (assoc result :text
-       (local-links
+   (let [fragment (first fragments)
+         first-token (get-first-token fragment)
+         formatter (*formatters* first-token)]
+     (cond
+      (empty? fragments)
+      (assoc result :text
+        (local-links
          (md/md-to-html-string
-           (cs/join "\n\n" (reverse processed))
-           :heading-anchors true)))
-    ;;; TODO: refactor; generalise extension architecture
-     (clojure.string/starts-with? (first fragments) "vis")
-     (let [kw (keyword (str "inclusion-" index))]
-       (process-text
-         (+ index 1)
-         (assoc
-           result
-           :inclusions
-           (assoc
-             (:inclusions result)
-             kw
-             (process-vega
-               (subs (first fragments) 3)
-               index)))
-         (rest fragments)
-         (cons kw processed)))
-     (clojure.string/starts-with? (first fragments) "mermaid")
-     (let [kw (keyword (str "inclusion-" index))]
-       (process-text
-         (+ index 1)
-         (assoc
-           result
-           :inclusions
-           (assoc
-             (:inclusions result)
-             kw
-             (process-mermaid
-               (subs (first fragments) 7)
-               index)))
-         (rest fragments)
-         (cons kw processed)))
-     true
-     (process-text (+ index 1) result (rest fragments) (cons (first fragments) processed)))))
+          (cs/join "\n\n" (reverse processed))
+          :heading-anchors true)))
+      formatter
+      (apply-formatter index result fragments processed fragment first-token formatter)
+      true
+      (process-markdown-fragment index result fragments processed)))))
 
 
 (defn reintegrate-inclusions
