@@ -6,6 +6,7 @@
             [scot.weft.i18n.core :as i18n]
             [taoensso.timbre :as timbre]
             [smeagol.authenticate :as auth]
+            [smeagol.configuration :refer [config]]
             [smeagol.formatting :refer [md->html]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -32,13 +33,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-;; the relative path to the config file.
-(def config-file-path (str (io/resource-path) "../config.edn"))
-
-
-(def config (read-string (slurp config-file-path)))
-
-
 (defn standard-params
   "Return a map of standard parameters to pass to the template renderer."
   [request]
@@ -63,6 +57,7 @@
 
 
 (def get-messages (memoize raw-get-messages))
+
 
 (defn get-message
   [message-key request]

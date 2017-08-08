@@ -1,23 +1,14 @@
 {% extends "templates/base.html" %}
 
 {% block extra-headers %}
+  {% style "vendor/mermaid/dist/mermaid.css" %}
   <!-- there's at the time of writing (20170731) a problem with the dependencies of the Bower
        package for vega-embed, so we're currently not installing either it or Vega locally.
        TODO: fix -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vega/3.0.0-rc2/vega.js"></script>
-  {% script "/vendor/vega-lite/build/vega-lite.js" %}
+  {% script "vendor/vega-lite/build/vega-lite.js" %}
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vega-embed/3.0.0-beta.19/vega-embed.js"></script>
-  <style media="screen">
-    /* Add space between Vega-Embed links  */
-    .vega-actions a {
-      margin-right: 5px;
-    }
-  </style>
 
-  <!-- Similarly, mermaid 7.0.3 isn't installing cleanly for me from Bower. I'm really not sure whether
-       the problem is me getting bower wrong, of these libraries not being well packaged.
-       mermaid 6.0.0 does install, so that's what I'm using. -->
-  {% style "vendor/mermaid/dist/mermaid.css" %}
   {% script "vendor/mermaid/dist/mermaid.js" %}
 {% endblock %}
 

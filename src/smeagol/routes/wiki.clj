@@ -115,7 +115,6 @@
 (defn wiki-page
   "Render the markdown page specified in this `request`, if any. If none found, redirect to edit-page"
   [request]
-  (timbre/debug (str "Request map: " request))
   (let [params (keywordize-keys (:params request))
         page (or (:page params) (util/get-message :default-page-title request))
         file-name (str "/content/" page ".md")

@@ -240,6 +240,11 @@ th {
   font-size: 66%;
 }
 
+/* Add space between Vega-Embed links  */
+.vega-actions a {
+  margin-right: 5px;
+}
+
 .warn {
   color: maroon;
 }

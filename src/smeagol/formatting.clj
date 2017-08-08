@@ -10,7 +10,7 @@
             [markdown.core :as md]
             [taoensso.timbre :as timbre]
             [smeagol.authenticate :as auth]
-            ))
+            [smeagol.configuration :refer [config]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;
@@ -93,14 +93,6 @@
        "\n</div>"))
 
 
-;; TODO: This isn't (yet) exactly what I want. The formatters ought to be configurable
-;; without editing the Smeagol code directly. But it's a long way in the right direction.
-(def ^:dynamic *formatters*
-  {"vega" process-vega
-   "vis" process-vega
-   "mermaid" process-mermaid})
-
-
 (defn get-first-token
   "Return the first space-separated token of this `string`."
   [^String string]
@@ -163,7 +155,7 @@
   ([index result fragments processed]
    (let [fragment (first fragments)
          first-token (get-first-token fragment)
-         formatter (*formatters* first-token)]
+         formatter (eval ((:formatters config) first-token))]
      (cond
       (empty? fragments)
       (assoc result :text
