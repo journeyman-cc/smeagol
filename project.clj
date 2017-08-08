@@ -25,11 +25,7 @@
                  [org.slf4j/jcl-over-slf4j "1.7.25"]
 
                  [com.taoensso/tower "3.0.2" :exclusions [com.taoensso/encore]]
-<<<<<<< Temporary merge branch 1
                  [markdown-clj "0.9.99" :exclusions [com.keminglabs/cljx]]
-=======
-                 [markdown-clj "0.9.91" :exclusions [com.keminglabs/cljx]]
->>>>>>> Temporary merge branch 2
                  [crypto-password "0.2.0"]
                  [clj-jgit "0.8.9"]
                  [environ "1.1.0"]
