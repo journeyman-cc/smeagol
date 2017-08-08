@@ -11,27 +11,19 @@ Smeagol is now a fully working small Wiki engine, and meets my own immediate nee
 ## Markup syntax
 Smeagol uses the Markdown format as provided by [markdown-clj](https://github.com/yogthos/markdown-clj), with the addition that anything enclosed in double square brackets, \[\[like this\]\], will be treated as a link into the wiki itself.
 
-## Security and authentication
-Security is now greatly improved. There is a file called *passwd* in the *resources* directory, which contains a clojure map which maps usernames to maps with plain-text passwords and emails thus:
+### Pluggable extensible markup
 
-    {:admin {:password "admin" :email "admin@localhost" :admin true}
-     :adam {:password "secret" :email "adam@localhost"}}
+A system of pluggable, extensible formatters is supported. In normal markdown, code blocks may be delimited by three backticks at start and end, and often the syntax of the code can be indicated by a token immediately following the opening three backticks. This has been extended to allow custom formatters to be provided for such code blocks. Two example formatters are provided:
 
-that is to say, the username is a keyword and the corresponding password is a string. However, since version 0.5.0, users can now change their own passwords, and when the user changes their password their new password is encrypted using the [scrypt](http://www.tarsnap.com/scrypt.html) one-way encryption scheme. The password file is now no longer either in the *resources/public* directory so cannot be downloaded through the browser, nor in the git archive to which the Wiki content is stored, so that even if that git archive is remotely clonable an attacker cannot get the password file that way.
+#### The Vega formatter
 
-## Images
-You can (if you're logged in) upload files, including images, using the **Upload a file** link on the top menu bar. You can link to an uploaded image, or other images already available on the web, like this:
+Inspired by [visdown](http://visdown.amitkaps.com/) and [vega-lite](https://vega.github.io/vega-lite/docs/), the Vega formatter allows you to embed vega data visualisations into Smeagol pages. The graph description should start with a line comprising three back-ticks and then the word '`vega`', and end with a line comprising just three backticks.
 
-![Smeagol](http://vignette3.wikia.nocookie.net/lotr/images/e/e1/Gollum_Render.png/revision/latest?cb=20141218075509)
+Here's an example cribbed in its entirety from [here](http://visdown.amitkaps.com/london):
 
-## Now with data visualisation
+##### Flight punctuality at London airports
 
-Inspired by [visdown](http://visdown.amitkaps.com/) and [vega-lite](https://vega.github.io/vega-lite/docs/), you can now embed visualisations into Smeagol pages, like this:
-
-### Flight punctuality at London airports
-
-Example cribbed in its entirety from [here](http://visdown.amitkaps.com/london):
-```vis
+```vega
 data:
   url: "data/london.csv"
 transform:
@@ -56,6 +48,53 @@ Data files can be uploaded in the same way as images, by using the **upload a fi
 Note that this visualisation will not be rendered in the GitHub wiki, as it doesn't have Smeagol's data visualisation magic. This is what it should look like:
 
 ![Example visualisation](https://github.com/simon-brooke/smeagol/blob/develop/resources/public/data/london.png?raw=true)
+
+#### The Mermaid formatter
+
+Graphs can now be embedded in a page using the [Mermaid](http://knsv.github.io/mermaid/index.html) graph description language. The graph description should start with a line comprising three back-ticks and then the word `mermaid`, and end with a line comprising just three backticks.
+
+Here's an example culled from the Mermaid documentation.
+
+##### GANTT Chart
+
+```mermaid
+gantt
+        dateFormat  YYYY-MM-DD
+        title Adding GANTT diagram functionality to mermaid
+        section A section
+        Completed task            :done,    des1, 2014-01-06,2014-01-08
+        Active task               :active,  des2, 2014-01-09, 3d
+        Future task               :         des3, after des2, 5d
+        Future task2               :         des4, after des3, 5d
+        section Critical tasks
+        Completed task in the critical line :crit, done, 2014-01-06,24h
+        Implement parser and jison          :crit, done, after des1, 2d
+        Create tests for parser             :crit, active, 3d
+        Future task in critical line        :crit, 5d
+        Create tests for renderer           :2d
+        Add to mermaid                      :1d
+```
+
+To add your own formatter, compile it into a jar file which is on the classpath - it does *not* have to be part of the Smeagol project directly, and then edit the value of the key `:formatters` in the file `config.edn`; whose standard definition is:
+
+     :formatters        {"vega"     smeagol.formatting/process-vega
+                         "vis"      smeagol.formatting/process-vega
+                         "mermaid"  smeagol.formatting/process-mermaid}
+
+The added key should be the word which will follow the opening three backticks of your code block, and the value of that key should be a symbol which evaluates to a function which can format the code block as required.
+
+## Security and authentication
+Security is now greatly improved. There is a file called *passwd* in the *resources* directory, which contains a clojure map which maps usernames to maps with plain-text passwords and emails thus:
+
+    {:admin {:password "admin" :email "admin@localhost" :admin true}
+     :adam {:password "secret" :email "adam@localhost"}}
+
+that is to say, the username is a keyword and the corresponding password is a string. However, since version 0.5.0, users can now change their own passwords, and when the user changes their password their new password is encrypted using the [scrypt](http://www.tarsnap.com/scrypt.html) one-way encryption scheme. The password file is now no longer either in the *resources/public* directory so cannot be downloaded through the browser, nor in the git archive to which the Wiki content is stored, so that even if that git archive is remotely clonable an attacker cannot get the password file that way.
+
+## Images
+You can (if you're logged in) upload files, including images, using the **Upload a file** link on the top menu bar. You can link to an uploaded image, or other images already available on the web, like this:
+
+![Smeagol](http://vignette3.wikia.nocookie.net/lotr/images/e/e1/Gollum_Render.png/revision/latest?cb=20141218075509)
 
 ## Advertisement
 If you like what you see here, I am available for work on open source Clojure projects.
