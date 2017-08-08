@@ -22,87 +22,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; config.edn: a simple configuration map for Smeagol; inspired by Cryogen.
-;;; This is essentially all the text in the chrome - that which isn't editable
-;;; through the wiki itself
+;;; This is top-level configuration.
 
 ;;      ;       ;       ;       ;       ;       ;       ;       ;       ;
-{:add-user-label        "Add new user"  ;; label for the add user link on edit users page
- :change-pass-label     "Change password!"
-                                        ;; text of the change password widget itself on the
-                                        ;; change password page
- :change-pass-link      "Change password"
-                                        ;; text of the change password link on the menu
- :change-pass-prompt    "To change your password"
-                                        ;; text of the change password widget prompt on the
-                                        ;; change password page
- :change-col-hdr        "Changes"       ;; header for the changes column in history
- :chpass-bad-match      "Your proposed passwords don't match"
-                                        ;; error text if proposed passwords don't match
- :chpass-fail           "Your password was not changed"
-                                        ;; error text on fail other htan too short or bad match
- :chpass-success        "Your password was changed"
-                                        ;; confirmation text on password change
- :chpass-too-short      "You proposed password wasn't long enough: eight characters required"
-                                        ;; error text if proposed password is too short
- :chpass-title-prefix   "Change password for"
-                                        ;; prefix for title of change password page
- :cookies-about         "About cookies" ;; about cookies text
- :cookies-more          "This website stores session information as a 'cookie' on  your browser. This helps us show you the content you want to see. This cookie does not identify you, and cannot be read by other websites. It is deleted by your browser as soon as you leave this site. This website does not use any third party cookies, so your visit here cannot be tracked by other websites."
-                                        ;; more about cookies text
- :default-page-title    "Introduction"  ;; title of the default page in this wiki
- :del-col-hdr           "Delete"        ;; header for delete column on edit users page
- :del-user-fail         "Could not delete user"
-                                        ;; error message on failure to delete user
- :del-user-success      "Successfully deleted user"
-                                        ;; confirmation message on deletion of user
- :diff-title-prefix     "Changes since version"
-                                        ;; prefix for the header of the changes page
- :edit-col-hdr          "Edit"          ;; header for edit column on edit users page
- :edit-page-link        "Edit this page"
-                                        ;; text of the edit page link on the content frame
- :edit-title-prefix     "Edit"          ;; prefix for title of edit content page
- :edit-users-link       "Edit users"    ;; text of the edit users link on the menu
- :edit-users-title      "Select user to edit"
-                                        ;; title of edit users page
- :email-prompt          "Email address" ;; text of the email widget prompt on edit user page
- :file-upload-link-text "You may link to this file using a link of the form"
-                                        ;; Text introducing the link to an uploaded file
- :file-upload-prompt    "File to upload" ;; prompt string for the file upload widget
- :file-upload-title     "Upload a file" ;; title for the file upload page
- :is-admin-prompt       "Is administrator?"
- :home-link             "Home"          ;; text of the home link on the menu
- :login-label           "Log in!"       ;; text of the login widget on the login page
- :login-link            "Log in"        ;; text of the login link on the menu
- :login-prompt          "To edit this wiki"
-                                        ;; text of the action widget prompt on the login page
- :logout-label          "Log out!"      ;; text of the logout widget on the logout page
- :logout-link           "Log out"       ;; text of the logout link on the menu
- :logged-in-as          "You are logged in as"
-                                        ;; text of the 'logged in as' label on the menu
- :history-link          "History"       ;; text of the history link on the content frame
- :history-title-prefix  "History of"    ;; prefix of the title on the history page
- :new-pass-prompt       "New password"  ;; text of the new password widget prompt on the change
-                                        ;; password and edit user pages
- :old-pass-prompt       "Your password"
-                                        ;; text of the old password widget prompt on the change
-                                        ;; password page, and password widget on login page
- :rpt-pass-prompt       "And again"     ;; text of the new password widget prompt on the change
-                                        ;; password and edit user pages
- :save-prompt           "When you have finished editing"
-                                        ;; text of the save widget label on edit content
-                                        ;; and edit user page
- :save-label            "Save!"         ;; text of the save widget itself
- :save-user-fail        "Failed to store user"
- :save-user-success     "Successfully stored user"
+{
  :site-title            "Smeagol"       ;; overall title of the site, used in page headings
- :username-prompt       "Username"      ;; text of the username widget prompt on edit user page
-                                        ;; text of the is admin widget prompt on edit user page
- :user-title-prefix     "Edit user"     ;; prefix for title of edit user page
- :vers-col-hdr          "Version"       ;; header for the version column in history
- :what-col-hdr          "What"          ;; header for the what column in history
- :what-changed-prompt   "What have you changed?"
-                                        ;; text of the summary widget prompt on edit
-                                        ;; content page
- :when-col-hdr          "When"          ;; header for the when column in history
- :your-uname-prompt     "Your username" ;; text of the username widget prompt on the login page
- }
+ :default-locale        "en-GB"         ;; default language used for messages
+ :formatters            {"vega"     smeagol.formatting/process-vega
+                         "vis"      smeagol.formatting/process-vega
+                         "mermaid"  smeagol.formatting/process-mermaid}
+}

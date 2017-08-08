@@ -42,7 +42,7 @@
     (content-type
       (->> (assoc params
                   (keyword (s/replace template #".html" "-selected")) "active"
-                  :config util/config
+                  :config (util/get-messages request)
                   :dev (env :dev)
                   :servlet-context
                   (if-let [context (:servlet-context request)]

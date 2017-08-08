@@ -1,15 +1,16 @@
 (ns ^{:doc "Format Semagol's enhanced markdown format."
       :author "Simon Brooke"}
   smeagol.formatting
-  (:require [clojure.string :as cs]
+  (:require [clojure.data.json :as json]
+            [clojure.string :as cs]
             [cemerick.url :refer (url url-encode url-decode)]
+            [clj-yaml.core :as yaml]
             [noir.io :as io]
             [noir.session :as session]
             [markdown.core :as md]
             [taoensso.timbre :as timbre]
             [smeagol.authenticate :as auth]
-            [clj-yaml.core :as yaml]
-            [clojure.data.json :as json]))
+            ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;

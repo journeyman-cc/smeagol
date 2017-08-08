@@ -3,6 +3,8 @@
   smeagol.util
   (:require [noir.session :as session]
             [noir.io :as io]
+            [scot.weft.i18n.core :as i18n]
+            [taoensso.timbre :as timbre]
             [smeagol.authenticate :as auth]
             [smeagol.formatting :refer [md->html]]))
 
@@ -46,4 +48,27 @@
      :side-bar (md->html (io/slurp-resource "/content/_side-bar.md"))
      :header (md->html (io/slurp-resource "/content/_header.md"))
      :version (System/getProperty "smeagol.version")}))
+
+
+(defn raw-get-messages
+  "Return the most acceptable messages collection we have given the
+  `Accept-Language` header in this `request`."
+  [request]
+  (merge
+    (i18n/get-messages
+      ((:headers request) "accept-language")
+      (str (io/resource-path) "../i18n")
+      "en-GB")
+    config))
+
+
+(def get-messages (memoize raw-get-messages))
+
+(defn get-message
+  [message-key request]
+  (let [messages (get-messages request)]
+    (if
+      (map? messages)
+      (or (messages message-key) message-key)
+      message-key)))
 

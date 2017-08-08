@@ -94,7 +94,6 @@
  :save-label            "Save!"         ;; text of the save widget itself
  :save-user-fail        "Failed to store user"
  :save-user-success     "Successfully stored user"
- :site-title            "Smeagol"       ;; overall title of the site, used in page headings
  :username-prompt       "Username"      ;; text of the username widget prompt on edit user page
                                         ;; text of the is admin widget prompt on edit user page
  :user-title-prefix     "Edit user"     ;; prefix for title of edit user page

@@ -5,6 +5,7 @@
                  [org.clojure/core.memoize "0.5.9"]
                  [org.clojure/data.json "0.2.6"]
                  [org.clojure/tools.logging "0.4.0"]
+                 [org.clojars.simon_brooke/internationalisation "1.0.0"]
                  [clj-jgit "0.8.9"]
                  [clj-yaml "0.4.0"]
                  [com.cemerick/url "0.1.1"]
@@ -15,6 +16,7 @@
                  [crypto-password "0.2.0"]
                  [environ "1.1.0"]
                  [im.chit/cronj "1.4.4"]
+                 [instaparse "1.4.1"]
                  [lib-noir "0.9.9" :exclusions [org.clojure/tools.reader]]
                  [markdown-clj "0.9.99" :exclusions [com.keminglabs/cljx]]
                  [noir-exception "0.2.5"]
@@ -32,7 +34,8 @@
             [lein-environ "1.0.0"]
             [lein-bower "0.5.1"]
             [lein-ancient "0.5.5" :exclusions [org.clojure/clojure org.clojure/data.xml]]
-            [lein-marginalia "0.7.1" :exclusions [org.clojure/clojure]]]
+            [lein-marginalia "0.7.1" :exclusions [org.clojure/clojure]]
+            [lein-codox "0.10.3"]]
   :bower-dependencies [[simplemde "1.11.2"]
                        ;; [vega-embed "3.0.0-beta.19"] vega-embed currently not loaded from Bower because of
                        ;; dependency conflict which will hopefully be resolved soon.

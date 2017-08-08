@@ -39,7 +39,7 @@
         user (session/get :user)]
     (layout/render "edit-users.html"
                    (merge (util/standard-params request)
-                          {:title (:edit-users-title util/config)
+                          {:title (:edit-users-title (util/get-messages request))
                            :users (auth/list-users)}))))
 
 (defn delete-user
@@ -48,11 +48,11 @@
   (let [params (keywordize-keys (:params request))
         target (:target params)
         deleted (auth/delete-user target)
-        message (if deleted (str (:del-user-success util/config) " " target "."))
-        error (if (not deleted) (str (:del-user-fail util/config) " " target "."))]
+        message (if deleted (str (:del-user-success (util/get-messages request)) " " target "."))
+        error (if (not deleted) (str (:del-user-fail (util/get-messages request)) " " target "."))]
     (layout/render "edit-users.html"
                    (merge (util/standard-params request)
-                          {:title (:edit-users-title util/config)
+                          {:title (:edit-users-title (util/get-messages request))
                            :message message
                            :error error
                            :users (auth/list-users)}))))
@@ -67,9 +67,9 @@
         password (if (and pass1 (auth/evaluate-password pass1 (:pass2 params))) pass1)
         stored (if (:email params)
                  (auth/add-user target password (:email params) (:admin params)))
-        message (if stored (str (:save-user-success util/config) " " target "."))
+        message (if stored (str (:save-user-success (util/get-messages request)) " " target "."))
         error (if (and (:email params) (not stored))
-                                    (str (:save-user-fail util/config) " " target "."))
+                                    (str (:save-user-fail (util/get-messages request)) " " target "."))
         details (auth/fetch-user-details target)]
     (if message
       (timbre/info message))
@@ -77,7 +77,7 @@
       (timbre/warn error))
     (layout/render "edit-user.html"
                    (merge (util/standard-params request)
-                          {:title (str (:edit-title-prefix util/config) " " target)
+                          {:title (str (:edit-title-prefix (util/get-messages request)) " " target)
                            :message message
                            :error error
                            :target target
