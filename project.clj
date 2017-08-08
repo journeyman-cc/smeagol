@@ -1,4 +1,4 @@
-(defproject smeagol "0.5.1-SNAPSHOT"
+(defproject smeagol "1.0.0-rc1"
   :description "A simple Git-backed Wiki inspired by Gollum"
   :url "https://github.com/simon-brooke/smeagol"
   :dependencies [[org.clojure/clojure "1.8.0"]
@@ -16,7 +16,6 @@
                  [crypto-password "0.2.0"]
                  [environ "1.1.0"]
                  [im.chit/cronj "1.4.4"]
-                 [instaparse "1.4.1"]
                  [lib-noir "0.9.9" :exclusions [org.clojure/tools.reader]]
                  [markdown-clj "0.9.99" :exclusions [com.keminglabs/cljx]]
                  [noir-exception "0.2.5"]
@@ -26,7 +25,7 @@
                  [org.slf4j/jcl-over-slf4j "1.7.25"]
                  [prone "1.1.4"]
                  [ring-server "0.4.0"]
-                 [selmer "1.10.9"]]
+                 [selmer "1.11.0"]]
 
   :repl-options {:init-ns smeagol.repl}
   :jvm-opts ["-server"]

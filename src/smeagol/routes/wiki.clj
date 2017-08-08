@@ -145,7 +145,7 @@
                    (merge (util/standard-params request)
                           {:title (str "History of " page)
                            :page page
-                           :history (md->html (hist/find-history repo-path file-name))}))))
+                           :history (hist/find-history repo-path file-name)}))))
 
 (defn upload-page
   "Render a form to allow the upload of a file."
