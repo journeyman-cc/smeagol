@@ -68,6 +68,9 @@
   (json/write-str (yaml/parse-string yaml-src)))
 
 
+(declare process-text)
+
+
 (defn process-vega
   "Process this `vega-source` string, assumed to be in YAML format, into a specification
    of a Vega chart, and add the plumbing to render it."

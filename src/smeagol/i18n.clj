@@ -1,6 +1,6 @@
-(ns ^{:doc "Miscellaneous utility functions supporting Smeagol."
+(ns ^{:doc "Internationalisation."
       :author "Simon Brooke"}
-  smeagol.util
+  smeagol.i18n
   (:require [noir.session :as session]
             [noir.io :as io]
             [smeagol.authenticate :as auth]
@@ -30,20 +30,24 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-;; the relative path to the config file.
-(def config-file-path (str (io/resource-path) "../config.edn"))
+(def i18n-cache {})
 
 
-(def config (read-string (slurp config-file-path)))
+(defn parse-accept-language
+  "The `Accept-Language` header is defined in section 14.4 of RFC 2616. It is composed
+  of a sequence of 'language tags' defined in section 3.10 of the same document.
+  Generally a language tag is a short alpha string (the 'primary language tag'),
+  optionally followed by a hyphen and another short alpha string (a 'sub tag').
+  A sequence of more than one sub-tag is allowed.
 
+  Generally a two-character primary tag will be an ISO-639 language code and any
+  initial two-character sub tag will be an ISO-3166 country code.
 
-(defn standard-params
-  "Return a map of standard parameters to pass to the template renderer."
-  [request]
-  (let [user (session/get :user)]
-    {:user user
-     :admin (auth/get-admin user)
-     :side-bar (md->html (io/slurp-resource "/content/_side-bar.md"))
-     :header (md->html (io/slurp-resource "/content/_header.md"))
-     :version (System/getProperty "smeagol.version")}))
+  Each language tag may optionally followed by a semi-colon followed by a 'q' value,
+  specified `q=0.8` where the numeric value is a real number in the range 0...1
+  and represents the user's preference for this language (higher is better). If
+  no q value is supplied 1 is assumed.
 
+  Language specifiers are separated by a comma followed by a space."
+  [accept-language-header]
+  )

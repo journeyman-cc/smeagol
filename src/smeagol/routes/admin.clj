@@ -39,7 +39,7 @@
         user (session/get :user)]
     (layout/render "edit-users.html"
                    (merge (util/standard-params request)
-                          {:title (:edit-users-title layout/config)
+                          {:title (:edit-users-title util/config)
                            :users (auth/list-users)}))))
 
 (defn delete-user
@@ -48,11 +48,11 @@
   (let [params (keywordize-keys (:params request))
         target (:target params)
         deleted (auth/delete-user target)
-        message (if deleted (str (:del-user-success layout/config) " " target "."))
-        error (if (not deleted) (str (:del-user-fail layout/config) " " target "."))]
+        message (if deleted (str (:del-user-success util/config) " " target "."))
+        error (if (not deleted) (str (:del-user-fail util/config) " " target "."))]
     (layout/render "edit-users.html"
                    (merge (util/standard-params request)
-                          {:title (:edit-users-title layout/config)
+                          {:title (:edit-users-title util/config)
                            :message message
                            :error error
                            :users (auth/list-users)}))))
@@ -67,9 +67,9 @@
         password (if (and pass1 (auth/evaluate-password pass1 (:pass2 params))) pass1)
         stored (if (:email params)
                  (auth/add-user target password (:email params) (:admin params)))
-        message (if stored (str (:save-user-success layout/config) " " target "."))
+        message (if stored (str (:save-user-success util/config) " " target "."))
         error (if (and (:email params) (not stored))
-                                    (str (:save-user-fail layout/config) " " target "."))
+                                    (str (:save-user-fail util/config) " " target "."))
         details (auth/fetch-user-details target)]
     (if message
       (timbre/info message))
@@ -77,7 +77,7 @@
       (timbre/warn error))
     (layout/render "edit-user.html"
                    (merge (util/standard-params request)
-                          {:title (str (:edit-title-prefix layout/config) " " target)
+                          {:title (str (:edit-title-prefix util/config) " " target)
                            :message message
                            :error error
                            :target target
