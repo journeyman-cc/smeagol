@@ -1,8 +1,15 @@
-(defproject smeagol "0.5.0-rc3"
+(defproject smeagol "1.0.0-rc1"
   :description "A simple Git-backed Wiki inspired by Gollum"
   :url "https://github.com/simon-brooke/smeagol"
-  :dependencies [[org.clojure/clojure "1.7.0"]
+  :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/core.memoize "0.5.9"]
+                 [org.clojure/data.json "0.2.6"]
+                 [org.clojure/tools.logging "0.4.0"]
+                 [org.clojars.simon_brooke/internationalisation "1.0.0"]
+                 [clj-jgit "0.8.9"]
+                 [clj-yaml "0.4.0"]
+                 [com.cemerick/url "0.1.1"]
+                 [com.fzakaria/slf4j-timbre "0.3.7"]
                  [com.taoensso/encore "2.91.1"]
                  [lib-noir "0.9.9" :exclusions [org.clojure/tools.reader]]
                  [com.cemerick/url "0.1.1"]
@@ -18,13 +25,25 @@
                  [org.slf4j/jcl-over-slf4j "1.7.25"]
 
                  [com.taoensso/tower "3.0.2" :exclusions [com.taoensso/encore]]
+<<<<<<< Temporary merge branch 1
                  [markdown-clj "0.9.99" :exclusions [com.keminglabs/cljx]]
+=======
+                 [markdown-clj "0.9.91" :exclusions [com.keminglabs/cljx]]
+>>>>>>> Temporary merge branch 2
                  [crypto-password "0.2.0"]
                  [clj-jgit "0.8.9"]
                  [environ "1.1.0"]
                  [im.chit/cronj "1.4.4"]
+                 [lib-noir "0.9.9" :exclusions [org.clojure/tools.reader]]
+                 [markdown-clj "0.9.99" :exclusions [com.keminglabs/cljx]]
                  [noir-exception "0.2.5"]
-                 [prone "1.1.4"]]
+                 [org.slf4j/slf4j-api "1.7.25"]
+                 [org.slf4j/log4j-over-slf4j "1.7.25"]
+                 [org.slf4j/jul-to-slf4j "1.7.25"]
+                 [org.slf4j/jcl-over-slf4j "1.7.25"]
+                 [prone "1.1.4"]
+                 [ring-server "0.4.0"]
+                 [selmer "1.11.0"]]
 
   :repl-options {:init-ns smeagol.repl}
   :jvm-opts ["-server"]
@@ -32,10 +51,13 @@
             [lein-environ "1.0.0"]
             [lein-bower "0.5.1"]
             [lein-ancient "0.5.5" :exclusions [org.clojure/clojure org.clojure/data.xml]]
-            [lein-marginalia "0.7.1" :exclusions [org.clojure/clojure]]]
-  :bower-dependencies [[simplemde "1.11.2"]]
-  :docker {:image-name "simonbrooke/smeagol"
-         :dockerfile "Dockerfile"}
+            [lein-marginalia "0.7.1" :exclusions [org.clojure/clojure]]
+            [lein-codox "0.10.3"]]
+  :bower-dependencies [[simplemde "1.11.2"]
+                       ;; [vega-embed "3.0.0-beta.19"] vega-embed currently not loaded from Bower because of
+                       ;; dependency conflict which will hopefully be resolved soon.
+                       [vega-lite "2.0.0-beta.10"]
+                       [mermaid "6.0.0"]]
   :ring {:handler smeagol.handler/app
          :init    smeagol.handler/init
          :destroy smeagol.handler/destroy}

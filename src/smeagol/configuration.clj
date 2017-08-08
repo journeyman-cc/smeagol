@@ -1,3 +1,8 @@
+(ns ^{:doc "Read and make available configuration."
+      :author "Simon Brooke"}
+  smeagol.configuration
+  (:require [noir.io :as io]))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;
 ;;;; Smeagol: a very simple Wiki engine.
@@ -20,15 +25,22 @@
 ;;;; Copyright (C) 2017 Simon Brooke
 ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;
+;;;; Right, doing the data visualisation thing is tricky. Doing it in the
+;;;; pipeline doesn't work, because the md-to-html-string filter messes up
+;;;; both YAML and JSON notation. So we need to extract the visualisation
+;;;; fragments from the Markdown text and replace them with tokens we will
+;;;; recognise afterwards, perform md-to-html-string, and then replace our
+;;;; tokens with the transformed visualisation specification.
+;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; config.edn: a simple configuration map for Smeagol; inspired by Cryogen.
-;;; This is top-level configuration.
 
-;;      ;       ;       ;       ;       ;       ;       ;       ;       ;
-{
- :site-title            "Smeagol"       ;; overall title of the site, used in page headings
- :default-locale        "en-GB"         ;; default language used for messages
- :formatters            {"vega"     smeagol.formatting/process-vega
-                         "vis"      smeagol.formatting/process-vega
-                         "mermaid"  smeagol.formatting/process-mermaid}
-}
+(def config-file-path
+  "The relative path to the config file."
+  (str (io/resource-path) "../config.edn"))
+
+
+(def config
+  "The actual configuration, as a map."
+  (read-string (slurp config-file-path)))

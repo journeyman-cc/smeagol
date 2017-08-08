@@ -3,6 +3,7 @@
   smeagol.routes.wiki
   (:require [clojure.walk :refer :all]
             [clojure.java.io :as cjio]
+            [clojure.string :as cs]
             [cemerick.url :refer (url url-encode url-decode)]
             [compojure.core :refer :all]
             [clj-jgit.porcelain :as git]
@@ -14,8 +15,10 @@
             [taoensso.timbre :as timbre]
             [smeagol.authenticate :as auth]
             [smeagol.diff2html :as d2h]
+            [smeagol.formatting :refer [md->html]]
             [smeagol.layout :as layout]
             [smeagol.util :as util]
+            [smeagol.uploads :as ul]
             [smeagol.history :as hist]
             [smeagol.routes.admin :as admin]))
 
@@ -54,7 +57,7 @@
 (defn process-source
   "Process `source-text` and save it to the specified `file-path`, committing it
   to Git and finally redirecting to wiki-page."
-  [params suffix]
+  [params suffix request]
   (let [source-text (:src params)
         page (:page params)
         file-name (str page suffix)
@@ -74,14 +77,14 @@
         (if
           (= suffix ".md")
           (url-encode page)
-          (:default-page-title layout/config))))))
+          (util/get-message :default-page-title request))))))
 
 
 (defn edit-page
   "Render a page in a text-area for editing. This could have been done in the same function as wiki-page,
   and that would have been neat, but I couldn't see how to establish security if that were done."
   ([request]
-   (edit-page request (:default-page-title layout/config) ".md" "edit.html" "/content/_edit-side-bar.md"))
+   (edit-page request (util/get-message :default-page-title request) ".md" "edit.html" "/content/_edit-side-bar.md"))
   ([request default suffix template side-bar]
    (let [params (keywordize-keys (:params request))
          src-text (:src params)
@@ -92,13 +95,13 @@
      (if (not exists?)
        (timbre/info (format "File '%s' not found; creating a new file" file-path))
        (timbre/info (format "Opening '%s' for editing" file-path)))
-     (cond src-text (process-source params suffix)
+     (cond src-text (process-source params suffix request)
            true
            (layout/render template
                           (merge (util/standard-params request)
-                                 {:title (str (:edit-title-prefix layout/config) " " page)
+                                 {:title (str (util/get-message :edit-title-prefix request) " " page)
                                   :page page
-                                  :side-bar (util/local-links (util/md->html side-bar))
+                                  :side-bar (md->html (io/slurp-resource side-bar))
                                   :content (if exists? (io/slurp-resource (str "/content/" page suffix)) "")
                                   :exists exists?}))))))
 
@@ -113,7 +116,7 @@
   "Render the markdown page specified in this `request`, if any. If none found, redirect to edit-page"
   [request]
   (let [params (keywordize-keys (:params request))
-        page (or (:page params) (:default-page-title layout/config))
+        page (or (:page params) (util/get-message :default-page-title request))
         file-name (str "/content/" page ".md")
         file-path (str (io/resource-path) file-name)
         exists? (.exists (clojure.java.io/as-file file-path))]
@@ -124,8 +127,7 @@
                            (merge (util/standard-params request)
                                   {:title page
                                    :page page
-                                   :side-bar (util/local-links (util/md->html "/content/_side-bar.md"))
-                                   :content (util/local-links (util/md->html file-name))
+                                   :content (md->html (io/slurp-resource file-name))
                                    :editable true})))
           true (response/redirect (str "/edit?page=" page)))))
 
@@ -135,45 +137,68 @@
   if any. If none, error?"
   [request]
   (let [params (keywordize-keys (:params request))
-        page (url-decode (or (:page params) (:default-page-title layout/config)))
+        page (url-decode (or (:page params) (util/get-message :default-page-title request)))
         file-name (str page ".md")
         repo-path (str (io/resource-path) "/content/")]
+    (timbre/info (format "Showing history of page '%s'" page))
     (layout/render "history.html"
                    (merge (util/standard-params request)
                           {:title (str "History of " page)
                            :page page
                            :history (hist/find-history repo-path file-name)}))))
 
+(defn upload-page
+  "Render a form to allow the upload of a file."
+  [request]
+  (let [params (keywordize-keys (:params request))
+        data-path (str (io/resource-path) "/uploads/")
+        upload (:upload params)
+        uploaded (if upload (ul/store-upload params))]
+    (layout/render "upload.html"
+                   (merge (util/standard-params request)
+                          {:title (util/get-message :file-upload-title request)
+                           :uploaded uploaded
+                           :is-image (and
+                                       uploaded
+                                       (or
+                                         (cs/ends-with? uploaded ".gif")
+                                         (cs/ends-with? uploaded ".jpg")
+                                         (cs/ends-with? uploaded ".jpeg")
+                                         (cs/ends-with? uploaded ".png")
+                                         (cs/ends-with? uploaded ".GIF")
+                                         (cs/ends-with? uploaded ".JPG")
+                                         (cs/ends-with? uploaded ".PNG")))}))))
+
 
 (defn version-page
   "Render a specific historical version of a page"
   [request]
   (let [params (keywordize-keys (:params request))
-        page (url-decode (or (:page params) (:default-page-title layout/config)))
+        page (url-decode (or (:page params) (util/get-message :default-page-title request)))
         version (:version params)
         file-name (str page ".md")
-        repo-path (str (io/resource-path) "/content/")]
+        repo-path (str (io/resource-path) "/content/")
+        content (hist/fetch-version repo-path file-name version)]
+    (timbre/info (format "Showing version '%s' of page '%s'" version page))
     (layout/render "wiki.html"
                    (merge (util/standard-params request)
-                          {:title (str (:vers-col-hdr layout/config) " " version " of " page)
+                          {:title (str (util/get-message :vers-col-hdr request) " " version " of " page)
                            :page page
-                           :content (util/local-links
-                                      (md/md-to-html-string
-                                        (hist/fetch-version
-                                          repo-path file-name version)))}))))
+                           :content (md->html content)}))))
 
 
 (defn diff-page
   "Render a diff between two versions of a page"
   [request]
   (let [params (keywordize-keys (:params request))
-        page (url-decode (or (:page params) (:default-page-title layout/config)))
+        page (url-decode (or (:page params) (util/get-message :default-page-title request)))
         version (:version params)
         file-name (str page ".md")
         repo-path (str (io/resource-path) "/content/")]
+    (timbre/info (format "Showing diff between version '%s' of page '%s' and current" version page))
     (layout/render "wiki.html"
                    (merge (util/standard-params request)
-                          {:title (str (:diff-title-prefix layout/config)" " version " of " page)
+                          {:title (str (util/get-message :diff-title-prefix request)" " version " of " page)
                            :page page
                            :content (d2h/diff2html (hist/diff repo-path file-name version))}))))
 
@@ -188,7 +213,7 @@
         user (session/get :user)
         redirect-to (or (:redirect-to params) "/wiki")]
     (cond
-     (= action (:logout-label layout/config))
+     (= action (util/get-message :logout-label request))
      (do
        (timbre/info (str "User " user " logging out"))
        (session/remove! :user)
@@ -200,11 +225,8 @@
      true
      (layout/render "auth.html"
                    (merge (util/standard-params request)
-                    {:title (if user (str (:logout-link layout/config) " " user) (:login-link layout/config))
-                     :redirect-to ((:headers request) "referer")
-                     :side-bar (util/local-links (util/md->html "/content/_side-bar.md"))
-                     :header (util/local-links (util/md->html "/content/_header.md"))
-                     :user user})))))
+                    {:title (if user (str (util/get-message :logout-link request) " " user) (util/get-message :login-link request))
+                     :redirect-to ((:headers request) "referer")})))))
 
 
 (defn passwd-page
@@ -220,16 +242,14 @@
                    (auth/change-pass user oldpass pass2))]
     (layout/render "passwd.html"
                    (merge (util/standard-params request)
-                          {:title (str (:chpass-title-prefix layout/config) " " user)
-                           :side-bar (util/local-links (util/md->html "/content/_side-bar.md"))
-                           :header (util/local-links (util/md->html "/content/_header.md"))
-                           :message (if changed? (:chpass-success layout/config))
+                          {:title (str (util/get-message :chpass-title-prefix request) " " user)
+                           :message (if changed? (util/get-message :chpass-success request))
                            :error (cond
                                     (nil? oldpass) nil
                                     changed? nil
-                                    (< (count pass1) 8) (:chpass-too-short layout/config)
-                                    (not (= pass1 pass2)) (:chpass-bad-match layout/config)
-                                    true (:chpass-fail layout/config))}))))
+                                    (< (count pass1) 8) (util/get-message :chpass-too-short request)
+                                    (not (= pass1 pass2)) (util/get-message :chpass-bad-match request)
+                                    true (util/get-message :chpass-fail request))}))))
 
 
 (defroutes wiki-routes
@@ -250,4 +270,5 @@
   (POST "/auth" request (auth-page request))
   (GET "/passwd" request (passwd-page request))
   (POST "/passwd" request (passwd-page request))
-  )
+  (GET "/upload" request (route/restricted (upload-page request)))
+  (POST "/upload" request (route/restricted (upload-page request))))

@@ -1,5 +1,17 @@
 {% extends "templates/base.html" %}
 
+{% block extra-headers %}
+  {% style "vendor/mermaid/dist/mermaid.css" %}
+  <!-- there's at the time of writing (20170731) a problem with the dependencies of the Bower
+       package for vega-embed, so we're currently not installing either it or Vega locally.
+       TODO: fix -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vega/3.0.0-rc2/vega.js"></script>
+  {% script "vendor/vega-lite/build/vega-lite.js" %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vega-embed/3.0.0-beta.19/vega-embed.js"></script>
+
+  {% script "vendor/mermaid/dist/mermaid.js" %}
+{% endblock %}
+
 {% block content %}
     <div id="content" class="wiki">
       {% if editable %}
@@ -10,4 +22,14 @@
       {% endif %}
       {{content|safe}}
     </div>
+
+    <script>
+      //<![CDATA[
+      if (document.addEventListener) {
+          document.addEventListener("DOMContentLoaded", function(event) {
+          mermaid.initialize({startOnLoad:true});
+        });
+      }
+      //]]
+    </script>
 {% endblock %}
