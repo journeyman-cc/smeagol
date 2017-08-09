@@ -1,6 +1,9 @@
-(defproject smeagol "0.99.6"
+(defproject smeagol "0.99.6-SNAPSHOT"
   :description "A simple Git-backed Wiki inspired by Gollum"
   :url "https://github.com/simon-brooke/smeagol"
+  :license {:name "GNU General Public License,version 2.0 or (at your option) any later version"
+            :url "https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html"}
+
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/core.memoize "0.5.9"]
                  [org.clojure/data.json "0.2.6"]
@@ -40,7 +43,9 @@
                  [selmer "1.11.0"]]
 
   :repl-options {:init-ns smeagol.repl}
+
   :jvm-opts ["-server"]
+
   :plugins [[lein-ancient "0.5.5" :exclusions [org.clojure/clojure org.clojure/data.xml]]
             [lein-bower "0.5.1"]
             [lein-codox "0.10.3"]
@@ -50,9 +55,9 @@
             [lein-ring "0.8.13" :exclusions [org.clojure/clojure]]]
 
   :bower-dependencies [[simplemde "1.11.2"]
-                       ;; [vega-embed "3.0.0-beta.19"] vega-embed currently not loaded from Bower because of
+                       ;; [vega-embed "3.0.0-beta.20"] ;; vega-embed currently not loaded from Bower because of
                        ;; dependency conflict which will hopefully be resolved soon.
-                       [vega-lite "2.0.0-beta.10"]
+                       [vega-lite "2.0.0-beta.11"]
                        [mermaid "6.0.0"]]
 
   :docker {:image-name "simonbrooke/smeagol"
@@ -61,8 +66,6 @@
   :ring {:handler smeagol.handler/app
          :init    smeagol.handler/init
          :destroy smeagol.handler/destroy}
-
-  :lein-release {:scm :git :deploy-via :lein-install}
 
   :release-tasks [["vcs" "assert-committed"]
                   ["change" "version" "leiningen.release/bump-version" "release"]
@@ -87,4 +90,5 @@
                    :injections [(require 'pjstadig.humane-test-output)
                                 (pjstadig.humane-test-output/activate!)]
                    :env {:dev true}}}
+
   :min-lein-version "2.0.0")
