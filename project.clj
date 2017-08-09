@@ -48,28 +48,43 @@
             [lein-environ "1.0.0"]
             [lein-marginalia "0.7.1" :exclusions [org.clojure/clojure]]
             [lein-ring "0.8.13" :exclusions [org.clojure/clojure]]]
+
   :bower-dependencies [[simplemde "1.11.2"]
                        ;; [vega-embed "3.0.0-beta.19"] vega-embed currently not loaded from Bower because of
                        ;; dependency conflict which will hopefully be resolved soon.
                        [vega-lite "2.0.0-beta.10"]
                        [mermaid "6.0.0"]]
+
   :docker {:image-name "simonbrooke/smeagol"
            :dockerfile "Dockerfile"}
+
   :ring {:handler smeagol.handler/app
          :init    smeagol.handler/init
          :destroy smeagol.handler/destroy}
+
   :lein-release {:scm :git :deploy-via :lein-install}
-  :profiles
-  {:uberjar {:omit-source true
-             :env {:production true}
-             :aot :all}
-   :production {:ring {:open-browser? false
-                       :stacktraces?  false
-                       :auto-reload?  false}}
-   :dev {:dependencies [[ring-mock "0.1.5"]
-                        [ring/ring-devel "1.6.2"]
-                        [pjstadig/humane-test-output "0.8.2"]]
-         :injections [(require 'pjstadig.humane-test-output)
-                      (pjstadig.humane-test-output/activate!)]
-         :env {:dev true}}}
+
+  :release-tasks [["vcs" "assert-committed"]
+                  ["change" "version" "leiningen.release/bump-version" "release"]
+                  ["vcs" "commit"]
+                  ["vcs" "tag"]
+                  ["ring" "uberwar"]
+                  ["docker" "build"]
+                  ["docker" "push"]
+                  ["change" "version" "leiningen.release/bump-version"]
+                  ["vcs" "commit"]
+                  ["vcs" "push"]]
+
+  :profiles {:uberjar {:omit-source true
+                       :env {:production true}
+                       :aot :all}
+             :production {:ring {:open-browser? false
+                                 :stacktraces?  false
+                                 :auto-reload?  false}}
+             :dev {:dependencies [[ring-mock "0.1.5"]
+                                  [ring/ring-devel "1.6.2"]
+                                  [pjstadig/humane-test-output "0.8.2"]]
+                   :injections [(require 'pjstadig.humane-test-output)
+                                (pjstadig.humane-test-output/activate!)]
+                   :env {:dev true}}}
   :min-lein-version "2.0.0")
