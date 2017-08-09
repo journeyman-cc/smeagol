@@ -4,7 +4,6 @@
   smeagol.layout
   (:require [selmer.parser :as parser]
             [clojure.string :as s]
-            [noir.io :as io]
             [ring.util.response :refer [content-type response]]
             [compojure.response :refer [Renderable]]
             [environ.core :refer [env]]

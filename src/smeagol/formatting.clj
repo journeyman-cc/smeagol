@@ -5,11 +5,7 @@
             [clojure.string :as cs]
             [cemerick.url :refer (url url-encode url-decode)]
             [clj-yaml.core :as yaml]
-            [noir.io :as io]
-            [noir.session :as session]
             [markdown.core :as md]
-            [taoensso.timbre :as timbre]
-            [smeagol.authenticate :as auth]
             [smeagol.configuration :refer [config]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -73,8 +69,8 @@
 
 
 (defn process-vega
-  "Process this `vega-source` string, assumed to be in YAML format, into a specification
-   of a Vega chart, and add the plumbing to render it."
+  "Process this `vega-src` string, assumed to be in YAML format, into a specification
+  of a Vega chart, and add the plumbing to render it."
   [^String vega-src ^Integer index]
   (str
     "<div class='data-visualisation' id='vis" index "'></div>\n"
@@ -82,7 +78,11 @@
     index
     " = "
     (yaml->json (str "$schema: https://vega.github.io/schema/vega-lite/v2.json\n" vega-src))
-    ";\nvega.embed('#vis" index "', vl" index ");\n//]]\n</script>"))
+    ";\nvega.embed('#vis"
+    index
+    "', vl"
+    index
+    ");\n//]]\n</script>"))
 
 
 (defn process-mermaid
@@ -91,6 +91,13 @@
   (str "<div class=\"mermaid data-visualisation\">\n"
        graph-spec
        "\n</div>"))
+
+
+(defn process-backticks
+  "Effectively, escape the backticks surrounding this `text`, by protecting them
+  from the `md->html` filter."
+  [^String text ^Integer index]
+  (str "<pre class=\"backticks\">```" (.trim text) "\n```</pre>"))
 
 
 (defn get-first-token
@@ -106,12 +113,12 @@
   `:inclusions`, a map of constructed keywords to inclusion specifications,
   and `:text`, an HTML text string with the keywords present where the
   corresponding inclusion should be inserted."
-  [index result fragments processed]
+  [index result fragment fragments processed]
   (process-text
-   (+ index 1)
-   result
-   (rest fragments)
-   (cons (first fragments) processed)))
+    (+ index 1)
+    result
+    fragments
+    (cons fragment processed)))
 
 
 (defn- apply-formatter
@@ -125,21 +132,21 @@
   [index result fragments processed fragment token formatter]
   (let
     [kw (keyword (str "inclusion-" index))]
-      (process-text
-       (+ index 1)
-       (assoc
-         result
-         :inclusions
-         (assoc
-           (:inclusions result)
-           kw
-           (apply
+    (process-text
+      (+ index 1)
+      (assoc
+        result
+        :inclusions
+        (assoc
+          (:inclusions result)
+          kw
+          (apply
             formatter
             (list
-             (subs fragment (count token))
-             index))))
-       (rest fragments)
-       (cons kw processed))))
+              (subs fragment (count token))
+              index))))
+      (rest fragments)
+      (cons kw processed))))
 
 
 (defn process-text
@@ -154,19 +161,22 @@
    (process-text 0 {:inclusions {}} (cs/split text #"```") '()))
   ([index result fragments processed]
    (let [fragment (first fragments)
+         ;; if I didn't find a formatter for a back-tick marked fragment,
+         ;; I need to put the backticks back in.
+         remarked (if (odd? index) (str "```" fragment "\n```") fragment)
          first-token (get-first-token fragment)
          formatter (eval ((:formatters config) first-token))]
      (cond
-      (empty? fragments)
-      (assoc result :text
-        (local-links
-         (md/md-to-html-string
-          (cs/join "\n\n" (reverse processed))
-          :heading-anchors true)))
-      formatter
-      (apply-formatter index result fragments processed fragment first-token formatter)
-      true
-      (process-markdown-fragment index result fragments processed)))))
+       (empty? fragments)
+       (assoc result :text
+         (local-links
+           (md/md-to-html-string
+             (cs/join "\n\n" (reverse processed))
+             :heading-anchors true)))
+       formatter
+       (apply-formatter index result fragments processed fragment first-token formatter)
+       true
+       (process-markdown-fragment index result remarked (rest fragments) processed)))))
 
 
 (defn reintegrate-inclusions

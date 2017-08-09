@@ -3,10 +3,10 @@
 {% block content %}
         <div id="content" class="edit">
             <form action="{{servlet-context}}/edit-user" method="POST">
-              <p class="widget">
-                <label for="target">{{config.username-prompt}}</label>
-                <input type="text" name="target" id="target" value="{{target}}" required/>
-              </p>
+                <p class="widget">
+                    <label for="target">{{config.username-prompt}}</label>
+                    <input type="text" name="target" id="target" value="{{target}}" required {% ifunequal target "" %}disabled{% endifunequal %}/>
+                </p>
                 <p class="widget">
                     <label for="pass1">{{config.new-pass-prompt}}</label>
                     <input name="pass1" id="pass1" type="password"/>

@@ -80,32 +80,33 @@
 
 (defn diff
   "Find the diff in the file at `file-path` within the repository at
-   `git-directory-path` between versions `older` and `newer` or between the specified
-   `version` and the current version of the file. Returns the diff as a string.
+  `git-directory-path` between versions `older` and `newer` or between the specified
+  `version` and the current version of the file. Returns the diff as a string.
 
-   Based on JGit Cookbook ShowFileDiff."
+  Based on JGit Cookbook ShowFileDiff."
   ([^String git-directory-path ^String file-path ^String version]
-    (diff git-directory-path file-path version
-          (:id (first (find-history git-directory-path file-path)))))
+   (diff git-directory-path file-path version
+         (:id (first (find-history git-directory-path file-path)))))
   ([^String git-directory-path ^String file-path ^String older ^String newer]
-    (let [git-r (git/load-repo git-directory-path)
-          old-parse (prepare-tree-parser git-r older)
-          new-parse (prepare-tree-parser git-r newer)
-          out (java.io.ByteArrayOutputStream.)]
-      (map
-        #(let [formatter (DiffFormatter. out)]
-           (.setRepository formatter (.getRepository git-r))
-           (.format formatter %)
-           %)
-        (.call
-          (.setOutputStream
-            (.setPathFilter
-              (.setNewTree
-                (.setOldTree (.diff git-r) old-parse)
-                new-parse)
-              (PathFilter/create file-path))
-            out)))
-      (.toString out))))
+   (let [git-r (git/load-repo git-directory-path)
+         old-parse (prepare-tree-parser git-r older)
+         new-parse (prepare-tree-parser git-r newer)
+         out (java.io.ByteArrayOutputStream.)]
+     (doall
+       (map
+         #(let [formatter (DiffFormatter. out)]
+            (.setRepository formatter (.getRepository git-r))
+            (.format formatter %)
+            %)
+         (.call
+           (.setOutputStream
+             (.setPathFilter
+               (.setNewTree
+                 (.setOldTree (.diff git-r) old-parse)
+                 new-parse)
+               (PathFilter/create file-path))
+             out))))
+     (.toString out))))
 
 
 (defn fetch-version

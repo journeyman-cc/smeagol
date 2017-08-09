@@ -28,7 +28,8 @@
 {
  :site-title            "Smeagol"       ;; overall title of the site, used in page headings
  :default-locale        "en-GB"         ;; default language used for messages
- :formatters            {"vega"     smeagol.formatting/process-vega
-                         "vis"      smeagol.formatting/process-vega
-                         "mermaid"  smeagol.formatting/process-mermaid}
+ :formatters            {"vega"         smeagol.formatting/process-vega
+                         "vis"          smeagol.formatting/process-vega
+                         "mermaid"      smeagol.formatting/process-mermaid
+                         "backticks"    smeagol.formatting/process-backticks}
 }

@@ -41,7 +41,7 @@
     (starts-with? line "-") (str "<p><del>" (subs line 1) "</del></p>")
     (starts-with? line "@@") "</div><div class='change'>"
     (starts-with? line "\\") (str "<p class='warn'>" (subs line 1) "</p>")
-    :true (str "<p>" line "</p>")))
+    true (str "<p>" line "</p>")))
 
 
 (defn diff2html

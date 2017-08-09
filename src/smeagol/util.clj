@@ -2,9 +2,9 @@
       :author "Simon Brooke"}
   smeagol.util
   (:require [noir.session :as session]
+            [clojure.java.io :as cljio]
             [noir.io :as io]
             [scot.weft.i18n.core :as i18n]
-            [taoensso.timbre :as timbre]
             [smeagol.authenticate :as auth]
             [smeagol.configuration :refer [config]]
             [smeagol.formatting :refer [md->html]]))
@@ -51,7 +51,7 @@
   (merge
     (i18n/get-messages
       ((:headers request) "accept-language")
-      (str (io/resource-path) "../i18n")
+      (.getAbsolutePath (cljio/file  (io/resource-path) ".." "i18n"))
       "en-GB")
     config))
 

@@ -1,7 +1,6 @@
-(ns smeagol.test.util
-  (:use clojure.test
-        ring.mock.request
-        smeagol.formatting))
+(ns smeagol.test.formatting
+  (:require [clojure.test :refer :all]
+            [smeagol.formatting :refer [local-links no-text-error]]))
 
 (deftest test-local-links
   (testing "Rewriting of local links"

@@ -7,7 +7,6 @@
             [cemerick.url :refer (url url-encode url-decode)]
             [compojure.core :refer :all]
             [clj-jgit.porcelain :as git]
-            [markdown.core :as md]
             [noir.io :as io]
             [noir.response :as response]
             [noir.util.route :as route]

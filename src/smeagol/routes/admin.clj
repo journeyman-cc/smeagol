@@ -62,7 +62,7 @@
   "Put an individual user's details on screen for editing."
   [request]
   (let [params (keywordize-keys (:params request))
-        target (:target params)
+        target (or (:target params) "")
         pass1 (:pass1 params)
         password (if (and pass1 (auth/evaluate-password pass1 (:pass2 params))) pass1)
         stored (if (:email params)
