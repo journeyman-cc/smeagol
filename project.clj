@@ -1,4 +1,4 @@
-(defproject smeagol "1.0.0-SNAPSHOT"
+(defproject smeagol "1.0.0"
   :description "A simple Git-backed Wiki inspired by Gollum"
   :url "https://github.com/simon-brooke/smeagol"
   :dependencies [[org.clojure/clojure "1.8.0"]
@@ -68,12 +68,12 @@
                   ["change" "version" "leiningen.release/bump-version" "release"]
                   ["vcs" "commit"]
                   ["vcs" "tag"]
+                  ["bower" "install"]
                   ["ring" "uberwar"]
                   ["docker" "build"]
                   ["docker" "push"]
                   ["change" "version" "leiningen.release/bump-version"]
-                  ["vcs" "commit"]
-                  ["vcs" "push"]]
+                  ["vcs" "commit"]]
 
   :profiles {:uberjar {:omit-source true
                        :env {:production true}
