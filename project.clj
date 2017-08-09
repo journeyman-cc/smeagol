@@ -1,4 +1,4 @@
-(defproject smeagol "1.0.0"
+(defproject smeagol "0.99.1-SNAPSHOT"
   :description "A simple Git-backed Wiki inspired by Gollum"
   :url "https://github.com/simon-brooke/smeagol"
   :dependencies [[org.clojure/clojure "1.8.0"]
