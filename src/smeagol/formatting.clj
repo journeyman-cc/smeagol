@@ -157,8 +157,8 @@
   The map has two top-level keys: `:inclusions`, a map of constructed keywords to
   inclusion specifications, and `:text`, an HTML text string with the keywords
   present where the corresponding inclusion should be inserted."
-  ([text]
-   (process-text 0 {:inclusions {}} (cs/split text #"```") '()))
+  ([^String text]
+   (process-text 0 {:inclusions {}} (cs/split (or text "") #"```") '()))
   ([index result fragments processed]
    (let [fragment (first fragments)
          ;; if I didn't find a formatter for a back-tick marked fragment,

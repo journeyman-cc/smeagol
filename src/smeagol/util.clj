@@ -35,12 +35,12 @@
 
 (defn standard-params
   "Return a map of standard parameters to pass to the template renderer."
-  [request]
+  [request content-dir]
   (let [user (session/get :user)]
     {:user user
      :admin (auth/get-admin user)
-     :side-bar (md->html (io/slurp-resource "/content/_side-bar.md"))
-     :header (md->html (io/slurp-resource "/content/_header.md"))
+     :side-bar (md->html (slurp (cljio/file content-dir "_side-bar.md")))
+     :header (md->html (slurp (cljio/file content-dir "_header.md")))
      :version (System/getProperty "smeagol.version")}))
 
 

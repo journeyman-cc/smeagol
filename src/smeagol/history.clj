@@ -49,11 +49,26 @@
     log-entry))
 
 
+(defn load-or-init-repo
+  "There's a bootstrapping problem: when Smeagol first starts the repository
+   hasn't been initialised. Try to open the repository at this `git-directory-path`;
+   if an exception is thrown, try to init a repository at this `git-directory-path`,
+   and then open it and populate it."
+  [^String git-directory-path]
+  (try
+    (git/load-repo git-directory-path)
+    (catch java.io.FileNotFoundException fnf
+      (git/git-init git-directory-path)
+      (let [repo (git/load-repo git-directory-path)]
+        (git/git-add-and-commit repo "Initial commit")
+        repo))))
+
+
 (defn find-history
   "Return the log entries in the repository at this `git-directory-path`
    which refer to changes to the file at this `file-path`."
   [^String git-directory-path ^String file-path]
-  (let [repository (git/load-repo git-directory-path)]
+  (let [repository (load-or-init-repo git-directory-path)]
     (filter
       #(entry-contains % file-path)
       (map #(q/commit-info repository %)
@@ -88,7 +103,7 @@
    (diff git-directory-path file-path version
          (:id (first (find-history git-directory-path file-path)))))
   ([^String git-directory-path ^String file-path ^String older ^String newer]
-   (let [git-r (git/load-repo git-directory-path)
+   (let [git-r (load-or-init-repo git-directory-path)
          old-parse (prepare-tree-parser git-r older)
          new-parse (prepare-tree-parser git-r newer)
          out (java.io.ByteArrayOutputStream.)]
@@ -115,7 +130,7 @@
 
    Based on JGit Cookbook ReadFileFromCommit."
   [^String git-directory-path ^String file-path ^String version]
-  (let [git-r (git/load-repo git-directory-path)
+  (let [git-r (load-or-init-repo git-directory-path)
         repo (.getRepository git-r)
         walk (i/new-rev-walk git-r)
         commit (i/bound-commit git-r walk (ObjectId/fromString version))

@@ -1,7 +1,8 @@
 (ns ^{:doc "Read and make available configuration."
       :author "Simon Brooke"}
   smeagol.configuration
-  (:require [noir.io :as io]))
+  (:require [environ.core :refer [env]]
+            [noir.io :as io]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;
@@ -38,7 +39,9 @@
 
 (def config-file-path
   "The relative path to the config file."
-  (str (io/resource-path) "../config.edn"))
+  (or
+    (env :smeagol-config)
+    (str (io/resource-path) "../config.edn")))
 
 
 (def config

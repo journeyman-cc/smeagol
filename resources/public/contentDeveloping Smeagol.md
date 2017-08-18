@@ -5,35 +5,29 @@ You will need [Leiningen](https://github.com/technomancy/leiningen) 2.0 or above
 You will need [node](https://nodejs.org/en/) and [bower](https://bower.io/) installed.
 
 ## Running
-### In development
+
 To start a web server for the application during development, run:
 
     lein bower install
     lein ring server
 		
-### In production
 To deploy Smeagol as a stand-alone application, compile it with:
 
     lein bower install
     lein uberjar
 		
-This will create a jar file in the `target` directory, named `smeagol-`*VERSION*`-standalone.jar`. 
-
-Smeagol cannot access either its configuration or its content from the jar file. Consequently you should set up two environment variables:
-
-1. **SMEAGOL_CONFIG** should be the full or relative pathname of a Smeagol [[Configuration]] file;
-2. **SMEAGOL_CONTENT_DIR** should be the full or relative pathname of the directory from which Smeagol should serve content (which may initially be empty, but must be writable by the process which runs Smeagol)'
-
-You can run the jar file with:
+This will create a jar file in the `target` directory, named `smeagol-`*VERSION*`-standalone.jar`. You can run this file with:
 
     java -jar smeagol-VERSION-standalone.jar
+		
+Test modification?
 
 Alternatively, if you want to deploy to a servlet container (which I would strongly recommend), the simplest thing is to run:
 
     lein bower install
     lein ring uberwar
 
-(a command which I'm sure Smeagol would entirely appreciate) and deploy the resulting war file. **NOTE** that if your Servlet container is configured to unpack war files you do not need to supply the environment variables specified above, but if it does not you must do so.
+(a command which I'm sure Smeagol would entirely appreciate) and deploy the resulting war file.
 
 ## Experimental Docker image
 
