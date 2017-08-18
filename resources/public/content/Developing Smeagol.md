@@ -27,6 +27,8 @@ Smeagol cannot access either its configuration or its content from the jar file.
 You can run the jar file with:
 
     java -jar smeagol-VERSION-standalone.jar
+		
+**NOTE** that there are still problems with deploying a jar file: although I do intend to support this, it does not yet work. Outstanding problems are the password file and the internationalisation files. The password file must certainly be outside the jar file, but it seems to me the internationalisation files should not need to be.
 
 Alternatively, if you want to deploy to a servlet container (which I would strongly recommend), the simplest thing is to run:
 
