@@ -19,6 +19,7 @@
           {% endif %}
         {% else %}
             <form action="{{servlet-context}}/upload" enctype="multipart/form-data" method="POST">
+                {% csrf-field %}
                 <p class="widget">
                     <label for="upload">{{config.file-upload-prompt}}</label>
                     <input name="upload" id="upload" type="file" required/>

@@ -16,6 +16,7 @@
                  [com.taoensso/encore "2.91.1"]
                  [lib-noir "0.9.9" :exclusions [org.clojure/tools.reader]]
                  [com.cemerick/url "0.1.1"]
+                 [ring/ring-anti-forgery "1.1.0"]
                  [ring-server "0.4.0"]
                  [selmer "1.10.9"]
                  [org.clojure/tools.logging "0.4.0"]
