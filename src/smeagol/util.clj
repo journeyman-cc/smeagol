@@ -58,7 +58,7 @@
   (merge
     (i18n/get-messages
       ((:headers request) "accept-language")
-      (.getAbsolutePath (cjio/file  (io/resource-path) ".." "i18n"))
+      (str (clojure.java.io/resource "i18n/"))     
       "en-GB")
     config))
 
