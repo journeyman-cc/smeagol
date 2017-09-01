@@ -1,9 +1,10 @@
 (ns ^{:doc "Miscellaneous utility functions supporting Smeagol."
       :author "Simon Brooke"}
   smeagol.util
-  (:require [noir.session :as session]
-            [clojure.java.io :as cljio]
+  (:require [clojure.java.io :as cjio]
+            [environ.core :refer [env]]
             [noir.io :as io]
+            [noir.session :as session]
             [scot.weft.i18n.core :as i18n]
             [smeagol.authenticate :as auth]
             [smeagol.configuration :refer [config]]
@@ -33,14 +34,20 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
+(def content-dir
+  (or
+    (env :smeagol-content-dir)
+    (cjio/file (io/resource-path) "content")))
+
+
 (defn standard-params
   "Return a map of standard parameters to pass to the template renderer."
-  [request content-dir]
+  [request]
   (let [user (session/get :user)]
     {:user user
      :admin (auth/get-admin user)
-     :side-bar (md->html (slurp (cljio/file content-dir "_side-bar.md")))
-     :header (md->html (slurp (cljio/file content-dir "_header.md")))
+     :side-bar (md->html (slurp (cjio/file content-dir "_side-bar.md")))
+     :header (md->html (slurp (cjio/file content-dir "_header.md")))
      :version (System/getProperty "smeagol.version")}))
 
 
@@ -51,7 +58,7 @@
   (merge
     (i18n/get-messages
       ((:headers request) "accept-language")
-      (.getAbsolutePath (cljio/file  (io/resource-path) ".." "i18n"))
+      (.getAbsolutePath (cjio/file  (io/resource-path) ".." "i18n"))
       "en-GB")
     config))
 

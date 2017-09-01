@@ -5,6 +5,7 @@
             [environ.core :refer [env]]
             [selmer.middleware :refer [wrap-error-page]]
             [prone.middleware :refer [wrap-exceptions]]
+            [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
             [noir-exception.core :refer [wrap-internal-error]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -39,11 +40,13 @@
 
 (def development-middleware
   [wrap-error-page
-   wrap-exceptions])
+   wrap-exceptions
+   wrap-anti-forgery])
 
 
 (def production-middleware
-  [#(wrap-internal-error % :log (fn [e] (timbre/error e)))])
+  [#(wrap-internal-error % :log (fn [e] (timbre/error e)))
+   wrap-anti-forgery])
 
 
 (defn load-middleware []

@@ -3,6 +3,7 @@
 {% block content %}
         <div id="content" class="edit">
             <form action="{{servlet-context}}/edit-user" method="POST">
+                {% csrf-field %}
                 <p class="widget">
                     <label for="target">{{config.username-prompt}}</label>
                     <input type="text" name="target" id="target" value="{{target}}" required {% ifunequal target "" %}disabled{% endifunequal %}/>

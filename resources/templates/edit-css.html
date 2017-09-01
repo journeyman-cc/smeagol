@@ -3,6 +3,7 @@
 {% block content %}
         <div id="content" class="edit">
             <form action="{{servlet-context}}/edit-css" method="POST">
+                {% csrf-field %}
                 <input type="hidden" name="page" value="{{page}}"/>
                 <textarea name="src" id="src" rows="25" cols="80">{{content}}</textarea>
                 <p class="widget">

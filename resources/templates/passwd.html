@@ -2,6 +2,7 @@
 {% block content %}
         <div id="content" class="auth">
             <form action="{{servlet-context}}/passwd" method="POST">
+                {% csrf-field %}
                 <p class="widget">
                     <label for="oldpass">{{config.old-pass-prompt}}</label>
                     <input name="oldpass" id="oldpass" type="password" required/>
