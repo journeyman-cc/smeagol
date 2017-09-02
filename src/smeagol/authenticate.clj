@@ -34,7 +34,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; the relative path to the password file.
-(def password-file-path (str (io/resource-path) "../passwd"))
+(def password-file-path (str (clojure.java.io/resource "passwd")))
 
 
 (defn- get-users
