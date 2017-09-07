@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>{{config.site-title}}: {{title}}</title>
+    <title>{% i18n site-title %}: {{title}}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,19 +15,19 @@
       <div id="nav">
         <img id="nav-icon" src="{{servlet-context}}/img/three-lines.png" alt="Menu"/>
         <menu id="nav-menu">
-          <li class="{{wiki-selected}}"><a href="{{servlet-context}}/">{{config.home-link}}</a></li>
+          <li class="{{wiki-selected}}"><a href="{{servlet-context}}/">{% i18n home-link %}</a></li>
           {% if admin %}
-          <li class="{{edit-users-selected}}"><a href="{{servlet-context}}/edit-users">{{config.edit-users-link}}</a></li>
+          <li class="{{edit-users-selected}}"><a href="{{servlet-context}}/edit-users">{% i18n edit-users-link %}</a></li>
           {% endif %}
           {% if user %}
-          <li class="{{upload-selected}}"><a href="upload">{{config.file-upload-title}}</a></li>
-          <li class="{{passwd-selected}}"><a href="passwd">{{config.change-pass-link}}</a></li>
-          <li class="user" id="user">{{config.logged-in-as}} {{user}}</li>
+          <li class="{{upload-selected}}"><a href="upload">{% i18n file-upload-title %}</a></li>
+          <li class="{{passwd-selected}}"><a href="passwd">{% i18n change-pass-link %}</a></li>
+          <li class="user" id="user">{% i18n logged-in-as}} {{user}}</li>
           <li class="{{auth-selected}}"><a href="{{servlet-context}}/auth">
-            {{config.logout-link}}</a></li>
+            {% i18n logout-link %}</a></li>
           {% else %}
           <li class="{{auth-selected}}"><a href="{{servlet-context}}/auth">
-            {{config.login-link}}</a></li>
+            {% i18n login-link %}</a></li>
           {% endif %}
         </menu>
         <div id="phone-side-bar"  class="wiki">
@@ -45,7 +45,7 @@
           </div>
         </div>
       </div>
-      <h1>{{config.site-title}}: {{title}}</h1>
+      <h1>{% i18n site-title %}: {{title}}</h1>
       {{header|safe}}
       {% if message %}
       <div id="message">
@@ -68,10 +68,10 @@
     </div>
     <div id="cookies">
       <div id="more-about-cookies">
-        {{config.cookies-more}}
+        {% i18n cookies-more %}
       </div>
       <div id="about-cookies">
-        {{config.cookies-about}}
+        {% i18n cookies-about %}
       </div>
     </div>
     <footer>

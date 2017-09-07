@@ -58,7 +58,7 @@
   (merge
     (i18n/get-messages
       ((:headers request) "accept-language")
-      (str (clojure.java.io/resource "i18n/"))     
+      (cjio/file (io/resource-path) "i18n")
       "en-GB")
     config))
 
@@ -67,10 +67,14 @@
 
 
 (defn get-message
-  [message-key request]
-  (let [messages (get-messages request)]
-    (if
-      (map? messages)
-      (or (messages message-key) message-key)
-      message-key)))
-
+  "Return the message with this `message-key` from this `request`.
+   if not found, return this `default`, if provided; else return the
+   `message-key`."
+  ([message-key request]
+   (get-message message-key message-key request))
+  ([message-key default request]
+   (let [messages (get-messages request)]
+     (if
+       (map? messages)
+       (or (messages message-key) default)
+       default))))

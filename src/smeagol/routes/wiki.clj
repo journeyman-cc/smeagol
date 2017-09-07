@@ -114,7 +114,7 @@
   "Render the markdown page specified in this `request`, if any. If none found, redirect to edit-page"
   [request]
   (let [params (keywordize-keys (:params request))
-        page (or (:page params) (util/get-message :default-page-title request))
+        page (or (:page params) (util/get-message :default-page-title "Introduction" request))
         file-name (str page ".md")
         file-path (cjio/file util/content-dir file-name)
         exists? (.exists (clojure.java.io/as-file file-path))]

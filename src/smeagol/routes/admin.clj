@@ -70,15 +70,17 @@
         message (if stored (str (:save-user-success (util/get-messages request)) " " target "."))
         error (if (and (:email params) (not stored))
                                     (str (:save-user-fail (util/get-messages request)) " " target "."))
+        page (if stored "edit-users.html" "edit-user.html")
         details (auth/fetch-user-details target)]
     (if message
       (timbre/info message))
     (if error
       (timbre/warn error))
-    (layout/render "edit-user.html"
+    (layout/render page
                    (merge (util/standard-params request)
                           {:title (str (:edit-title-prefix (util/get-messages request)) " " target)
                            :message message
                            :error error
                            :target target
-                           :details details}))))
+                           :details details
+                           :users (auth/list-users)}))))

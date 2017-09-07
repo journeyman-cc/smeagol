@@ -6,21 +6,21 @@
             <input type="hidden" name="redirect-to" value="{{redirect-to}}"/>
             {% if user %}
             <p class="widget">
-              <label for="submit">{{config.save-prompt}}</label>
-              <input name="action" id="action" type="submit" class="action-dangerous" value="{{config.logout-label}}"/>
+              <label for="submit">{% i18n save-prompt %}</label>
+              <input name="action" id="action" type="submit" class="action-dangerous" value="{% i18n logout-label %}"/>
             </p>
             {% else %}
             <p class="widget">
-              <label for="username">{{config.your-uname-prompt}}</label>
+              <label for="username">{% i18n your-uname-prompt %}</label>
               <input name="username" id="username" type="text" required/>
             </p>
             <p class="widget">
-              <label for="password">{{config.old-pass-prompt}}</label>
+              <label for="password">{% i18n old-pass-prompt %}</label>
               <input name="password" id="password" type="password" required/>
             </p>
             <p class="widget">
-              <label for="submit">{{config.login-prompt}}</label>
-              <input name="action" id="action" type="submit" class="action" value="{{config.login-label}}"/>
+              <label for="submit">{% i18n login-prompt %}</label>
+              <input name="action" id="action" type="submit" class="action" value="{% i18n login-label %}"/>
             </p>
             {% endif %}
           </form>

@@ -4,17 +4,17 @@
         <div id="content">
           <table>
             <tr>
-              <th/><th>{{config.edit-col-hdr}}</th><th>{{config.del-col-hdr}}</th>
+              <th/><th>{% i18n edit-col-hdr %}</th><th>{% i18n del-col-hdr %}</th>
             </tr>
             {% for user in users %}
             <tr>
               <td>{{user}}</td>
-              <td><a href="edit-user?target={{user}}">{{config.edit-col-hdr}} {{user}}</a></td>
-              <td><a href="delete-user?target={{user}}">{{config.del-col-hdr}} {{user}}</a></td>
+              <td><a href="edit-user?target={{user}}">{% i18n edit-col-hdr %} {{user}}</a></td>
+              <td><a href="delete-user?target={{user}}">{% i18n del-col-hdr %} {{user}}</a></td>
             </tr>
             {% endfor %}
             <tr>
-              <td><a href="edit-user">{{config.add-user-label}}</a></td>
+              <td><a href="edit-user">{% i18n add-user-label %}</a></td>
               <td></td>
               <td></td>
             </tr>

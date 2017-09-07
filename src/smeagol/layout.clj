@@ -2,13 +2,14 @@
 (ns ^{:doc "Render a page as HTML."
       :author "Simon Brooke"}
   smeagol.layout
-  (:require [selmer.parser :as parser]
-            [clojure.string :as s]
-            [ring.util.anti-forgery :refer [anti-forgery-field]]
-            [ring.util.response :refer [content-type response]]
+  (:require [clojure.string :as s]
             [compojure.response :refer [Renderable]]
             [environ.core :refer [env]]
-            [smeagol.util :as util]))
+            [ring.util.anti-forgery :refer [anti-forgery-field]]
+            [ring.util.response :refer [content-type response]]
+            [selmer.parser :as parser]
+            [smeagol.util :as util]
+            [taoensso.timbre :as timbre]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;
@@ -37,6 +38,16 @@
 
 (parser/add-tag! :csrf-field (fn [_ _] (anti-forgery-field)))
 
+;; Attempt to do internationalisation more neatly
+;; This tag takes two arguments, the first is a key, the (optional) second is a
+;; default. The key is looked up in the i18n
+(parser/add-tag! :i18n
+  (fn [args context-map]
+    (let [messages (:i18n context-map)
+          default (or (second args) (first args))]
+      (timbre/info (str "i18n: key is " (first args) " messages map is " messages))
+      (if (map? messages) (get messages (keyword (first args)) default) default))))
+
 
 (deftype RenderableTemplate [template params]
   Renderable
@@ -44,7 +55,7 @@
     (content-type
       (->> (assoc params
                   (keyword (s/replace template #".html" "-selected")) "active"
-                  :config (util/get-messages request)
+                  :i18n (util/get-messages request)
                   :dev (env :dev)
                   :servlet-context
                   (if-let [context (:servlet-context request)]

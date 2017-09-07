@@ -16,8 +16,8 @@
     <div id="content" class="wiki">
       {% if editable %}
     	<ul class="minor-controls">
-        <li><a href="{{servlet-context}}/edit?page={{title}}">{{config.edit-page-link}}</a></li>
-    		<li><a href="history?page={{page}}">{{config.history-link}}</a></li>
+        <li><a href="{{servlet-context}}/edit?page={{title}}">{% i18n edit-page-link %}</a></li>
+    		<li><a href="history?page={{page}}">{% i18n history-link %}</a></li>
     	</ul>
       {% endif %}
       {{content|safe}}

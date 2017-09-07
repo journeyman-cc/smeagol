@@ -6,13 +6,13 @@
             <img alt="Uploaded image" src="uploads/{{uploaded}}"/>
 
             <p>
-              {{config.file-upload-link-text}}:
+              {% i18n file-upload-link-text %}:
 
               <code>![Uploaded image](uploads/{{uploaded}})</code>
             </p>
           {% else %}
             <p>
-              {{config.file-upload-link-text}}:
+              {% i18n file-upload-link-text %}:
 
               <code>[Uploaded file](uploads/{{uploaded}})</code>
             </p>
@@ -21,12 +21,12 @@
             <form action="{{servlet-context}}/upload" enctype="multipart/form-data" method="POST">
                 {% csrf-field %}
                 <p class="widget">
-                    <label for="upload">{{config.file-upload-prompt}}</label>
+                    <label for="upload">{% i18n file-upload-prompt %}</label>
                     <input name="upload" id="upload" type="file" required/>
                 </p>
                 <p class="widget">
-                    <label for="submit">{{config.save-prompt}}</label>
-                    <input name="submit" id="submit" type="submit" class="action" value="{{config.save-label}}"/>
+                    <label for="submit">{% i18n save-prompt %}</label>
+                    <input name="submit" id="submit" type="submit" class="action" value="{% i18n save-label %}"/>
                 </p>
             </form>
         {% endif %}

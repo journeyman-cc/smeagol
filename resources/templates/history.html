@@ -3,10 +3,10 @@
    <div id="content" class="history">
      <table class="music-ruled">
        <tr>
-         <th>{{config.when-col-hdr}}</th>
-         <th>{{config.what-col-hdr}}</th>
-         <th>{{config.vers-col-hdr}}</th>
-         <th>{{config.change-col-hdr}}</th>
+         <th>{% i18n when-col-hdr %}</th>
+         <th>{% i18n what-col-hdr %}</th>
+         <th>{% i18n vers-col-hdr %}</th>
+         <th>{% i18n change-col-hdr %}</th>
        </tr>
        {% for entry in history %}
        <tr>

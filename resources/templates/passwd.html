@@ -4,20 +4,20 @@
             <form action="{{servlet-context}}/passwd" method="POST">
                 {% csrf-field %}
                 <p class="widget">
-                    <label for="oldpass">{{config.old-pass-prompt}}</label>
+                    <label for="oldpass">{% i18n old-pass-prompt %}</label>
                     <input name="oldpass" id="oldpass" type="password" required/>
                 </p>
                 <p class="widget">
-                    <label for="pass1">{{config.new-pass-prompt}}</label>
+                    <label for="pass1">{% i18n new-pass-prompt %}</label>
                     <input name="pass1" id="pass1" type="password" required/>
                 </p>
                 <p class="widget">
-                    <label for="pass2">{{config.rpt-pass-prompt}}</label>
+                    <label for="pass2">{% i18n rpt-pass-prompt %}</label>
                     <input name="pass2" id="pass2" type="password" required/>
                 </p>
                 <p class="widget">
-                    <label for="submit">{{config.change-pass-prompt}}</label>
-                    <input name="action" id="action" type="submit" class="action" value="{{config.change-pass-link}}!"/>
+                    <label for="submit">{% i18n change-pass-prompt %}</label>
+                    <input name="action" id="action" type="submit" class="action" value="{% i18n change-pass-link %}!"/>
                 </p>
             </form>
         </div>
