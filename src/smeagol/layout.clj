@@ -46,7 +46,7 @@
     (let [messages (:i18n context-map)
           default (or (second args) (first args))]
       (timbre/info (str "i18n: key is " (first args) " messages map is " messages))
-      (if (map? messages) (get messages (keyword (first args)) default) default))))
+      (if (map? messages) (or (messages (keyword (first args))) default) default))))
 
 
 (deftype RenderableTemplate [template params]

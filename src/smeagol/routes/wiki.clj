@@ -1,25 +1,25 @@
 (ns ^{:doc "Render all the main pages of a very simple Wiki engine."
       :author "Simon Brooke"}
   smeagol.routes.wiki
-  (:require [clojure.walk :refer :all]
+  (:require [cemerick.url :refer (url url-encode url-decode)]
+            [clj-jgit.porcelain :as git]
             [clojure.java.io :as cjio]
             [clojure.string :as cs]
-            [cemerick.url :refer (url url-encode url-decode)]
+            [clojure.walk :refer :all]
             [compojure.core :refer :all]
-            [clj-jgit.porcelain :as git]
             [noir.io :as io]
             [noir.response :as response]
             [noir.util.route :as route]
             [noir.session :as session]
-            [taoensso.timbre :as timbre]
             [smeagol.authenticate :as auth]
             [smeagol.diff2html :as d2h]
             [smeagol.formatting :refer [md->html]]
+            [smeagol.history :as hist]
             [smeagol.layout :as layout]
+            [smeagol.routes.admin :as admin]
             [smeagol.util :as util]
             [smeagol.uploads :as ul]
-            [smeagol.history :as hist]
-            [smeagol.routes.admin :as admin]))
+            [taoensso.timbre :as timbre]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;

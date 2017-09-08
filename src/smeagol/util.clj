@@ -58,9 +58,11 @@
   (merge
     (i18n/get-messages
       ((:headers request) "accept-language")
-      (cjio/file (io/resource-path) "i18n")
+;;      (cjio/file (io/resource-path) "i18n")
+      "i18n"
       "en-GB")
-    config))
+    config)
+  )
 
 
 (def get-messages (memoize raw-get-messages))

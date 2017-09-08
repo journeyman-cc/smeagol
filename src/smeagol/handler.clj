@@ -2,19 +2,19 @@
       :author "Simon Brooke"}
   smeagol.handler
   (:require [compojure.core :refer [defroutes]]
+            [compojure.route :as route]
+            [cronj.core :as cronj]
+            [environ.core :refer [env]]
+            [noir.response :refer [redirect]]
+            [noir.session :as session]
+            [noir.util.middleware :refer [app-handler]]
+            [ring.middleware.defaults :refer [site-defaults]]
+            [selmer.parser :as parser]
             [smeagol.routes.wiki :refer [wiki-routes]]
             [smeagol.middleware :refer [load-middleware]]
             [smeagol.session-manager :as session-manager]
-            [noir.response :refer [redirect]]
-            [noir.util.middleware :refer [app-handler]]
-            [noir.session :as session]
-            [ring.middleware.defaults :refer [site-defaults]]
-            [compojure.route :as route]
             [taoensso.timbre :as timbre]
-            [taoensso.timbre.appenders.3rd-party.rotor :as rotor]
-            [selmer.parser :as parser]
-            [environ.core :refer [env]]
-            [cronj.core :as cronj]))
+            [taoensso.timbre.appenders.3rd-party.rotor :as rotor]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;
