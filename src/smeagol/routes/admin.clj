@@ -61,26 +61,41 @@
 (defn edit-user
   "Put an individual user's details on screen for editing."
   [request]
-  (let [params (keywordize-keys (:params request))
-        target (or (:target params) "")
-        pass1 (:pass1 params)
-        password (if (and pass1 (auth/evaluate-password pass1 (:pass2 params))) pass1)
-        stored (if (:email params)
-                 (auth/add-user target password (:email params) (:admin params)))
-        message (if stored (str (:save-user-success (util/get-messages request)) " " target "."))
-        error (if (and (:email params) (not stored))
-                                    (str (:save-user-fail (util/get-messages request)) " " target "."))
-        page (if stored "edit-users.html" "edit-user.html")
-        details (auth/fetch-user-details target)]
-    (if message
-      (timbre/info message))
-    (if error
-      (timbre/warn error))
-    (layout/render page
-                   (merge (util/standard-params request)
-                          {:title (str (:edit-title-prefix (util/get-messages request)) " " target)
-                           :message message
-                           :error error
-                           :target target
-                           :details details
-                           :users (auth/list-users)}))))
+  (let [params (keywordize-keys (:params request))]
+    (try
+      (let [target (or (:target params) "")
+            pass1 (:pass1 params)
+            pass2 (:pass2 params)
+            check-pass (auth/evaluate-password pass1 pass2)
+            password (if (and pass1 (true? check-pass)) pass1)
+            stored (if
+                     (:email params)
+                     (auth/add-user target password (:email params) (:admin params)))
+            message (if stored (str (:save-user-success (util/get-messages request)) " " target "."))
+            error (if (and (:email params) (not stored))
+                    (str
+                      (:save-user-fail (util/get-messages request))
+                      " " target ". "
+                      (if (keyword? check-pass) (check-pass (util/get-messages request)))))
+            page (if stored "edit-users.html" "edit-user.html")
+            details (auth/fetch-user-details target)]
+        (if message
+          (timbre/info message))
+        (if error
+          (timbre/warn error))
+        (layout/render page
+                       (merge (util/standard-params request)
+                              {:title (str (:edit-title-prefix (util/get-messages request)) " " target)
+                               :message message
+                               :error error
+                               :target target
+                               :details details
+                               :users (auth/list-users)})))
+      (catch Exception any
+        (timbre/error (.getMessage any))
+        (layout/render "edit-user.html"
+                       (merge (util/standard-params request)
+                              {:title (str (:edit-title-prefix (util/get-messages request)) " " (:target params))
+                               :error (.getMessage any)
+                               :target (:target params)
+                               :details {:email (:email params) :admin (:admin params)}}))))))

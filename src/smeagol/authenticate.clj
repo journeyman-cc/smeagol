@@ -74,10 +74,14 @@
     (let [user ((keyword username)  (get-users))]
       (:admin user))))
 
+
 (defn evaluate-password
-  "Evaluate whether this proposed password is suitable for use."
+  "Evaluate whether this proposed password is suitable for use; return `true` is so, a keyword if not."
   ([pass1 pass2]
-   (and pass1 (>= (count pass1) 8) (.equals pass1 pass2)))
+   (cond
+     (< (count pass1) 8) :chpass-too-short
+     (.equals pass1 pass2) true
+     true :chpass-bad-match))
   ([password]
    (evaluate-password password password)))
 
@@ -129,34 +133,37 @@
 
 
 (defn add-user
-  "Add a user to the passwd file with this username, initial password and email address and admin flag."
+  "Add a user to the passwd file with this `username`, initial password and `email` address and `admin`  flag."
   [username newpass email admin]
-  (let [users (get-users)
-        user ((keyword username) users)
-        password (if
-                   (and newpass (evaluate-password newpass))
-                   (password/encrypt newpass))
-        details {:email email
-                 :admin (if
-                          (and (string? admin) (> (count admin) 0))
-                          true
-                          false)}
-        ;; if we have a valid password we want to include it in the details to update.
-        full-details (if password
-                       (merge details {:password password})
-                       details)]
-    (try
-      (locking password-file-path
-        (spit password-file-path
-              (merge users
-                     {(keyword username) (merge user full-details)}))
-        (timbre/info (str "Successfully added user " username))
-        true)
-      (catch Exception any
-        (timbre/error
-          (format "Adding user %s failed: %s (%s)"
-                  username (.getName (.getClass any)) (.getMessage any)))
-        false))))
+  (timbre/info  "Trying to add user " username)
+  (cond
+    (not (string? username)) (throw (Exception. "Username must be a string."))
+    (= (count username) 0) (throw (Exception. "Username cannot be zero length"))
+    true (let [users (get-users)
+               user ((keyword username) users)
+               password (if
+                          (and newpass (evaluate-password newpass))
+                          (password/encrypt newpass))
+               details {:email email
+                        :admin (if
+                                 (and (string? admin) (> (count admin) 0))
+                                 true
+                                 false)}
+               ;; if we have a valid password we want to include it in the details to update.
+               full-details (if password
+                              (assoc details :password password)
+                              details)]
+           (try
+             (locking password-file-path
+               (spit password-file-path
+                     (assoc users (keyword username) (merge user full-details)))
+               (timbre/info  "Successfully added user " username)
+               true)
+             (catch Exception any
+               (timbre/error
+                 (format "Adding user %s failed: %s (%s)"
+                         username (.getName (.getClass any)) (.getMessage any)))
+               false)))))
 
 
 (defn delete-user

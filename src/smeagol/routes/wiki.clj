@@ -233,8 +233,9 @@
         pass1 (:pass1 params)
         pass2 (:pass2 params)
         user (session/get :user)
+        check-pass (auth/evaluate-password pass1 pass2)
         changed? (and
-                   (auth/evaluate-password pass1 pass2)
+                   (true? check-pass)
                    (auth/change-pass user oldpass pass2))]
     (layout/render "passwd.html"
                    (merge (util/standard-params request)
@@ -243,8 +244,7 @@
                            :error (cond
                                     (nil? oldpass) nil
                                     changed? nil
-                                    (< (count pass1) 8) (util/get-message :chpass-too-short request)
-                                    (not (= pass1 pass2)) (util/get-message :chpass-bad-match request)
+                                    (keyword? check-pass) (util/get-message check-pass request)
                                     true (util/get-message :chpass-fail request))}))))
 
 

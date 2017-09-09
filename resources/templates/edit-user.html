@@ -6,7 +6,12 @@
                 {% csrf-field %}
                 <p class="widget">
                     <label for="target">{% i18n username-prompt %}</label>
-                    <input type="text" name="target" id="target" value="{{target}}" required {% ifunequal target "" %}disabled{% endifunequal %}/>
+                  {% ifequal target "" %}
+                    <input type="text" name="target" id="target" value="{{target}}" required/>
+                  {% else %}
+                    <span class="pseudo-input">{{target}}</span>
+                    <input type="hidden" name="target" id="target" value="{{target}}" required/>
+                  {% endifequal %}
                 </p>
                 <p class="widget">
                     <label for="pass1">{% i18n new-pass-prompt %}</label>
