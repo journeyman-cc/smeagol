@@ -2,12 +2,16 @@
 (ns ^{:doc "Render a page as HTML."
       :author "Simon Brooke"}
   smeagol.layout
-  (:require [clojure.string :as s]
+  (:require [clojure.java.io :as cjio]
+            [clojure.string :as s]
             [compojure.response :refer [Renderable]]
             [environ.core :refer [env]]
+            [hiccup.core :refer [html]]
             [ring.util.anti-forgery :refer [anti-forgery-field]]
             [ring.util.response :refer [content-type response]]
             [selmer.parser :as parser]
+            [smeagol.configuration :refer [config]]
+            [smeagol.sanity :refer :all]
             [smeagol.util :as util]
             [taoensso.timbre :as timbre]))
 
@@ -51,23 +55,30 @@
 (deftype RenderableTemplate [template params]
   Renderable
   (render [this request]
-    (content-type
-      (->> (assoc params
-                  (keyword (s/replace template #".html" "-selected")) "active"
-                  :i18n (util/get-messages request)
-                  :dev (env :dev)
-                  :servlet-context
-                  (if-let [context (:servlet-context request)]
-                    ;; If we're not inside a serlvet environment (for
-                    ;; example when using mock requests), then
-                    ;; .getContextPath might not exist
-                    (try (.getContextPath context)
+          (try
+            (content-type
+              (->> (assoc params
+                     (keyword (s/replace template #".html" "-selected")) "active"
+                     :i18n (util/get-messages request)
+                     :dev (env :dev)
+                     :servlet-context
+                     (if-let [context (:servlet-context request)]
+                       ;; If we're not inside a serlvet environment (for
+                       ;; example when using mock requests), then
+                       ;; .getContextPath might not exist
+                       (try (.getContextPath context)
                          (catch IllegalArgumentException _ context))))
-        (parser/render-file (str template-path template))
-        response)
-      "text/html; charset=utf-8")))
+                   (parser/render-file (str template-path template))
+                   response)
+              "text/html; charset=utf-8")
+            (catch Exception any
+              (show-sanity-check-error any)))))
 
 
-(defn render [template & [params]]
-  (RenderableTemplate. template params))
+(defn render
+  [template & [params]]
+  (try
+    (RenderableTemplate. template params)
+    (catch Exception any
+      (show-sanity-check-error any))))
 

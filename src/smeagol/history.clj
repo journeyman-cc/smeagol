@@ -41,11 +41,7 @@
   [^String log-entry ^String file-path]
   (timbre/info (format "searching '%s' for '%s'" log-entry file-path))
   (cond
-    (not
-      (empty?
-        (filter
-          #(= (first %) file-path)
-      (:changed_files log-entry))))
+    (seq (filter (fn* [p1__341301#] (= (first p1__341301#) file-path)) (:changed_files log-entry)))
     log-entry))
 
 
@@ -88,7 +84,7 @@
     (try
       (.reset result reader (.getId tree))
       (finally
-        (.release reader)
+        (.close reader)
         (.dispose walk)))
     result))
 
@@ -121,7 +117,7 @@
                  new-parse)
                (PathFilter/create file-path))
              out))))
-     (.toString out))))
+     (str out))))
 
 
 (defn fetch-version
@@ -144,4 +140,4 @@
       (throw (IllegalStateException.
                (str "Did not find expected file '" file-path "'"))))
     (.copyTo (.open repo (.getObjectId tw 0)) out)
-    (.toString out)))
+    (str out)))

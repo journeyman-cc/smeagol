@@ -40,13 +40,11 @@
 
 (def development-middleware
   [wrap-error-page
-   wrap-exceptions
-   wrap-anti-forgery])
+   wrap-exceptions])
 
 
 (def production-middleware
-  [#(wrap-internal-error % :log (fn [e] (timbre/error e)))
-   wrap-anti-forgery])
+  [#(wrap-internal-error % :log (fn [e] (timbre/error e)))])
 
 
 (defn load-middleware []

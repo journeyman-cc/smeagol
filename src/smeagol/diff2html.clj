@@ -47,16 +47,6 @@
 (defn diff2html
   "Convert this string, assumed to be in diff format, to HTML."
   [^String diff-text]
-  (apply str
-         (flatten
-           (list "<div class='change'>"
-                 (join "\n"
-                       (remove nil?
-                               (map mung-line
-                                    ;; The first five lines are boilerplate, and
-                                    ;; uninteresting for now
-                                    (drop 5
-                                          (split-lines diff-text)))))
-                 "</div>"))))
+  (clojure.string/join (flatten (list "<div class='change'>" (join "\n" (remove nil? (map mung-line (drop 5 (split-lines diff-text))))) "</div>"))))
 
 

@@ -46,4 +46,7 @@
 
 (def config
   "The actual configuration, as a map."
-  (read-string (slurp config-file-path)))
+  (try
+    (read-string (slurp config-file-path))
+    (catch Exception any
+      (throw (Exception. "Could not load configuration" any)))))
