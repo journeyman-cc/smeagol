@@ -115,7 +115,7 @@
   corresponding inclusion should be inserted."
   [index result fragment fragments processed]
   (process-text
-    (+ index 1)
+    (inc index)
     result
     fragments
     (cons fragment processed)))
@@ -133,18 +133,8 @@
   (let
     [kw (keyword (str "inclusion-" index))]
     (process-text
-      (+ index 1)
-      (assoc
-        result
-        :inclusions
-        (assoc
-          (:inclusions result)
-          kw
-          (apply
-            formatter
-            (list
-              (subs fragment (count token))
-              index))))
+      (inc index)
+      (assoc-in result [:inclusions kw] (apply formatter (list (subs fragment (count token)) index)))
       (rest fragments)
       (cons kw processed))))
 

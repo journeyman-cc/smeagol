@@ -128,7 +128,7 @@
   "Return the map of features of this user, if any."
   [username]
   (if
-    (and username (> (count (str username)) 0))
+    (and username (pos? (count (str username))))
     ((keyword username) (get-users))))
 
 
@@ -138,7 +138,7 @@
   (timbre/info  "Trying to add user " username)
   (cond
     (not (string? username)) (throw (Exception. "Username must be a string."))
-    (= (count username) 0) (throw (Exception. "Username cannot be zero length"))
+    (zero? (count username)) (throw (Exception. "Username cannot be zero length"))
     true (let [users (get-users)
                user ((keyword username) users)
                password (if
@@ -146,7 +146,7 @@
                           (password/encrypt newpass))
                details {:email email
                         :admin (if
-                                 (and (string? admin) (> (count admin) 0))
+                                 (and (string? admin) (pos? (count admin)))
                                  true
                                  false)}
                ;; if we have a valid password we want to include it in the details to update.

@@ -92,9 +92,7 @@
          file-path (cjio/file util/content-dir file-name)
          exists? (.exists (cjio/as-file file-path))
          user (session/get :user)]
-     (if (not exists?)
-       (timbre/info (format "File '%s' not found; creating a new file" file-path))
-       (timbre/info (format "Opening '%s' for editing" file-path)))
+     (if-not exists? (timbre/info (format "File '%s' not found; creating a new file" file-path)) (timbre/info (format "Opening '%s' for editing" file-path)))
      (cond src-text (process-source params suffix request)
            true
            (layout/render template
