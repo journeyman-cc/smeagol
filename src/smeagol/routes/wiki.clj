@@ -84,24 +84,29 @@
   ([request]
    (edit-page request (util/get-message :default-page-title request) ".md" "edit.html" "_edit-side-bar.md"))
   ([request default suffix template side-bar]
-   (show-sanity-check-error)
-   (let [params (keywordize-keys (:params request))
-         src-text (:src params)
-         page (or (:page params) default)
-         file-name (str page suffix)
-         file-path (cjio/file util/content-dir file-name)
-         exists? (.exists (cjio/as-file file-path))
-         user (session/get :user)]
-     (if-not exists? (timbre/info (format "File '%s' not found; creating a new file" file-path)) (timbre/info (format "Opening '%s' for editing" file-path)))
-     (cond src-text (process-source params suffix request)
-           true
-           (layout/render template
-                          (merge (util/standard-params request)
-                                 {:title (str (util/get-message :edit-title-prefix request) " " page)
-                                  :page page
-                                  :side-bar (md->html (slurp (cjio/file util/content-dir side-bar)))
-                                  :content (if exists? (slurp file-path) "")
-                                  :exists exists?}))))))
+   (or
+     (show-sanity-check-error)
+     (let [params (keywordize-keys (:params request))
+           src-text (:src params)
+           page (or (:page params) default)
+           file-name (str page suffix)
+           file-path (cjio/file util/content-dir file-name)
+           exists? (.exists (cjio/as-file file-path))
+           user (session/get :user)]
+       (if-not
+         exists?
+         (timbre/info
+           (format "File '%s' not found; creating a new file" file-path))
+         (timbre/info (format "Opening '%s' for editing" file-path)))
+       (cond src-text (process-source params suffix request)
+             true
+             (layout/render template
+                            (merge (util/standard-params request)
+                                   {:title (str (util/get-message :edit-title-prefix request) " " page)
+                                    :page page
+                                    :side-bar (md->html (slurp (cjio/file util/content-dir side-bar)))
+                                    :content (if exists? (slurp file-path) "")
+                                    :exists exists?})))))))
 
 
 (defn edit-css-page
@@ -181,7 +186,7 @@
     (timbre/info (format "Showing version '%s' of page '%s'" version page))
     (layout/render "wiki.html"
                    (merge (util/standard-params request)
-                          {:title (str (util/get-message :vers-col-hdr request) " " version " of " page)
+                          {:title (str (util/get-message :vers-col-hdr request) " " version " " (util/get-message :of request) " "  page)
                            :page page
                            :content (md->html content)}))))
 
@@ -196,9 +201,18 @@
     (timbre/info (format "Showing diff between version '%s' of page '%s' and current" version page))
     (layout/render "wiki.html"
                    (merge (util/standard-params request)
-                          {:title (str (util/get-message :diff-title-prefix request)" " version " of " page)
+                          {:title
+                           (str
+                             (util/get-message :diff-title-prefix request)
+                             " "
+                             version
+                             " "
+                             (util/get-message :of request)
+                             " "
+                             page)
                            :page page
-                           :content (d2h/diff2html (hist/diff util/content-dir file-name version))}))))
+                           :content (d2h/diff2html
+                                      (hist/diff util/content-dir file-name version))}))))
 
 
 (defn auth-page
@@ -225,7 +239,9 @@
         true
         (layout/render "auth.html"
                        (merge (util/standard-params request)
-                              {:title (if user (str (util/get-message :logout-link request) " " user) (util/get-message :login-link request))
+                              {:title (if user
+                                        (str (util/get-message :logout-link request) " " user)
+                                        (util/get-message :login-link request))
                                :redirect-to ((:headers request) "referer")}))))))
 
 

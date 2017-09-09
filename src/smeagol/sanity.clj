@@ -2,13 +2,7 @@
       :author "Simon Brooke"}
   smeagol.sanity
   (:require [clojure.java.io :as cjio]
-            [clojure.string :as s]
-            [compojure.response :refer [Renderable]]
-            [environ.core :refer [env]]
             [hiccup.core :refer [html]]
-            [ring.util.anti-forgery :refer [anti-forgery-field]]
-            [ring.util.response :refer [content-type response]]
-            [selmer.parser :as parser]
             [smeagol.configuration :refer [config]]
             [smeagol.util :as util]
             [taoensso.timbre :as timbre]))
@@ -36,9 +30,12 @@
 ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn check-content-dir []
+(defn check-content-dir
+  "Check that the content directory exists and is populated. Throw exception
+  if not."
+  []
   (try
-    (let [directory (cjio/as-file (cjio/resource util/content-dir))]
+    (let [directory (cjio/as-file util/content-dir)]
       (if
         (.isDirectory directory)
         true
@@ -50,31 +47,38 @@
     (catch Exception any
       (throw (Exception. (str "Content directory '" util/content-dir "' does not exist") any))))
   (try
-    (slurp (cjio/resource (str util/content-dir java.io.File/separator "_side-bar.md")))
+    (doall
+      (map
+        #(let
+           [path (cjio/file util/content-dir %)]
+           (timbre/info "Checking the existence of " path)
+           (slurp path))
+        ["_side-bar.md" "_edit-side-bar.md" "_header.md"]))
     (timbre/info "Content directory '" util/content-dir "' check completed.")
     (catch Exception any
       (throw (Exception. (str "Content directory '" util/content-dir "' is not initialised") any)))))
 
 
-(defn- raw-sanity-check-installation []
-  (check-content-dir)
-  (config :test))
-
-
-(defn sanity-check-installation []
+(defn- raw-sanity-check-installation
+  "Actually do the sanity check."
+  []
   (timbre/info "Running sanity check")
   (check-content-dir)
   (config :test)
   (timbre/info "Sanity check completed"))
 
 
-;;(def sanity-check-installation (memoize raw-sanity-check-installation))
+;;; We memoise the sanity check so that although it is called for every wiki
+;;; page, it is only actually evaluated once.
+(def sanity-check-installation (memoize raw-sanity-check-installation))
 
 
-(defn- get-causes [any]
+(defn- get-causes
+  "Get the causes of this `error`, if it is an Exception."
+  [error]
   (if
-    (instance? Exception any)
-    (cons any (get-causes (.getCause any)))
+    (instance? Exception error)
+    (cons error (get-causes (.getCause error)))
     '()))
 
 

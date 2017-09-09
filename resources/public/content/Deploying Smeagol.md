@@ -10,7 +10,15 @@ Smeagol cannot access either its configuration or its content from the jar file,
 
 1. `SMEAGOL_CONFIG` should be the full or relative pathname of a Smeagol [[Configuration]] file;
 2. `SMEAGOL_CONTENT_DIR` should be the full or relative pathname of the directory from which Smeagol should serve content (which may initially be empty, but must be writable by the process which runs Smeagol)'
-3. `SMEAGOL_PASSWD` should be the full or relative pathname of a Smeagol Passwd file - see [[Security and authentication]]. This file must contain an entry for at least your initial user, and, if you want to administer users through the user interface, must be writable by the process which runs Smeagol;
+3. `SMEAGOL_PASSWD` should be the full or relative pathname of a Smeagol Passwd file - see [[Security and authentication]]. This file must contain an entry for at least your initial user, and, if you want to administer users through the user interface, must be writable by the process which runs Smeagol.
+
+**NOTE** that `SMEAGOL_CONTENT_DIR` must contain at least the following files:
+
+1. `_edit-side-bar.md` - the side-bar that should be displayed when editing pages;
+2. `_header.md` - the header to be displayed on all pages;
+3. `_side-bar.md` - the side-bar that should be displayed when not editing pages.
+
+Standard versions of these files can be found in the [source repository](https://github.com/journeyman-cc/smeagol/tree/master/resources/public/content). All these files should be in markdown format - see [[Extensible Markup]].
 
 You can run the jar file with:
 
