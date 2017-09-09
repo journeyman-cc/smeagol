@@ -1,7 +1,8 @@
 (ns ^{:doc "Set up, configure, and clean up after the wiki server."
       :author "Simon Brooke"}
   smeagol.handler
-  (:require [compojure.core :refer [defroutes]]
+  (:require [clojure.java.io :as cjio]
+            [compojure.core :refer [defroutes]]
             [compojure.route :as route]
             [cronj.core :as cronj]
             [environ.core :refer [env]]
@@ -46,23 +47,6 @@
   (route/resources "/")
   (route/not-found "Not Found"))
 
-(defn init
-  "init will be called once when
-   app is deployed as a servlet on
-   an app server such as Tomcat
-   put any initialization code here"
-  []
-  (timbre/merge-config!
-    {:appenders
-     {:rotor (rotor/rotor-appender
-               {:path "smeagol.log"
-                :max-size (* 512 1024)
-                :backlog 10})}})
-  (if (env :dev) (parser/cache-off!))
-  ;;start the expired session cleanup job
-  (cronj/start! session-manager/cleanup-job)
-  (timbre/info "\n-=[ smeagol started successfully"
-               (when (env :dev) "using the development profile") "]=-"))
 
 (defn destroy
   "destroy will be called when your application
@@ -72,28 +56,53 @@
   (cronj/shutdown! session-manager/cleanup-job)
   (timbre/info "shutdown complete!"))
 
+
+(defn init
+  "init will be called once when
+  app is deployed as a servlet on
+  an app server such as Tomcat
+  put any initialization code here"
+  []
+  (try
+    (timbre/merge-config!
+      {:appenders
+       {:rotor (rotor/rotor-appender
+                 {:path "smeagol.log"
+                  :max-size (* 512 1024)
+                  :backlog 10})}})
+    (cronj/start! session-manager/cleanup-job)
+    (if (env :dev) (parser/cache-off!))
+    ;;start the expired session cleanup job
+    (timbre/info "\n-=[ smeagol started successfully"
+                 (when (env :dev) "using the development profile") "]=-")
+    (catch Exception any
+      (timbre/error "Failure during startup" any)
+      (destroy))))
+
 ;; timeout sessions after 30 minutes
 (def session-defaults
   {:timeout (* 60 30)
    :timeout-response (redirect "/")})
 
-(defn- mk-defaults
-       "set to true to enable XSS protection"
-       [xss-protection?]
-       (-> site-defaults
-           (update-in [:session] merge session-defaults)
-           (assoc-in [:security :anti-forgery] xss-protection?)))
+
+(defn- make-defaults
+  "set to true to enable XSS protection"
+  [xss-protection?]
+  (-> site-defaults
+      (update-in [:session] merge session-defaults)
+      (assoc-in [:security :anti-forgery] xss-protection?)))
+
 
 (def app (app-handler
-           ;; add your application routes here
-           [wiki-routes base-routes]
-           ;; add custom middleware here
-           :middleware (load-middleware)
-           :ring-defaults (mk-defaults false)
-           ;; add access rules here
-           :access-rules [{:redirect "/auth"
-                :rule user-access}]
-           ;; serialize/deserialize the following data formats
-           ;; available formats:
-           ;; :json :json-kw :yaml :yaml-kw :edn :yaml-in-html
-           :formats [:json-kw :edn :transit-json]))
+    ;; add your application routes here
+    [wiki-routes base-routes]
+    ;; add custom middleware here
+    :middleware (load-middleware)
+    :ring-defaults (make-defaults true)
+    ;; add access rules here
+    :access-rules [{:redirect "/auth"
+                    :rule user-access}]
+    ;; serialize/deserialize the following data formats
+    ;; available formats:
+    ;; :json :json-kw :yaml :yaml-kw :edn :yaml-in-html
+    :formats [:json-kw :edn :transit-json]))

@@ -51,18 +51,16 @@
      :version (System/getProperty "smeagol.version")}))
 
 
-(defn raw-get-messages
+(defn- raw-get-messages
   "Return the most acceptable messages collection we have given the
   `Accept-Language` header in this `request`."
   [request]
   (merge
     (i18n/get-messages
       ((:headers request) "accept-language")
-;;      (cjio/file (io/resource-path) "i18n")
       "i18n"
       "en-GB")
-    config)
-  )
+    config))
 
 
 (def get-messages (memoize raw-get-messages))

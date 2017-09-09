@@ -1,4 +1,4 @@
-(defproject smeagol "0.99.8"
+(defproject smeagol "0.99.9-SNAPSHOT"
   :description "A simple Git-backed Wiki inspired by Gollum"
   :url "https://github.com/simon-brooke/smeagol"
   :license {:name "GNU General Public License,version 2.0 or (at your option) any later version"
@@ -14,6 +14,7 @@
                  [com.taoensso/tower "3.0.2" :exclusions [com.taoensso/encore]]
                  [crypto-password "0.2.0"]
                  [environ "1.1.0"]
+                 [hiccup "1.0.5"]
                  [im.chit/cronj "1.4.4"]
                  [lib-noir "0.9.9" :exclusions [org.clojure/tools.reader]]
                  [markdown-clj "0.9.99" :exclusions [com.keminglabs/cljx]]
