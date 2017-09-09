@@ -8,7 +8,7 @@
                  [org.clojure/core.memoize "0.5.9"]
                  [org.clojure/data.json "0.2.6"]
                  [org.clojure/tools.logging "0.4.0"]
-                 [org.clojars.simon_brooke/internationalisation "1.0.3-SNAPSHOT"]
+                 [org.clojars.simon_brooke/internationalisation "1.0.3"]
                  [clj-jgit "0.8.9"]
                  [clj-yaml "0.4.0"]
                  [com.cemerick/url "0.1.1"]
