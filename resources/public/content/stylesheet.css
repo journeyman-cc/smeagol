@@ -83,6 +83,15 @@ header h1 {
   margin-top: 0;
 }
 
+header a {
+  font-weight: bold;
+  color: white;
+}
+
+header a:hover {
+  color: darkgray;
+}
+
 img {
   border: 0;
   padding: 0;

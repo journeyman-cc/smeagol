@@ -23,7 +23,7 @@ You can (if you're logged in) upload files, including images, using the **Upload
 ![Smeagol](http://vignette3.wikia.nocookie.net/lotr/images/e/e1/Gollum_Render.png/revision/latest?cb=20141218075509)
 
 ## Running Smeagol
-You can run Smeagol from the [[Docker Image]]; alternatively you can run it from an executable jar file or as a war file in a servlet container. Read how in [[Developing Smeagol]].
+You can run Smeagol from the [[Docker Image]]; alternatively you can run it from an executable jar file or as a war file in a servlet container. Read how in [[Deploying Smeagol]].
 
 ## Developing Smeagol
 Smeagol is an open source project; you're entitled to make changes yourself. Read more about [[Developing Smeagol]].
