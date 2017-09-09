@@ -1,3 +1,5 @@
+The basic format of Smeagol pages is [Markdown](https://daringfireball.net/projects/markdown/); documentation on how to format them is [here](https://daringfireball.net/projects/markdown/syntax). Note that there are a number of slightly different variants of Markdown; the version used by Smeagol does not currently allow tables.
+
 A system of pluggable, extensible formatters is supported. In normal markdown, code blocks may be delimited by three backticks at start and end, and often the syntax of the code can be indicated by a token immediately following the opening three backticks. This has been extended to allow custom formatters to be provided for such code blocks. Two example formatters are provided:
 
 ## The Vega formatter

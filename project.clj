@@ -3,11 +3,11 @@
   :url "https://github.com/simon-brooke/smeagol"
   :license {:name "GNU General Public License,version 2.0 or (at your option) any later version"
             :url "https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html"}
-  :dependencies [[clj-jgit "0.8.9"]
+  :dependencies [[clj-jgit "0.8.10"]
                  [clj-yaml "0.4.0"]
                  [com.cemerick/url "0.1.1"]
                  [com.fzakaria/slf4j-timbre "0.3.7"]
-                 [com.taoensso/encore "2.91.1"]
+                 [com.taoensso/encore "2.92.0"]
                  [com.cemerick/url "0.1.1"]
                  [com.taoensso/timbre "4.10.0"]
                  [com.fzakaria/slf4j-timbre "0.3.7"]

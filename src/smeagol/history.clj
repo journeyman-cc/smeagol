@@ -84,7 +84,7 @@
     (try
       (.reset result reader (.getId tree))
       (finally
-        (.release reader)
+        (.close reader)
         (.dispose walk)))
     result))
 
