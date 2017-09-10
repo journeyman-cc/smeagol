@@ -2,7 +2,8 @@
       :author "Simon Brooke"}
   smeagol.configuration
   (:require [environ.core :refer [env]]
-            [noir.io :as io]))
+            [noir.io :as io]
+            [taoensso.timbre :as timbre]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;
@@ -49,4 +50,5 @@
   (try
     (read-string (slurp config-file-path))
     (catch Exception any
-      (throw (Exception. "Could not load configuration" any)))))
+      (timbre/error "Could not load configuration" any)
+      {})))
