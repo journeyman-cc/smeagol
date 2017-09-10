@@ -3,12 +3,12 @@
         <div id="content" class="auth">
         {% if uploaded %}
           {% if is-image %}
-            <img alt="Uploaded image" src="uploads/{{uploaded}}"/>
-
             <p>
+              <img id="uploaded-image" alt="Uploaded image" src="content/uploads/{{uploaded}}"/>
+
               {% i18n file-upload-link-text %}:
 
-              <code>![Uploaded image](uploads/{{uploaded}})</code>
+              <code>![Uploaded image](content/uploads/{{uploaded}})</code>
             </p>
           {% else %}
             <p>
@@ -23,6 +23,10 @@
                 <p class="widget">
                     <label for="upload">{% i18n file-upload-prompt %}</label>
                     <input name="upload" id="upload" type="file" required/>
+                </p>
+                <p class="widget">
+                    <label for="summary">{% i18n file-summary-prompt %}</label>
+                    <input name="summary" id="summary" type="text" required/>
                 </p>
                 <p class="widget">
                     <label for="submit">{% i18n save-prompt %}</label>
