@@ -209,6 +209,10 @@ th {
 	display: block;
 }
 
+#uploaded-image {
+  float: right;
+}
+
 .change {
   background-color: rgb( 223, 223, 223);
   border: thin solid silver;

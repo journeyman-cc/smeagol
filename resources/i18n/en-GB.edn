@@ -75,6 +75,8 @@
  :email-prompt          "Email address" ;; text of the email widget prompt on edit user page
  :file-or-directory     "File or directory"
                                         ;; used in sanity check report
+ :file-summary-prompt   "Description/what's changed"
+                                        ;; prompt for the file upload summary input
  :file-upload-link-text "You may link to this file using a link of the form"
                                         ;; Text introducing the link to an uploaded file
  :file-upload-prompt    "File to upload" ;; prompt string for the file upload widget

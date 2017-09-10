@@ -29,19 +29,20 @@
 ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn avoid-name-collisions
-  "Find a filename within this `path`, based on this `file-name`, that does not
-   reference an existing file. It is assumed that `path` ends with a path separator.
-   Returns a filename hwich does not currently reference a file within the path."
-  [path file-name]
-  (if (.exists (File. (str path file-name)))
-    (let [parts (cs/split file-name #"\.")
-          prefix (cs/join "." (butlast parts))
-          suffix (last parts)]
-      (first
-       (filter #(not (.exists (File. (str path %))))
-               (map #(str prefix "." % "." suffix) (range)))))
-    file-name))
+;; No longer used as uploaded files now go into Git.
+;; (defn avoid-name-collisions
+;;   "Find a filename within this `path`, based on this `file-name`, that does not
+;;    reference an existing file. It is assumed that `path` ends with a path separator.
+;;    Returns a filename hwich does not currently reference a file within the path."
+;;   [path file-name]
+;;   (if (.exists (File. (str path file-name)))
+;;     (let [parts (cs/split file-name #"\.")
+;;           prefix (cs/join "." (butlast parts))
+;;           suffix (last parts)]
+;;       (first
+;;        (filter #(not (.exists (File. (str path %))))
+;;                (map #(str prefix "." % "." suffix) (range)))))
+;;     file-name))
 
 
 (defn store-upload
@@ -49,11 +50,10 @@
   The issue with storing an upload is moving it into place.
   If `params` are passed as a map, it is expected that this is a map from
   an HTTP POST operation of a form with type `multipart/form-data`."
-  [params]
+  [params path]
   (let [upload (:upload params)
         tmp-file (:tempfile upload)
-        path (str (io/resource-path) "uploads/")
-        filename (avoid-name-collisions path (:filename upload))]
+        filename (:filename upload)]
     (timbre/info
       (str "Storing upload file: " upload))
       (if tmp-file

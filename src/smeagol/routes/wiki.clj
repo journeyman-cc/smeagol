@@ -156,9 +156,17 @@
   "Render a form to allow the upload of a file."
   [request]
   (let [params (keywordize-keys (:params request))
-        data-path (str (io/resource-path) "/uploads/")
+        data-path (str (io/resource-path) "/content/uploads/")
+        git-repo (get-git-repo)
         upload (:upload params)
-        uploaded (if upload (ul/store-upload params))]
+        uploaded (if upload (ul/store-upload params data-path))
+        user (session/get :user)
+        summary (format "%s: %s" user (or (:summary params) "no summary"))]
+    (if
+      uploaded
+      (do
+        (git/git-add git-repo uploaded)
+        (git/git-commit git-repo summary {:name user :email (auth/get-email user)})))
     (layout/render "upload.html"
                    (merge (util/standard-params request)
                           {:title (util/get-message :file-upload-title request)
