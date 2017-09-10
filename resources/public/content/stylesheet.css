@@ -34,12 +34,20 @@ del {
   color: red;
 }
 
-div.content, form, p, pre, h1, h2, h3, h4, h5 {
+div.content, div.error, div.message, form, p, pre, h1, h2, h3, h4, h5 {
   padding: 0.1em 5% 0 5%;
 }
 
 dl, menu, ol, table, ul {
   margin: 0.25em 5%;
+}
+
+dt {
+  font-weight: bold;
+}
+
+dd {
+  font-style: italic;
 }
 
 /* footer of the page - not-editable, provided by Smeagol */
