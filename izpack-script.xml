@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes"?>
+<izpack:installation version="5.0"
+                     xmlns="http://izpack.org/schema/installation"
+                     xmlns:izpack="http://izpack.org/schema/installation"
+                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                     xsi:schemaLocation="http://izpack.org/schema/installation http://izpack.org/schema/5.0/izpack-installation-5.0.xsd">
+    <info>
+        <appname>Smeagol</appname>
+        <appversion>0.99.9</appversion>
+        <authors>
+            <author email="simon@journeyman.cc" name="Simon Brooke"/>
+        </authors>
+        <javaversion>1.6</javaversion>
+        <requiresjdk>no</requiresjdk>
+        <run-privileged condition="izpack.windowsinstall.vista|izpack.windowsinstall.7"/>
+        <uninstaller name="smeagol-uninstaller.jar" write="yes"/>
+        <url>https://github.com/journeyman-cc/smeagol/</url>
+        <writeinstallationinformation>no</writeinstallationinformation>
+    </info>
+    <guiprefs height="480" resizable="no" width="640">
+        <modifier key="useFlags" value="yes"/>
+        <modifier key="langDisplayType" value="default"/>
+    </guiprefs>
+    <locale>
+        <langpack iso3="eng"/>
+    </locale>
+    <resources>
+        <res id="LicencePanel.licence" parse="yes" src="/home/simon/workspace/smeagol/LICENSE"/>
+    </resources>
+    <panels>
+        <panel classname="CheckedHelloPanel"/>
+        <panel classname="LicencePanel"/>
+        <panel classname="PacksPanel"/>
+        <panel classname="TargetPanel"/>
+        <panel classname="InstallPanel"/>
+        <panel classname="SimpleFinishPanel"/>
+    </panels>
+    <packs>
+        <pack name="Core" preselected="no" required="no">
+            <description/>
+            <file override="update"
+                src="/home/simon/workspace/smeagol/target/smeagol-0.99.9-SNAPSHOT-standalone.jar" targetdir="$INSTALL_PATH/"/>
+            <file override="update"
+                src="/home/simon/workspace/smeagol/resources/passwd" targetdir="$INSTALL_PATH/"/>
+            <file override="update"
+                src="/home/simon/workspace/smeagol/resources/public/content" targetdir="$INSTALL_PATH/"/>
+            <file override="update"
+                src="/home/simon/workspace/smeagol/resources/config.edn" targetdir="$INSTALL_PATH/"/>
+        </pack>
+    </packs>
+</izpack:installation>
