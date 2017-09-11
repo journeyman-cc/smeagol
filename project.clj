@@ -62,7 +62,7 @@
                   ;; ["vcs" "tag"] -- not working, problems with secret key
                   ["clean"]
                   ["bower" "install"]
-                  ["ring" "uberwar"]
+                  ["ring" "uberjar"]
                   ["docker" "build"]
                   ["docker" "push"]
                   ["change" "version" "leiningen.release/bump-version"]
