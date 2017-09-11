@@ -1,4 +1,4 @@
-(defproject smeagol "0.99.9-SNAPSHOT"
+(defproject smeagol "1.0.0-rc3"
   :description "A simple Git-backed Wiki inspired by Gollum"
   :url "https://github.com/simon-brooke/smeagol"
   :license {:name "GNU General Public License,version 2.0 or (at your option) any later version"

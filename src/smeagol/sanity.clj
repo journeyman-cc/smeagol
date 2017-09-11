@@ -343,7 +343,7 @@
          [:p (as-hiccup :see-documentation messages)
           [:a
            {:href
-            "https://github.com/journeyman-cc/smeagol/blob/develop/resources/public/content/Deploying%20Smeagol.md"}
+            "https://github.com/journeyman-cc/smeagol/blob/master/resources/public/content/Deploying%20Smeagol.md"}
            (as-hiccup :here messages)]]]
         [:footer
          [:div {:id "credits"}
