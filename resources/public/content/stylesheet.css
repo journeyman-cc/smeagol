@@ -265,6 +265,14 @@ th {
   padding: 0 2em 0 0;
 }
 
+.sanity-cause .sanity-stacktrace {
+  display: none;
+}
+
+.sanity-cause:hover .sanity-stacktrace {
+  display: block;
+}
+
 .vega-bindings, .vega-actions {
   font-size: 66%;
 }

@@ -76,7 +76,7 @@
     (timbre/info "\n-=[ smeagol started successfully"
                  (when (env :dev) "using the development profile") "]=-")
     (catch Exception any
-      (timbre/error "Failure during startup" any)
+      (timbre/error any "Failure during startup")
       (destroy))))
 
 ;; timeout sessions after 30 minutes

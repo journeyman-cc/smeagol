@@ -252,13 +252,28 @@
   (as-hiccup [this dictionary] "")
 
   clojure.lang.Keyword
-  (as-hiccup [this dictionary]  (str (or (this dictionary)(string/replace (name this) "-" " ")) " "))
+  (as-hiccup [this dictionary]
+             (str
+               (or
+                 (this dictionary)
+                 (string/replace (name this) "-" " "))
+               " "))
 
   clojure.lang.PersistentList
-  (as-hiccup [this dictionary] (apply vector (cons :div (map #(as-hiccup %  dictionary) this))))
+  (as-hiccup [this dictionary]
+             (apply
+               vector
+               (cons
+                 :div
+                 (map #(as-hiccup % dictionary) this))))
 
   clojure.lang.PersistentVector
-  (as-hiccup [this dictionary] (apply vector (cons :div (map #(as-hiccup %  dictionary) this))))
+  (as-hiccup [this dictionary]
+             (apply
+               vector
+               (cons
+                 :div
+                 (map #(as-hiccup % dictionary) this))))
 
   clojure.lang.PersistentArrayMap
   (as-hiccup [this dictionary]
@@ -296,66 +311,94 @@
                vector
                (cons
                  :div
-                     (cons
-                       {:class "sanity-exception"}
-              (map
-                (fn [x]
-                  [:div
-                   {:class "sanity-cause"}
-                   (.getMessage x)
-                   [:div {:class "sanity-stacktrace"}
-                    (apply
-                      vector
-                      (cons
-                        :ol
-                        (map
-                          as-hiccup
-                          (.getStackTrace x)
-                          dictionary)))]])
-                (get-causes this))))))
+                 (cons
+                   {:class "sanity-exception"}
+                   (map
+                     (fn [x]
+                       [:div
+                        {:class "sanity-cause"}
+                        [:h2 (.getMessage x)]
+                        [:div {:class "sanity-stacktrace"}
+                         (apply
+                           vector
+                           (cons
+                             :ol
+                             (map
+                               as-hiccup
+                               (.getStackTrace x)
+                               dictionary)))]])
+                     (get-causes this))))))
   java.lang.Object
   (as-hiccup [this dictionary] (str this " ")))
 
 
-(defn sanity-check-report
-  [problems]
+(defn get-locale-messages
+  "Get messages for the server-side locale."
+  []
   (let [locale (Locale/getDefault)
-        locale-specifier (str (.getLanguage locale) "-" (.getCountry locale))
-        messages (try
-                   (i18n/get-messages locale-specifier "i18n" "en-GB")
-                   (catch Exception any {}))]
+        locale-specifier (str (.getLanguage locale) "-" (.getCountry locale))]
+    (try
+      (i18n/get-messages locale-specifier "i18n" "en-GB")
+      (catch Exception any {}))))
+
+
+;; Prepackaged hiccup sub-units
+(defn as-hiccup-head
+  [messages]
+  [:head
+   [:title (as-hiccup :smeagol-not-initialised messages)]
+   [:link {:href "/content/stylesheet.css" :rel "stylesheet"}]])
+
+
+(defn as-hiccup-header
+  [messages]
+  [:header
+   [:div {:id "nav"} "&nbsp;"]
+   [:h1 (as-hiccup :smeagol-not-initialised messages)]
+   [:p "&nbsp;"]])
+
+
+(defn as-hiccup-see-doc
+  [messages]
+  [:p (as-hiccup :see-documentation messages)
+   [:a
+    {:href
+     "https://github.com/journeyman-cc/smeagol/wiki/Deploying-Smeagol"}
+    (as-hiccup :here messages)] "."])
+
+
+(defn as-hiccup-footer
+  [messages]
+  [:footer
+   [:div {:id "credits"}
+    [:div
+     [:img {:height "16" :width "16" :alt "one wiki to rule them all" :src "img/smeagol.png"}]
+     " One Wiki to rule them all || Smeagol wiki engine || "
+     [:img
+      {:height "16" :width "16"
+       :alt "The Web Engineering Factory &amp; Toolworks"
+       :src "http://www.weft.scot/images/weft.logo.64.png"}]
+     " Developed by "
+     [:a {:href "http://www.weft.scot/"}"WEFT"]]]])
+
+
+(defn sanity-check-report
+  "Convert this `problem` report into a nicely formatted HTML page"
+  [problems]
+  (let [messages (get-locale-messages)]
     (html
       [:html
-       [:head
-        [:title (as-hiccup :smeagol-not-initialised messages)]
-        [:link {:href "/content/stylesheet.css" :rel "stylesheet"}]]
+       (as-hiccup-head messages)
        [:body
-        [:header
-         [:div {:id "nav"} "&nbsp;"]
-         [:h1 (as-hiccup :smeagol-not-initialised messages)]
-         [:p "&nbsp;"]]
-        [:div {:id "error" :class "error"}
-         [:div {:class "error"}
-         (as-hiccup [(count (keys problems)) :problems-found] messages)]]
+        (as-hiccup-header messages)
+        [:div {:id "error"}
+         [:p {:class "error"}
+          (rest (as-hiccup [(count (keys problems)) :problems-found] messages))]]
         [:div {:id "main-container" :class "sanity-check-report"}
          [:p (as-hiccup :smeagol-misconfiguration messages)]
          (as-hiccup problems messages)
-         [:p (as-hiccup :see-documentation messages)
-          [:a
-           {:href
-            "https://github.com/journeyman-cc/smeagol/blob/master/resources/public/content/Deploying%20Smeagol.md"}
-           (as-hiccup :here messages)]]]
-        [:footer
-         [:div {:id "credits"}
-          [:div
-           [:img {:height "16" :width "16" :alt "one wiki to rule them all" :src "img/smeagol.png"}]
-           " One Wiki to rule them all || Smeagol wiki engine || "
-           [:img
-            {:height "16" :width "16"
-             :alt "The Web Engineering Factory &amp; Toolworks"
-             :src "http://www.weft.scot/images/weft.logo.64.png"}]
-           " Developed by "
-           [:a {:href "http://www.weft.scot/"}"WEFT"]]]]]])))
+         (as-hiccup-see-doc messages)]
+        (as-hiccup-footer messages)]])))
 
 
 (defn- raw-sanity-check-installation
@@ -383,26 +426,26 @@
   If no argument is passed, run the sanity check and if it fails return page contents;
   if `error` is passed, just return page content describing the error."
   ([error]
-   (html
-     [:html
-      [:head
-       [:title "Smeagol is not initialised correctly"]
-       [:link {:href "/content/stylesheet.css" :rel "stylesheet"}]]
-      [:body
-       [:header
-        [:h1 "Smeagol is not initialised correctly"]]
-       [:div {:id "error"}
-        [:p {:class "error"} (.getMessage error)]]
-       [:p "There was a problem launching Smeagol probably because of misconfiguration:"]
-       (apply
-         vector
-         (cons :ol
-               (map #(vector :li (.getMessage %))
-                    (get-causes error))))
-       [:p :see-documentation
-        [:a {:href "https://github.com/journeyman-cc/smeagol/blob/develop/resources/public/content/Deploying%20Smeagol.md"} "here"]]]]))
+   (let [messages (get-locale-messages)]
+     (html
+       [:html
+        (as-hiccup-head messages)
+        [:body
+         (as-hiccup-header messages)
+         [:div {:id "error"}
+          [:p {:class "error"} (.getMessage error)]]
+         [:div {:id "main-container" :class "sanity-check-report"}
+          [:p  (as-hiccup :smeagol-misconfiguration messages)]
+          (as-hiccup error messages)
+          (as-hiccup-see-doc messages)]
+         (as-hiccup-footer messages)]])))
   ([]
    (try
      (sanity-check-installation)
-     (catch Exception any (show-sanity-check-error any)))))
+     (catch Exception any
+       (timbre/error any "Failure during sanity check")
+       (show-sanity-check-error any)))))
+
+(show-sanity-check-error (Exception. "That's insane!"))
+
 

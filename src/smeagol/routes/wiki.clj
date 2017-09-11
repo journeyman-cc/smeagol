@@ -45,13 +45,6 @@
 ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
-(defn get-git-repo
-  "Get the git repository for my content, creating it if necessary"
-  []
-  (hist/load-or-init-repo util/content-dir))
-
-
 (defn process-source
   "Process `source-text` and save it to the specified `file-path`, committing it
   to Git and finally redirecting to wiki-page."
@@ -61,7 +54,7 @@
         file-name (str page suffix)
         file-path (cjio/file util/content-dir file-name)
         exists? (.exists (cjio/as-file file-path))
-        git-repo (get-git-repo)
+        git-repo (hist/load-or-init-repo util/content-dir)
         user (session/get :user)
         email (auth/get-email user)
         summary (format "%s: %s" user (or (:summary params) "no summary"))]
@@ -157,7 +150,7 @@
   [request]
   (let [params (keywordize-keys (:params request))
         data-path (str (io/resource-path) "/content/uploads/")
-        git-repo (get-git-repo)
+        git-repo (hist/load-or-init-repo util/content-dir)
         upload (:upload params)
         uploaded (if upload (ul/store-upload params data-path))
         user (session/get :user)

@@ -37,7 +37,6 @@
 ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
 (def config-file-path
   "The relative path to the config file."
   (or
@@ -50,5 +49,5 @@
   (try
     (read-string (slurp config-file-path))
     (catch Exception any
-      (timbre/error "Could not load configuration" any)
+      (timbre/error any "Could not load configuration")
       {})))
