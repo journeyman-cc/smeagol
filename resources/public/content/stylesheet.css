@@ -34,12 +34,20 @@ del {
   color: red;
 }
 
-div.content, form, p, pre, h1, h2, h3, h4, h5 {
-  padding: 0.25em 5%;
+div.content, div.error, div.message, form, p, pre, h1, h2, h3, h4, h5 {
+  padding: 0.1em 5% 0 5%;
 }
 
 dl, menu, ol, table, ul {
   margin: 0.25em 5%;
+}
+
+dt {
+  font-weight: bold;
+}
+
+dd {
+  font-style: italic;
 }
 
 /* footer of the page - not-editable, provided by Smeagol */
@@ -74,6 +82,7 @@ form {
 header {
   margin-top: 0;
   width:100%;
+  max-width: 100%;
   background-color: gray;
   color: white;
 }
@@ -82,8 +91,19 @@ header h1 {
   margin-top: 0;
 }
 
-header img {
-  float: right;
+header a {
+  font-weight: bold;
+  color: white;
+}
+
+header a:hover {
+  color: darkgray;
+}
+
+img {
+  border: 0;
+  padding: 0;
+  vertical-align: middle;
 }
 
 input {
@@ -115,14 +135,6 @@ label {
   display: inline-block;
 }
 
-menu li {
-  display: inline;
-}
-
-menu li::before {
-  content: "|| ";
-}
-
 table {
   border: 2px solid black;
   border-collapse: collapse;
@@ -147,58 +159,6 @@ th {
  ## ids generally in document order
  */
 
-/* top-of-page navigation, not editable, provided by Smeagol */
-#nav{
-  margin: 0;
-  padding: 0;
-  top: 0;
-  width: 100%;
-  _position: absolute;
-  _top: expression(document.documentElement.scrollTop);
-  z-index: 149;
-  background:rgba(40,40,40,0.8);
-}
-
-#user {
-	font-height: 66%;
-	float: right;
-	padding: 0.1em 0.75em;
-  margin: 0;
-  color: white;
-}
-
-#user a {
-  color: silver;
-}
-
-/* only needed for fly-out menu effect on tablet and phone stylesheets */
-#nav-icon {
-  display: none;
-}
-
-#nav-menu {
-	margin: 0;
-  padding: 0;
-}
-
-#nav ul li {
-  padding: 0;
-  margin: 0;
-  display: inline;
-}
-
-#nav ul li a {
-  color: white;
-  text-decoration: none;
-  font-weight: bold;
-  padding: 0.1em 0.75em;
-  margin: 0;
-}
-
-#nav ul li.active a { background: silver;}
-li.nav-item a:hover { background: rgb( 240, 240, 240) }
-li.nav-item a:active { background: gray; color: white; }
-
 /* Overall container div, holds all content of page. Yes, I know it shouldn't have fixed width */
 #main-container{
 }
@@ -211,33 +171,25 @@ li.nav-item a:active { background: gray; color: white; }
   float: left;
 }
 
-/* content of the current in the Wiki - editable, provided by users. Within main-container */
-#content {
-  border: thin solid silver;
-  width: 80%;
-  float: right;
-  padding-bottom: 5em;
-}
-
 /* cookies information box, fixed, in right margin, just above footer */
 #cookies {
 	width: 30%;
 	float: right;
   position: fixed;
-  bottom: 1.5em;
+  bottom: 3.5em;
   right: 0;
-	z-index: 150;
+	z-index: 175;
   background: transparent;
 }
 
 /* about-cookies box: permanently visible part of cookies information box */
 #about-cookies {
   clear: right;
-  width: 10em;
   font-size: 66%;
   float: right;
   text-align: right;
   padding: 0.25em 2em;
+  border-radius: 0.25em;
 	color: white;
   background:rgba(40,40,40,0.8);
 }
@@ -245,7 +197,8 @@ li.nav-item a:active { background: gray; color: white; }
 /* more-about-cookies box, normally hidden */
 #more-about-cookies {
   display: none;
-	padding: 0.25em 2em;
+	padding: 0.5em 2em;
+  border-radius: 0.5em;
 	color: white;
   background:rgba(40,40,40,0.8);
 	border-bottom: thin solid white;
@@ -256,9 +209,18 @@ li.nav-item a:active { background: gray; color: white; }
 	display: block;
 }
 
+#uploaded-image {
+  float: right;
+}
+
 .change {
   background-color: rgb( 223, 223, 223);
   border: thin solid silver;
+}
+
+
+.data-visualisation {
+  padding: 0.25em 5%;
 }
 
 .error {
@@ -277,7 +239,9 @@ li.nav-item a:active { background: gray; color: white; }
 .minor-controls {
   list-style: none;
   float: right;
+  right: 0;
   padding: 0.25em 2em;
+  border-radius: 0.25em;
   color: white;
   background:rgba(40,40,40,0.8);
   font-size: 66%;
@@ -291,6 +255,23 @@ li.nav-item a:active { background: gray; color: white; }
   float: right;
   padding: 0.25em 2em;
   color: white;
+}
+
+.pseudo-input {
+  border: inset thin;
+  background-color: white;
+  display: inline-block;
+  min-width: 7.5em;
+  padding: 0 2em 0 0;
+}
+
+.vega-bindings, .vega-actions {
+  font-size: 66%;
+}
+
+/* Add space between Vega-Embed links  */
+.vega-actions a {
+  margin-right: 5px;
 }
 
 .warn {
@@ -309,3 +290,212 @@ li.nav-item a:active { background: gray; color: white; }
   margin: 0;
 }
 
+/* desktops and laptops, primarily. Adapted to mouse; targets may be small */
+@media all and (min-device-width: 1025px) {
+  /* content of the current page in the Wiki - editable, provided by users. Within main-container */
+  #content {
+    border: thin solid silver;
+    width: 80%;
+    float: right;
+    padding-bottom: 5em;
+  }
+
+  #phone-side-bar, #phone-credits {
+    display: none;
+  }
+
+  /* top-of-page navigation, not editable, provided by Smeagol */
+  #nav{
+    margin: 0;
+    padding: 0;
+    top: 0;
+    width: 100%;
+    _position: absolute;
+    _top: expression(document.documentElement.scrollTop);
+    z-index: 149;
+    background:rgba(40,40,40,0.8);
+  }
+
+  /* only needed for fly-out menu effect on tablet and phone stylesheets */
+  #nav-icon {
+    display: none;
+  }
+
+  #nav-menu {
+    margin: 0;
+    padding: 0;
+  }
+
+  #nav menu li {
+    padding: 0;
+    margin: 0;
+    display: inline;
+  }
+
+  #nav menu li a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 0.1em 0.75em;
+    margin: 0;
+  }
+
+  #nav menu li.active a { background: gray;}
+  li.nav-item a:hover { background: rgb( 240, 240, 240) }
+  li.nav-item a:active { background: gray; color: white; }
+
+  #nav menu li#user {
+    padding: 0 1em;
+    float: right;
+  }
+}
+
+/* tablets, primarily. Adapted to touch; targets are larger */
+@media all and (min-device-width: 769px) and (max-device-width: 1024px) {
+  h1 {
+    /* I wouldn't normally use a px value, but the menu icon is 49px wide */
+    padding: 0.25em 5%;
+    padding-left: 100px;
+  }
+
+  /* content of the current page in the Wiki - editable, provided by users. Within main-container */
+  #content {
+    border: thin solid silver;
+    width: 80%;
+    float: right;
+    padding-bottom: 5em;
+  }
+
+  #nav{
+    margin: 0;
+    padding: 0;
+    position: fixed;
+    z-index: 149;
+    color: silver;
+    background:rgba(40,40,40,0.9);
+  }
+
+  #nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  #nav:hover #nav-menu {
+    display: block;
+    list-style-type: none;
+    width: 100%;
+  }
+
+  #nav-icon {
+    padding: 0;
+  }
+
+  #nav-menu, #phone-side-bar {
+    display: none;
+  }
+
+  #nav menu li {
+    padding: 0.5em;
+    margin: 0.5 em;
+    font-size: 150%;
+  }
+
+  #nav menu li a {
+  }
+
+  #nav ul li.active a { background: silver;}
+  li.nav-item a:hover { background: rgb( 240, 240, 240) }
+  li.nav-item a:active { background: gray; color: white; }
+
+  #nav menu #user {
+    text-decoration: none;
+    font-weight: bold;
+    margin: 0;
+  }
+}
+
+/* phones, and, indeed, smaller phones. Adapted to touch; display radically
+ * decluttered */
+@media all and (max-device-width: 768px) {
+  footer {
+    display: none;
+  }
+
+  h1 {
+    /* I wouldn't normally use a px value, but the menu icon is 49px wide */
+    padding: 0.25em 5%;
+    padding-left: 100px;
+    text-align: right;
+  }
+
+  /* content of the current in the Wiki - editable, provided by users. Within main-container */
+  #content {
+    border: thin solid silver;
+    width: 100%;
+    padding-bottom: 2em;
+  }
+
+  #main-container {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+
+  #cookies {
+    display: none;
+  }
+
+  #nav{
+    margin: 0;
+    padding: 0;
+    position: fixed;
+    z-index: 149;
+    color: silver;
+    background:rgba(40,40,40,0.9);
+  }
+
+  #nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  #nav:hover #nav-menu, #nav:hover #phone-side-bar {
+    display: block;
+    list-style-type: none;
+    width: 100%;
+  }
+
+  #nav-icon {
+    padding: 0;
+  }
+
+  #nav-menu, #phone-side-bar {
+    display: none;
+  }
+
+  #nav menu li {
+    padding: 0.5em;
+    margin: 0.5 em;
+    font-size: 150%;
+  }
+
+  #nav menu li a {
+  }
+
+  #nav ul li.active a { background: silver;}
+  li.nav-item a:hover { background: rgb( 240, 240, 240) }
+  li.nav-item a:active { background: gray; color: white; }
+
+  #nav menu #user {
+    text-decoration: none;
+    font-weight: bold;
+    margin: 0;
+  }
+
+  #side-bar {
+    display: none;
+  }
+}

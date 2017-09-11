@@ -1,0 +1,143 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;
+;;;; Smeagol: a very simple Wiki engine.
+;;;;
+;;;; This program is free software; you can redistribute it and/or
+;;;; modify it under the terms of the GNU General Public License
+;;;; as published by the Free Software Foundation; either version 2
+;;;; of the License, or (at your option) any later version.
+;;;;
+;;;; This program is distributed in the hope that it will be useful,
+;;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;;;; GNU General Public License for more details.
+;;;;
+;;;; You should have received a copy of the GNU General Public License
+;;;; along with this program; if not, write to the Free Software
+;;;; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
+;;;; USA.
+;;;;
+;;;; Copyright (C) 2017 Simon Brooke
+;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; en-GB.edn: English-language messages.
+;;; This is essentially all the text in the chrome - that which isn't editable
+;;; through the wiki itself; and the test in the sanity check report.
+
+;;      ;       ;       ;       ;       ;       ;       ;       ;       ;
+{:add-user-label        "Add new user"  ;; label for the add user link on edit users page
+ :change-pass-label     "Change password!"
+                                        ;; text of the change password widget itself on the
+                                        ;; change password page
+ :change-pass-link      "Change password"
+                                        ;; text of the change password link on the menu
+ :change-pass-prompt    "To change your password"
+                                        ;; text of the change password widget prompt on the
+                                        ;; change password page
+ :change-col-hdr        "Changes"       ;; header for the changes column in history
+ :chpass-bad-match      "Your proposed passwords don't match"
+                                        ;; error text if proposed passwords don't match
+ :chpass-fail           "Your password was not changed"
+                                        ;; error text on fail other htan too short or bad match
+ :chpass-success        "Your password was changed"
+                                        ;; confirmation text on password change
+ :chpass-too-short      "You proposed password wasn't long enough: eight characters required"
+                                        ;; error text if proposed password is too short
+ :chpass-title-prefix   "Change password for"
+                                        ;; prefix for title of change password page
+ :content-dir           "The content directory"
+                                        ;; used in sanity check report
+ :content-dir-exists    "The content directory exists"
+                                        ;; used in sanity check report
+ :content-dir-is-dir    "The content directory is a directory"
+                                        ;; used in sanity check report
+ :cookies-about         "About cookies" ;; about cookies text
+ :cookies-more          "This website stores session information as a 'cookie' on  your browser. This helps us show you the content you want to see. This cookie does not identify you, and cannot be read by other websites. It is deleted by your browser as soon as you leave this site. This website does not use any third party cookies, so your visit here cannot be tracked by other websites."
+                                        ;; more about cookies text
+ :default-page-title    "Introduction"  ;; title of the default page in this wiki
+ :del-col-hdr           "Delete"        ;; header for delete column on edit users page
+ :del-user-fail         "Could not delete user"
+                                        ;; error message on failure to delete user
+ :del-user-success      "Successfully deleted user"
+                                        ;; confirmation message on deletion of user
+ :diff-title-prefix     "Changes since version"
+                                        ;; prefix for the header of the changes page
+ :does-not-exist        "does not exist"
+                                        ;; (of a file or directory); used in sanity check report
+ :edit-col-hdr          "Edit"          ;; header for edit column on edit users page
+ :edit-page-link        "Edit this page"
+                                        ;; text of the edit page link on the content frame
+ :edit-title-prefix     "Edit"          ;; prefix for title of edit content page
+ :edit-users-link       "Edit users"    ;; text of the edit users link on the menu
+ :edit-users-title      "Select user to edit"
+                                        ;; title of edit users page
+ :email-prompt          "Email address" ;; text of the email widget prompt on edit user page
+ :file-or-directory     "File or directory"
+                                        ;; used in sanity check report
+ :file-summary-prompt   "Description/what's changed"
+                                        ;; prompt for the file upload summary input
+ :file-upload-link-text "You may link to this file using a link of the form"
+                                        ;; Text introducing the link to an uploaded file
+ :file-upload-prompt    "File to upload" ;; prompt string for the file upload widget
+ :file-upload-title     "Upload a file" ;; title for the file upload page
+ :is-admin-prompt       "Is administrator?"
+ :here                  "here"          ;; used in sanity check report
+ :home-link             "Home"          ;; text of the home link on the menu
+ :is-not-directory      "is not a directory"
+                                        ;; (of a file or directory) used in sanity check report
+ :is-not-readable       "is not readable"
+                                        ;; (of a file or directory) used in sanity check report
+ :is-not-writable       "is not writable"
+                                        ;; (of a file or directory) used in sanity check report
+ :login-label           "Log in!"       ;; text of the login widget on the login page
+ :login-link            "Log in"        ;; text of the login link on the menu
+ :login-prompt          "To edit this wiki"
+                                        ;; text of the action widget prompt on the login page
+ :logout-label          "Log out!"      ;; text of the logout widget on the logout page
+ :logout-link           "Log out"       ;; text of the logout link on the menu
+ :logged-in-as          "You are logged in as"
+                                        ;; text of the 'logged in as' label on the menu
+ :history-link          "History"       ;; text of the history link on the content frame
+ :history-title-prefix  "History of"    ;; prefix of the title on the history page
+ :new-pass-prompt       "New password"  ;; text of the new password widget prompt on the change
+                                        ;; password and edit user pages
+ :no-admin-users        "There are no users in the 'passwd' file with administrative privileges"
+                                        ;; used in sanity check report
+ :old-pass-prompt       "Your password"
+                                        ;; text of the old password widget prompt on the change
+                                        ;; password page, and password widget on login page
+ :password-file         "the password ('passwd') file"
+                                        ;; used in sanity check report
+ :problems-found        "problems were found"
+                                        ;; used in sanity check report
+ :rpt-pass-prompt       "And again"     ;; text of the new password widget prompt on the change
+                                        ;; password and edit user pages
+ :save-prompt           "When you have finished editing"
+                                        ;; text of the save widget label on edit content
+                                        ;; and edit user page
+ :save-label            "Save!"         ;; text of the save widget itself
+ :save-user-fail        "Failed to store user"
+ :save-user-success     "Successfully stored user"
+ :see-documentation     "For more information please see documentation "
+                                        ;; used in sanity check report
+ :smeagol-not-initialised
+                        "Smeagol is not initialised correctly"
+                                        ;; title of the sanity check report
+ :smeagol-misconfiguration
+                        "Smeagol has been unable to find some of the resources on which it depends,
+                         possibly because of misconfiguration or missing environment variables."
+                                        ;; used in sanity check report
+ :user-lacks-field      "User record in the passwd file lacks a field"
+                                        ;; used in sanity check report
+ :username-prompt       "Username"      ;; text of the username widget prompt on edit user page
+                                        ;; text of the is admin widget prompt on edit user page
+ :user-title-prefix     "Edit user"     ;; prefix for title of edit user page
+ :vers-col-hdr          "Version"       ;; header for the version column in history
+ :what-col-hdr          "What"          ;; header for the what column in history
+ :what-changed-prompt   "What have you changed?"
+                                        ;; text of the summary widget prompt on edit
+                                        ;; content page
+ :when-col-hdr          "When"          ;; header for the when column in history
+ :your-uname-prompt     "Your username" ;; text of the username widget prompt on the login page
+ }

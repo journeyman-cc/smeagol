@@ -1,12 +1,14 @@
 (ns ^{:doc "Miscellaneous utility functions supporting Smeagol."
       :author "Simon Brooke"}
   smeagol.util
-  (:require [clojure.string :as cs]
-            [cemerick.url :refer (url url-encode url-decode)]
+  (:require [clojure.java.io :as cjio]
+            [environ.core :refer [env]]
             [noir.io :as io]
             [noir.session :as session]
-            [markdown.core :as md]
-            [smeagol.authenticate :as auth]))
+            [scot.weft.i18n.core :as i18n]
+            [smeagol.authenticate :as auth]
+            [smeagol.configuration :refer [config]]
+            [smeagol.formatting :refer [md->html]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;
@@ -31,23 +33,11 @@
 ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn md->html
-  "reads a markdown file from public/md and returns an HTML string"
-  [filename]
-  (md/md-to-html-string (io/slurp-resource filename)))
 
-
-(defn local-links
-  "Rewrite text in `html-src` surrounded by double square brackets as a local link into this wiki."
-  [^String html-src]
-  (cs/replace html-src #"\[\[[^\[\]]*\]\]"
-              #(let [text (clojure.string/replace %1 #"[\[\]]" "")
-                     encoded (url-encode text)
-                     ;; I use '\_' to represent '_' in wiki markup, because
-                     ;; '_' is meaningful in Markdown. However, this needs to
-                     ;; be stripped out when interpreting local links.
-                     munged (cs/replace encoded #"%26%2395%3B" "_")]
-                 (format "<a href='wiki?page=%s'>%s</a>" munged text))))
+(def content-dir
+  (or
+    (env :smeagol-content-dir)
+    (cjio/file (io/resource-path) "content")))
 
 
 (defn standard-params
@@ -56,7 +46,35 @@
   (let [user (session/get :user)]
     {:user user
      :admin (auth/get-admin user)
-     :side-bar (local-links (md->html "/content/_side-bar.md"))
-     :header (local-links (md->html "/content/_header.md"))
+     :side-bar (md->html (slurp (cjio/file content-dir "_side-bar.md")))
+     :header (md->html (slurp (cjio/file content-dir "_header.md")))
      :version (System/getProperty "smeagol.version")}))
 
+
+(defn- raw-get-messages
+  "Return the most acceptable messages collection we have given the
+  `Accept-Language` header in this `request`."
+  [request]
+  (merge
+    (i18n/get-messages
+      ((:headers request) "accept-language")
+      "i18n"
+      "en-GB")
+    config))
+
+
+(def get-messages (memoize raw-get-messages))
+
+
+(defn get-message
+  "Return the message with this `message-key` from this `request`.
+   if not found, return this `default`, if provided; else return the
+   `message-key`."
+  ([message-key request]
+   (get-message message-key message-key request))
+  ([message-key default request]
+   (let [messages (get-messages request)]
+     (if
+       (map? messages)
+       (or (messages message-key) default)
+       default))))

@@ -1,26 +1,43 @@
 {% extends "templates/base.html" %}
 {% block extra-headers %}
-    <link rel="stylesheet" href="{{servlet-context}}/vendor/simplemde/dist/simplemde.min.css">
-    <script src="{{servlet-context}}/vendor/simplemde/dist/simplemde.min.js"></script>
+{% style "/vendor/simplemde/dist/simplemde.min.css" %}
+{% script "/vendor/simplemde/dist/simplemde.min.js" %}
 {% endblock %}
 
 {% block content %}
         <div id="content" class="edit">
             <form action="{{servlet-context}}/edit" method="POST">
+                {% csrf-field %}
                 <input type="hidden" name="page" value="{{page}}"/>
                 <textarea name="src" id="src" rows="25" cols="80">{{content}}</textarea>
                 <p class="widget">
-                    <label for="summary">What have you changed?</label>
+                    <label for="summary">{% i18n what-changed-prompt %}</label>
                     <input name="summary" id="summary" type="text"
                         value="{%if exists%}{%else%}New file {{title}}{%endif%}" required/>
                 </p>
                 <p class="widget">
-                    <label for="submit">When you have finished editing</label>
-                    <input name="submit" id="submit" type="submit" class="action" value="Save!"/>
+                    <label for="submit">{% i18n save-prompt %}</label>
+                    <input name="submit" id="submit" type="submit" class="action" value="{% i18n save-label %}"/>
                 </p>
             </form>
         </div>
         <script>
-          var simplemde = new SimpleMDE();
+          var simplemde = new SimpleMDE({
+            autosave: {
+              enabled: true,
+              uniqueId: "Smeagol-{{page}}",
+              delay: 1000,
+            },
+            indentWithTabs: true,
+            insertTexts: {
+              horizontalRule: ["", "\n\n-----\n\n"],
+              image: ["![](http://", ")"],
+              link: ["[", "](http://)"],
+              table: ["", "\n\n| Column 1 | Column 2 | Column 3 |\n| -------- | -------- | -------- |\n| Text     | Text      | Text     |\n\n"],
+            },
+            showIcons: ["code"], //, "table"], - sadly, markdown-clj does not support tables
+	          spellChecker: true,
+	          status: ["autosave", "lines", "words", "cursor"]
+          });
         </script>
 {% endblock %}

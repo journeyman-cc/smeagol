@@ -2,10 +2,10 @@
       :author "Simon Brooke"}
   smeagol.middleware
   (:require [taoensso.timbre :as timbre]
-            [selmer.parser :as parser]
             [environ.core :refer [env]]
             [selmer.middleware :refer [wrap-error-page]]
             [prone.middleware :refer [wrap-exceptions]]
+            [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
             [noir-exception.core :refer [wrap-internal-error]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

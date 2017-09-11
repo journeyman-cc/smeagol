@@ -41,18 +41,30 @@
   [^String log-entry ^String file-path]
   (timbre/info (format "searching '%s' for '%s'" log-entry file-path))
   (cond
-    (not
-      (empty?
-        (filter
-          #(= (first %) file-path)
-      (:changed_files log-entry))))
+    (seq (filter (fn* [p1__341301#] (= (first p1__341301#) file-path)) (:changed_files log-entry)))
     log-entry))
 
 
-(defn find-history [^String git-directory-path ^String file-path]
+(defn load-or-init-repo
+  "There's a bootstrapping problem: when Smeagol first starts the repository
+   hasn't been initialised. Try to open the repository at this `git-directory-path`;
+   if an exception is thrown, try to init a repository at this `git-directory-path`,
+   and then open it and populate it."
+  [^String git-directory-path]
+  (try
+    (git/load-repo git-directory-path)
+    (catch java.io.FileNotFoundException fnf
+      (git/git-init git-directory-path)
+      (let [repo (git/load-repo git-directory-path)]
+        (git/git-add-and-commit repo "Initial commit")
+        repo))))
+
+
+(defn find-history
   "Return the log entries in the repository at this `git-directory-path`
    which refer to changes to the file at this `file-path`."
-  (let [repository (git/load-repo git-directory-path)]
+  [^String git-directory-path ^String file-path]
+  (let [repository (load-or-init-repo git-directory-path)]
     (filter
       #(entry-contains % file-path)
       (map #(q/commit-info repository %)
@@ -72,39 +84,40 @@
     (try
       (.reset result reader (.getId tree))
       (finally
-        (.release reader)
+        (.close reader)
         (.dispose walk)))
     result))
 
 
 (defn diff
   "Find the diff in the file at `file-path` within the repository at
-   `git-directory-path` between versions `older` and `newer` or between the specified
-   `version` and the current version of the file. Returns the diff as a string.
+  `git-directory-path` between versions `older` and `newer` or between the specified
+  `version` and the current version of the file. Returns the diff as a string.
 
-   Based on JGit Cookbook ShowFileDiff."
+  Based on JGit Cookbook ShowFileDiff."
   ([^String git-directory-path ^String file-path ^String version]
-    (diff git-directory-path file-path version
-          (:id (first (find-history git-directory-path file-path)))))
+   (diff git-directory-path file-path version
+         (:id (first (find-history git-directory-path file-path)))))
   ([^String git-directory-path ^String file-path ^String older ^String newer]
-    (let [git-r (git/load-repo git-directory-path)
-          old-parse (prepare-tree-parser git-r older)
-          new-parse (prepare-tree-parser git-r newer)
-          out (java.io.ByteArrayOutputStream.)]
-      (map
-        #(let [formatter (DiffFormatter. out)]
-           (.setRepository formatter (.getRepository git-r))
-           (.format formatter %)
-           %)
-        (.call
-          (.setOutputStream
-            (.setPathFilter
-              (.setNewTree
-                (.setOldTree (.diff git-r) old-parse)
-                new-parse)
-              (PathFilter/create file-path))
-            out)))
-      (.toString out))))
+   (let [git-r (load-or-init-repo git-directory-path)
+         old-parse (prepare-tree-parser git-r older)
+         new-parse (prepare-tree-parser git-r newer)
+         out (java.io.ByteArrayOutputStream.)]
+     (doall
+       (map
+         #(let [formatter (DiffFormatter. out)]
+            (.setRepository formatter (.getRepository git-r))
+            (.format formatter %)
+            %)
+         (.call
+           (.setOutputStream
+             (.setPathFilter
+               (.setNewTree
+                 (.setOldTree (.diff git-r) old-parse)
+                 new-parse)
+               (PathFilter/create file-path))
+             out))))
+     (str out))))
 
 
 (defn fetch-version
@@ -113,7 +126,7 @@
 
    Based on JGit Cookbook ReadFileFromCommit."
   [^String git-directory-path ^String file-path ^String version]
-  (let [git-r (git/load-repo git-directory-path)
+  (let [git-r (load-or-init-repo git-directory-path)
         repo (.getRepository git-r)
         walk (i/new-rev-walk git-r)
         commit (i/bound-commit git-r walk (ObjectId/fromString version))
@@ -127,4 +140,4 @@
       (throw (IllegalStateException.
                (str "Did not find expected file '" file-path "'"))))
     (.copyTo (.open repo (.getObjectId tw 0)) out)
-    (.toString out)))
+    (str out)))

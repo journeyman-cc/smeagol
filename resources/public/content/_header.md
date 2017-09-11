@@ -1,1 +1,2 @@
-This is the header. There isn't yet much in it. You could [edit](edit?page=_header) it to provide internal navigation or branding.
+[[Introduction]] | [[User Documentation]] | [[Deploying Smeagol]] | [[Developing Smeagol]] || 
+This is the header. You could [edit](edit?page=_header) it to provide internal navigation or branding.

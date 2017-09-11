@@ -1,27 +1,28 @@
 {% extends "templates/base.html" %}
 {% block content %}
         <div id="content" class="auth">
-            <form action="{{servlet-context}}/auth" method="POST">
-                <input type="hidden" name="redirect-to" value="{{redirect-to}}"/>
-                {% if user %}
-                <p class="widget">
-                    <label for="submit">To finish editing</label>
-                    <input name="action" id="action" type="submit" class="action-dangerous" value="Logout!"/>
-                </p>
-                {% else %}
-                <p class="widget">
-                    <label for="username">Your username</label>
-                    <input name="username" id="username" type="text" required/>
-                </p>
-                <p class="widget">
-                    <label for="password">Your password</label>
-                    <input name="password" id="password" type="password" required/>
-                </p>
-                <p class="widget">
-                    <label for="submit">To edit this wiki</label>
-                    <input name="action" id="action" type="submit" class="action" value="Login!"/>
-                </p>
-                {% endif %}
-            </form>
+          <form action="{{servlet-context}}/auth" method="POST">
+            {% csrf-field %}
+            <input type="hidden" name="redirect-to" value="{{redirect-to}}"/>
+            {% if user %}
+            <p class="widget">
+              <label for="submit">{% i18n save-prompt %}</label>
+              <input name="action" id="action" type="submit" class="action-dangerous" value="{% i18n logout-label %}"/>
+            </p>
+            {% else %}
+            <p class="widget">
+              <label for="username">{% i18n your-uname-prompt %}</label>
+              <input name="username" id="username" type="text" required/>
+            </p>
+            <p class="widget">
+              <label for="password">{% i18n old-pass-prompt %}</label>
+              <input name="password" id="password" type="password" required/>
+            </p>
+            <p class="widget">
+              <label for="submit">{% i18n login-prompt %}</label>
+              <input name="action" id="action" type="submit" class="action" value="{% i18n login-label %}"/>
+            </p>
+            {% endif %}
+          </form>
         </div>
 {% endblock %}

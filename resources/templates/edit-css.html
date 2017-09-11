@@ -3,20 +3,18 @@
 {% block content %}
         <div id="content" class="edit">
             <form action="{{servlet-context}}/edit-css" method="POST">
+                {% csrf-field %}
                 <input type="hidden" name="page" value="{{page}}"/>
                 <textarea name="src" id="src" rows="25" cols="80">{{content}}</textarea>
                 <p class="widget">
-                    <label for="summary">What have you changed?</label>
+                    <label for="summary">{% i18n what-changed-prompt %}</label>
                     <input name="summary" id="summary" type="text"
                         value="{%if exists%}{%else%}New file {{title}}{%endif%}" required/>
                 </p>
                 <p class="widget">
-                    <label for="submit">When you have finished editing</label>
-                    <input name="submit" id="submit" type="submit" class="action" value="Save!"/>
+                    <label for="submit">{% i18n save-prompt %}</label>
+                    <input name="submit" id="submit" type="submit" class="action" value="{% i18n save-label %}"/>
                 </p>
             </form>
         </div>
-        <script>
-          var simplemde = new SimpleMDE();
-        </script>
 {% endblock %}

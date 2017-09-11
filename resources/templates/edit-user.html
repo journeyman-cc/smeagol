@@ -3,29 +3,35 @@
 {% block content %}
         <div id="content" class="edit">
             <form action="{{servlet-context}}/edit-user" method="POST">
-              <p class="widget">
-                <label for="target">Username</label>
-                <input type="text" name="target" id="target" value="{{target}}" required/>
-              </p>
+                {% csrf-field %}
                 <p class="widget">
-                    <label for="pass1">New password</label>
+                    <label for="target">{% i18n username-prompt %}</label>
+                  {% ifequal target "" %}
+                    <input type="text" name="target" id="target" value="{{target}}" required/>
+                  {% else %}
+                    <span class="pseudo-input">{{target}}</span>
+                    <input type="hidden" name="target" id="target" value="{{target}}" required/>
+                  {% endifequal %}
+                </p>
+                <p class="widget">
+                    <label for="pass1">{% i18n new-pass-prompt %}</label>
                     <input name="pass1" id="pass1" type="password"/>
                 </p>
                 <p class="widget">
-                    <label for="pass2">And again</label>
+                    <label for="pass2">{% i18n rpt-pass-prompt %}</label>
                     <input name="pass2" id="pass2" type="password"/>
                 </p>
                 <p class="widget">
-                    <label for="email">Email address</label>
+                    <label for="email">{% i18n email-prompt %}</label>
                     <input name="email" id="email" type="text" value="{{details.email}}" required/>
                 </p>
                 <p class="widget">
-                    <label for="admin">Is administrator?</label>
+                    <label for="admin">{% i18n is-admin-prompt %}</label>
                     <input name="admin" id="admin" type="checkbox" {% if details.admin %}checked{% endif %}/>
                 </p>
                 <p class="widget">
-                    <label for="submit">When you have finished editing</label>
-                    <input name="submit" id="submit" type="submit" class="action" value="Save!"/>
+                    <label for="submit">{% i18n save-prompt %}</label>
+                    <input name="submit" id="submit" type="submit" class="action" value="{% i18n save-label}}"/>
                 </p>
             </form>
         </div>

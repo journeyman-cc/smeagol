@@ -1,7 +1,6 @@
 (ns smeagol.test.diff2html
-  (:use clojure.test
-        ring.mock.request
-        smeagol.diff2html))
+  (:require [clojure.test :refer :all]
+            [smeagol.diff2html :refer :all]))
 
 (deftest test-mung-line
   (testing "conversion of individual lines"

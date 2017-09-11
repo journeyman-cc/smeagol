@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>{{title}}</title>
+    <title>{% i18n site-title %}: {{title}}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <link href="{{servlet-context}}/content/stylesheet.css" media="screen and (min-device-width: 1025px)" rel="stylesheet" type="text/css" />
-    <link href="{{servlet-context}}/css/print.css" media="print" rel="stylesheet" type="text/css" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% style "/content/stylesheet.css" %}
     {% block extra-headers %}
     {% endblock %}
   </head>
@@ -12,24 +13,39 @@
     <header class="wiki">
       <!-- navbar -->
       <div id="nav">
-        {% if user %}
-        <p class="user" id="user">You are logged in as {{user}} | <a href="passwd">change password</a></p>
-        {% endif %}
-        <img id="nav-icon" src="{{servlet-context}}/img/threelines.png" alt="Menu"/>
-        <ul id="nav-menu" class="nav">
-          <li class="{{wiki-selected}}"><a href="{{servlet-context}}/">Home</a></li>
+        <img id="nav-icon" src="{{servlet-context}}/img/three-lines.png" alt="Menu"/>
+        <menu id="nav-menu">
+          <li class="{{wiki-selected}}"><a href="{{servlet-context}}/">{% i18n home-link %}</a></li>
           {% if admin %}
-          <li class="{{admin-selected}}"><a href="{{servlet-context}}/edit-users">Edit users</a></li>
+          <li class="{{edit-users-selected}}"><a href="{{servlet-context}}/edit-users">{% i18n edit-users-link %}</a></li>
           {% endif %}
+          {% if user %}
+          <li class="{{upload-selected}}"><a href="upload">{% i18n file-upload-title %}</a></li>
+          <li class="{{passwd-selected}}"><a href="passwd">{% i18n change-pass-link %}</a></li>
+          <li class="user" id="user">{% i18n logged-in-as}} {{user}}</li>
           <li class="{{auth-selected}}"><a href="{{servlet-context}}/auth">
-            {% if user %}
-            Log out
-            {% else %}
-            Log in
-            {% endif %}</a></li>
-        </ul>
+            {% i18n logout-link %}</a></li>
+          {% else %}
+          <li class="{{auth-selected}}"><a href="{{servlet-context}}/auth">
+            {% i18n login-link %}</a></li>
+          {% endif %}
+        </menu>
+        <div id="phone-side-bar"  class="wiki">
+            {{side-bar|safe}}
+          <div id="phone-credits">
+            <p>
+              <img height="16" width="16" alt="one wiki to rule them all"
+                   src="img/smeagol.png"/>One Wiki to rule them all ||
+              Smeagol wiki engine {{version}} ||
+              <img height="16" width="16"
+                   alt="The Web Engineering Factory &amp; Toolworks"
+                  src="http://www.weft.scot/images/weft.logo.64.png">
+              Developed by <a href="http://www.weft.scot/">WEFT</a>
+            </p>
+          </div>
+        </div>
       </div>
-      <h1>{{title}}</h1>
+      <h1>{% i18n site-title %}: {{title}}</h1>
       {{header|safe}}
       {% if message %}
       <div id="message">
@@ -52,13 +68,10 @@
     </div>
     <div id="cookies">
       <div id="more-about-cookies">
-        This website stores session information as a 'cookie' on your browser. This helps us show you the content
-        you want to see. This cookie does not identify you, and cannot be read by other websites. It is deleted by
-        your browser as soon as you leave this site. This website does not use any third party cookies, so your
-        visit here cannot be tracked by other websites.
+        {% i18n cookies-more %}
       </div>
       <div id="about-cookies">
-        About cookies
+        {% i18n cookies-about %}
       </div>
     </div>
     <footer>
@@ -66,7 +79,7 @@
          <div>
            <img height="16" width="16" alt="one wiki to rule them all" src="img/smeagol.png"/>One Wiki to rule them all ||
            Smeagol wiki engine {{version}} ||
-           <img height="16" width="16" alt="The Web Engineering Factory &amp; Toolworks" src="http://www.weft.scot/images/weft.logo.64.png"> Developed by <a href="http://www.weft.scot/">WEFT</a>
+           <img height="16" width="16" alt="The Web Engineering Factory &amp; Toolworks" src="https://www.weft.scot/images/weft.logo.64.png"> Developed by <a href="http://www.weft.scot/">WEFT</a>
          </div>
          <div>
            Built with <a href="http://www.luminusweb.net/">LuminusWeb</a> ||
@@ -78,4 +91,3 @@
     <footer>
   </body>
 </html>
-

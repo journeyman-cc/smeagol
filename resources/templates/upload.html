@@ -1,0 +1,38 @@
+{% extends "templates/base.html" %}
+{% block content %}
+        <div id="content" class="auth">
+        {% if uploaded %}
+          {% if is-image %}
+            <p>
+              <img id="uploaded-image" alt="Uploaded image" src="content/uploads/{{uploaded}}"/>
+
+              {% i18n file-upload-link-text %}:
+
+              <code>![Uploaded image](content/uploads/{{uploaded}})</code>
+            </p>
+          {% else %}
+            <p>
+              {% i18n file-upload-link-text %}:
+
+              <code>[Uploaded file](uploads/{{uploaded}})</code>
+            </p>
+          {% endif %}
+        {% else %}
+            <form action="{{servlet-context}}/upload" enctype="multipart/form-data" method="POST">
+                {% csrf-field %}
+                <p class="widget">
+                    <label for="upload">{% i18n file-upload-prompt %}</label>
+                    <input name="upload" id="upload" type="file" required/>
+                </p>
+                <p class="widget">
+                    <label for="summary">{% i18n file-summary-prompt %}</label>
+                    <input name="summary" id="summary" type="text" required/>
+                </p>
+                <p class="widget">
+                    <label for="submit">{% i18n save-prompt %}</label>
+                    <input name="submit" id="submit" type="submit" class="action" value="{% i18n save-label %}"/>
+                </p>
+            </form>
+        {% endif %}
+        </div>
+{% endblock %}

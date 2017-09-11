@@ -1,9 +1,10 @@
 (ns ^{:doc "Authentication functions."
       :author "Simon Brooke"}
   smeagol.authenticate
-  (:require [taoensso.timbre :as timbre]
+  (:require [crypto.password.scrypt :as password]
+            [environ.core :refer [env]]
             [noir.io :as io]
-            [crypto.password.scrypt :as password]))
+            [taoensso.timbre :as timbre]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;
@@ -34,7 +35,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; the relative path to the password file.
-(def password-file-path (str (io/resource-path) "../passwd"))
+(def password-file-path
+  (or
+    (env :smeagol-passwd)
+    (str (clojure.java.io/resource "passwd"))))
 
 
 (defn- get-users
@@ -70,10 +74,14 @@
     (let [user ((keyword username)  (get-users))]
       (:admin user))))
 
+
 (defn evaluate-password
-  "Evaluate whether this proposed password is suitable for use."
+  "Evaluate whether this proposed password is suitable for use; return `true` is so, a keyword if not."
   ([pass1 pass2]
-   (and pass1 (>= (count pass1) 8) (.equals pass1 pass2)))
+   (cond
+     (< (count pass1) 8) :chpass-too-short
+     (.equals pass1 pass2) true
+     true :chpass-bad-match))
   ([password]
    (evaluate-password password password)))
 
@@ -120,39 +128,44 @@
   "Return the map of features of this user, if any."
   [username]
   (if
-    (and username (> (count (str username)) 0))
+    (and username (pos? (count (str username))))
     ((keyword username) (get-users))))
 
 
 (defn add-user
-  "Add a user to the passwd file with this username, initial password and email address and admin flag."
+  "Add a user to the passwd file with this `username`, initial password `newpass`,
+  `email` address and `admin`  flag; *or*, modify an existing user. Return true
+  if user is successfully stored, false otherwise."
   [username newpass email admin]
-  (let [users (get-users)
-        user ((keyword username) users)
-        password (if
-                   (and newpass (evaluate-password newpass))
-                   (password/encrypt newpass))
-        details {:email email
-                 :admin (if
-                          (and (string? admin) (> (count admin) 0))
-                          true
-                          false)}
-        ;; if we have a valid password we want to include it in the details to update.
-        full-details (if password
-                       (merge details {:password password})
-                       details)]
-    (try
-      (locking password-file-path
-        (spit password-file-path
-              (merge users
-                     {(keyword username) (merge user full-details)}))
-        (timbre/info (str "Successfully added user " username))
-        true)
-      (catch Exception any
-        (timbre/error
-          (format "Adding user %s failed: %s (%s)"
-                  username (.getName (.getClass any)) (.getMessage any)))
-        false))))
+  (timbre/info  "Trying to add user " username)
+  (cond
+    (not (string? username)) (throw (Exception. "Username must be a string."))
+    (zero? (count username)) (throw (Exception. "Username cannot be zero length"))
+    true (let [users (get-users)
+               user ((keyword username) users)
+               password (if
+                          (and newpass (evaluate-password newpass))
+                          (password/encrypt newpass))
+               details {:email email
+                        :admin (if
+                                 (and (string? admin) (pos? (count admin)))
+                                 true
+                                 false)}
+               ;; if we have a valid password we want to include it in the details to update.
+               full-details (if password
+                              (assoc details :password password)
+                              details)]
+           (try
+             (locking password-file-path
+               (spit password-file-path
+                     (assoc users (keyword username) (merge user full-details)))
+               (timbre/info  "Successfully added user " username)
+               true)
+             (catch Exception any
+               (timbre/error
+                 (format "Adding user %s failed: %s (%s)"
+                         username (.getName (.getClass any)) (.getMessage any)))
+               false)))))
 
 
 (defn delete-user
