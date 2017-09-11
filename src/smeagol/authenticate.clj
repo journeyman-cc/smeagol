@@ -133,7 +133,9 @@
 
 
 (defn add-user
-  "Add a user to the passwd file with this `username`, initial password and `email` address and `admin`  flag."
+  "Add a user to the passwd file with this `username`, initial password `newpass`,
+  `email` address and `admin`  flag; *or*, modify an existing user. Return true
+  if user is successfully stored, false otherwise."
   [username newpass email admin]
   (timbre/info  "Trying to add user " username)
   (cond

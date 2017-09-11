@@ -69,10 +69,16 @@
             check-pass (auth/evaluate-password pass1 pass2)
             password (if (and pass1 (true? check-pass)) pass1)
             stored (if
-                     (:email params)
+                     (and
+                      (:email params)
+                      (or
+                       (nil? pass1)
+                       (zero? (count pass1))
+                       (true? check-pass)))
                      (auth/add-user target password (:email params) (:admin params)))
             message (if stored (str (:save-user-success (util/get-messages request)) " " target "."))
-            error (if (and (:email params) (not stored))
+            error (if
+                    (and (:email params) (not stored))
                     (str
                       (:save-user-fail (util/get-messages request))
                       " " target ". "
