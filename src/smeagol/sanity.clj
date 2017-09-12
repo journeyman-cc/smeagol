@@ -1,4 +1,5 @@
-(ns ^{:doc "Functions related to sanity checks and error reporting in conditions where the environment may not be sane."
+(ns ^{:doc "Functions related to sanity checks and error reporting in conditions
+      where the environment may not be sane."
       :author "Simon Brooke"}
   smeagol.sanity
   (:import (java.util Locale))
@@ -412,7 +413,7 @@
         (timbre/warn "Sanity check completed; " (count (keys result)) " problem(s) found")
         (sanity-check-report result))
       (do
-        (timbre/info "Sanity check completed; no problem(s) found")
+        (timbre/info "Sanity check completed; no problems found")
         nil))))
 
 

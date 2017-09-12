@@ -22,20 +22,22 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; config.edn: a simple configuration map for Smeagol; inspired by Cryogen.
-;;; This is top-level configuration.
+;;; This is top-level configuration. All values can be overridden with
+;;; environment variables.
 
 ;;      ;       ;       ;       ;       ;       ;       ;       ;       ;
 {
-  :site-title           "Smeagol"       ;; overall title of the site, used in page headings
+  :content-dir          "resources/public/content"
+                                        ;; where content is served from.
   :default-locale       "en-GB"         ;; default language used for messages
-;;  :content-dir          "/home/simon/tmp/test-content"
-                                        ;; where content is served from
-  :passwd               "/home/simon/tmp/passwd"
-                                        ;; where the password file is stored
-  :log-level            :info           ;; the minimum logging level; one of
-                                        ;; TRACE DEBUG INFO WARN ERROR FATAL
   :formatters           {"vega"         smeagol.formatting/process-vega
                          "vis"          smeagol.formatting/process-vega
                          "mermaid"      smeagol.formatting/process-mermaid
                          "backticks"    smeagol.formatting/process-backticks}
+  :log-level            :info           ;; the minimum logging level; one of
+                                        ;; :trace :debug :info :warn :error :fatal
+  :passwd               "resources/passwd"
+                                        ;; where the password file is stored
+  :site-title           "Smeagol"       ;; overall title of the site, used in
+                                        ;; page headings
 }

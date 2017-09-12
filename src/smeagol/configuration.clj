@@ -1,7 +1,9 @@
 (ns ^{:doc "Read and make available configuration."
       :author "Simon Brooke"}
   smeagol.configuration
-  (:require [environ.core :refer [env]]
+  (:require [clojure.pprint :refer [pprint]]
+            [clojure.string :as s]
+            [environ.core :refer [env]]
             [noir.io :as io]
             [taoensso.timbre :as timbre]))
 
@@ -54,6 +56,16 @@
     vars))
 
 
+(defn to-keyword
+  "Convert this argument into an idiomatic clojure keyword."
+  [arg]
+  (if (and arg (not (keyword? arg)))
+    (keyword
+      (s/lower-case
+        (s/replace (str arg) #"[^A-Za-z0-9]+" "-")))
+    arg))
+
+
 (defn transform-map
   "transform this map `m` by applying these `transforms`. Each transforms
   is expected to comprise a map with the keys :from and :to, whose values
@@ -61,14 +73,21 @@
   and optionally a key :transform, whose value is a function of one
   argument to be used to transform the value of that key."
   [m tuples]
+  (timbre/debug
+    "transform-map:\n"
+    (with-out-str (clojure.pprint/pprint m)))
   (reduce
     (fn [m tuple]
       (if
         (and (map? tuple) (map? m) (m (:from tuple)))
         (let [old-val (m (:from tuple))
-              t (:transform tuple)
-              new-val (if t (apply t (list old-val)) old-val)]
-          (assoc (dissoc m (:from tuple)) (:to tuple) new-val))
+              t (:transform tuple)]
+          (assoc
+            (dissoc m (:from tuple))
+            (:to tuple)
+            (if-not
+              (nil? t)
+              (eval (list t old-val)) old-val)))
         m))
     m
     tuples))
@@ -78,27 +97,41 @@
   "Transforms to use with `transform-map` to convert environment
   variable names (which need to be specific) into the shorter names
   used internally"
-  '( {:from :smeagol-site-title :to :site-title}
+  '( {:from :smeagol-content-dir :to :content-dir}
      {:from :smeagol-default-locale :to :default-locale}
      {:from :smeagol-formatters :to :formatters :transform read-string}
-     {:from :smeagol-content-dir :to :content-dir}
+     {:from :smeagol-log-level :to :log-level :transform to-keyword}
      {:from :smeagol-passwd :to :passwd}
-     {:from :smeagol-log-level :to :log-level :transform (fn [s] (keyword (lower-case s)))}))
+     {:from :smeagol-site-title :to :site-title}))
 
 
-(def config
+(defn build-config
+  []
   "The actual configuration, as a map. The idea here is that the config
   file is read (if it is specified and present), but that individual
-  values "
+  values can be overridden by environment variables."
   (try
     (let [file-contents (try
                           (read-string (slurp config-file-path))
-                          (catch Exception _ {}))]
-      (merge
-        file-contents
-        (transform-map
-          (from-env-vars :smeagol-site-title :smeagol-default-locale)
-          config-env-transforms)))
+                          (catch Exception _ {}))
+          config (merge
+                   file-contents
+                   (transform-map
+                     (from-env-vars
+                       :smeagol-content-dir
+                       :smeagol-default-locale
+                       :smeagol-formatters
+                       :smeagol-log-level
+                       :smeagol-passwd
+                       :smeagol-site-title)
+                     config-env-transforms))]
+      (if (env :dev)
+        (timbre/debug
+          "Loaded configuration\n"
+          (with-out-str (clojure.pprint/pprint config))))
+      config)
     (catch Exception any
       (timbre/error any "Could not load configuration")
       {})))
+
+(def config (build-config))
