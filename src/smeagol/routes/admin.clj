@@ -98,7 +98,7 @@
                                :details details
                                :users (auth/list-users)})))
       (catch Exception any
-        (timbre/error (.getMessage any))
+        (timbre/error any)
         (layout/render "edit-user.html"
                        (merge (util/standard-params request)
                               {:title (str (:edit-title-prefix (util/get-messages request)) " " (:target params))

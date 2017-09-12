@@ -1,4 +1,4 @@
-(defproject smeagol "1.0.0-rc3"
+(defproject smeagol "1.0.0"
   :description "A simple Git-backed Wiki inspired by Gollum"
   :url "https://github.com/simon-brooke/smeagol"
   :license {:name "GNU General Public License,version 2.0 or (at your option) any later version"
@@ -8,9 +8,7 @@
                  [com.cemerick/url "0.1.1"]
                  [com.fzakaria/slf4j-timbre "0.3.7"]
                  [com.taoensso/encore "2.92.0"]
-                 [com.cemerick/url "0.1.1"]
                  [com.taoensso/timbre "4.10.0"]
-                 [com.fzakaria/slf4j-timbre "0.3.7"]
                  [com.taoensso/tower "3.0.2" :exclusions [com.taoensso/encore]]
                  [crypto-password "0.2.0"]
                  [environ "1.1.0"]
@@ -64,7 +62,7 @@
                   ;; ["vcs" "tag"] -- not working, problems with secret key
                   ["clean"]
                   ["bower" "install"]
-                  ["ring" "uberwar"]
+                  ["ring" "uberjar"]
                   ["docker" "build"]
                   ["docker" "push"]
                   ["change" "version" "leiningen.release/bump-version"]
