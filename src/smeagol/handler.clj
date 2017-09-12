@@ -12,6 +12,7 @@
             [noir.util.middleware :refer [app-handler]]
             [ring.middleware.defaults :refer [site-defaults]]
             [selmer.parser :as parser]
+            [smeagol.configuration :refer [config]]
             [smeagol.routes.wiki :refer [wiki-routes]]
             [smeagol.middleware :refer [load-middleware]]
             [smeagol.session-manager :as session-manager]
@@ -73,9 +74,7 @@
                   :max-size (* 512 1024)
                   :backlog 10})}
        :level (or
-                (read-string (env :timbre-level))
-                (let [level (read-string (env :log-level))]
-                  (if (string? level) (lower-case (keyword level))))
+                (:log-level config)
                 (if (env :dev) :debug)
                 :info)})
     (cronj/start! session-manager/cleanup-job)

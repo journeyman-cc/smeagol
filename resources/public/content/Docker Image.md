@@ -8,7 +8,7 @@ Where 127.0.0.1 is the IP address through which you want to forward port 80 (in 
 
 You can then browse to Smeagol by pointing your browser at http://localhost/.
 
-As of version 0.99.10, the Docker image is now based on the Jetty, rather than the Tomcat, deployment of Smeagol (that is to say, it runs the executable jar file). This makes for a lighter weight Docker image, but there are still some problems which need to be addressed.
+As of version 0.99.10, the Docker image is now based on the Jetty, rather than the Tomcat, deployment of Smeagol (that is to say, it runs the executable jar file). This makes for a lighter weight Docker image. All configuration can be overridden with [[Environment Variables]], which can be passed into the Docker container when the image is invoked, or from a [[Configuration]] file.
 
 The `config.edn` and `passwd` files and the `content` directory are copied into `/usr/local/etc` in the Docker image, and the appropriate environment variables are set up to point to them:
 ```

@@ -6,12 +6,18 @@ To deploy Smeagol as a stand-alone application, either download the jar file for
 
 This will create a jar file in the `target` directory, named `smeagol-`*VERSION*`-standalone.jar`.
 
-Smeagol cannot access either its configuration or its content from the jar file, as otherwise they would not be editable. Consequently you should set up three environment variables:
+Smeagol cannot access either its configuration or its content from the jar file, as otherwise they would not be editable. There are three solutions to this:
 
-1. `SMEAGOL_CONFIG` should be the full or relative pathname of a Smeagol [[Configuration]] file;
-2. `SMEAGOL_CONTENT_DIR` should be the full or relative pathname of the directory from which Smeagol should serve content (which may initially be empty, but must be writable by the process which runs Smeagol)'
-3. `SMEAGOL_PASSWD` should be the full or relative pathname of a Smeagol Passwd file - see [[Security and authentication]]. This file must contain an entry for at least your initial user, and, if you want to administer users through the user interface, must be writable by the process which runs Smeagol.
+### Custom configuration file
+You can copy the standard [[Configuration]] file `resources/config.edn` to somewhere outside the jar file, edit it to suit your installation, and set up a single environment variable, `SMEAGOL_CONFIG`, whose value is the path to your new configuration file.
 
+### Environment variables
+Alternatively, you can configure everything through [[Environment Variables]].
+
+### Hybrid strategy
+You can have both a configuration file and environment variables. If you do this, the environment variables override the values in the configuration file.
+
+### Necessary content
 **NOTE** that `SMEAGOL_CONTENT_DIR` must contain at least the following files:
 
 1. `_edit-side-bar.md` - the side-bar that should be displayed when editing pages;

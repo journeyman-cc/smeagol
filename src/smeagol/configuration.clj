@@ -80,7 +80,10 @@
   used internally"
   '( {:from :smeagol-site-title :to :site-title}
      {:from :smeagol-default-locale :to :default-locale}
-     {:from :smeagol-formatters :to :formatters :transform read-string}))
+     {:from :smeagol-formatters :to :formatters :transform read-string}
+     {:from :smeagol-content-dir :to :content-dir}
+     {:from :smeagol-passwd :to :passwd}
+     {:from :smeagol-log-level :to :log-level :transform (fn [s] (keyword (lower-case s)))}))
 
 
 (def config

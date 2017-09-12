@@ -37,7 +37,7 @@
 
 (def content-dir
   (or
-    (env :smeagol-content-dir)
+    (:content-dir config)
     (cjio/file (io/resource-path) "content")))
 
 

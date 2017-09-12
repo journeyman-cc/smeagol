@@ -4,6 +4,7 @@
   (:require [crypto.password.scrypt :as password]
             [environ.core :refer [env]]
             [noir.io :as io]
+            [smeagol.configuration :refer [config]]
             [taoensso.timbre :as timbre]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -37,7 +38,7 @@
 ;; the relative path to the password file.
 (def password-file-path
   (or
-    (env :smeagol-passwd)
+    (:passwd config)
     (str (io/resource-path) "../passwd")))
 
 

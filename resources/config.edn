@@ -26,9 +26,15 @@
 
 ;;      ;       ;       ;       ;       ;       ;       ;       ;       ;
 {
- :site-title            "Smeagol"       ;; overall title of the site, used in page headings
- :default-locale        "en-GB"         ;; default language used for messages
- :formatters            {"vega"         smeagol.formatting/process-vega
+  :site-title           "Smeagol"       ;; overall title of the site, used in page headings
+  :default-locale       "en-GB"         ;; default language used for messages
+;;  :content-dir          "/home/simon/tmp/test-content"
+                                        ;; where content is served from
+  :passwd               "/home/simon/tmp/passwd"
+                                        ;; where the password file is stored
+  :log-level            :info           ;; the minimum logging level; one of
+                                        ;; TRACE DEBUG INFO WARN ERROR FATAL
+  :formatters           {"vega"         smeagol.formatting/process-vega
                          "vis"          smeagol.formatting/process-vega
                          "mermaid"      smeagol.formatting/process-mermaid
                          "backticks"    smeagol.formatting/process-backticks}
