@@ -2,6 +2,7 @@
       :author "Simon Brooke"}
   smeagol.handler
   (:require [clojure.java.io :as cjio]
+            [clojure.string :refer [lower-case]]
             [compojure.core :refer [defroutes]]
             [compojure.route :as route]
             [cronj.core :as cronj]
@@ -43,6 +44,7 @@
 (defn user-access [request]
   (session/get :user))
 
+
 (defroutes base-routes
   (route/resources "/")
   (route/not-found "Not Found"))
@@ -69,7 +71,13 @@
        {:rotor (rotor/rotor-appender
                  {:path "smeagol.log"
                   :max-size (* 512 1024)
-                  :backlog 10})}})
+                  :backlog 10})}
+       :level (or
+                (read-string (env :timbre-level))
+                (let [level (read-string (env :log-level))]
+                  (if (string? level) (lower-case (keyword level))))
+                (if (env :dev) :debug)
+                :info)})
     (cronj/start! session-manager/cleanup-job)
     (if (env :dev) (parser/cache-off!))
     ;;start the expired session cleanup job

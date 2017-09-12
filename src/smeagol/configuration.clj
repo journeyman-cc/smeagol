@@ -44,10 +44,58 @@
     (str (io/resource-path) "../config.edn")))
 
 
+(defn- from-env-vars
+  "Read a map from those of these environment variables which have values"
+  [& vars]
+  (reduce
+    #(let [v (env %2)]
+       (if v (assoc %1 %2 v) %1))
+    {}
+    vars))
+
+
+(defn transform-map
+  "transform this map `m` by applying these `transforms`. Each transforms
+  is expected to comprise a map with the keys :from and :to, whose values
+  are respectively a key to match and a key to replace that match with,
+  and optionally a key :transform, whose value is a function of one
+  argument to be used to transform the value of that key."
+  [m tuples]
+  (reduce
+    (fn [m tuple]
+      (if
+        (and (map? tuple) (map? m) (m (:from tuple)))
+        (let [old-val (m (:from tuple))
+              t (:transform tuple)
+              new-val (if t (apply t (list old-val)) old-val)]
+          (assoc (dissoc m (:from tuple)) (:to tuple) new-val))
+        m))
+    m
+    tuples))
+
+
+(def config-env-transforms
+  "Transforms to use with `transform-map` to convert environment
+  variable names (which need to be specific) into the shorter names
+  used internally"
+  '( {:from :smeagol-site-title :to :site-title}
+     {:from :smeagol-default-locale :to :default-locale}
+     {:from :smeagol-formatters :to :formatters :transform read-string}))
+
+
 (def config
-  "The actual configuration, as a map."
+  "The actual configuration, as a map. The idea here is that the config
+  file is read (if it is specified and present), but that individual
+  values "
   (try
-    (read-string (slurp config-file-path))
+    (let [file-contents (try
+                          (read-string (slurp config-file-path))
+                          (catch Exception _ {}))]
+      (merge
+        file-contents
+        (transform-map
+          (from-env-vars :smeagol-site-title :smeagol-default-locale)
+          config-env-transforms)))
     (catch Exception any
       (timbre/error any "Could not load configuration")
       {})))
