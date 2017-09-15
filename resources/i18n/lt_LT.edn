@@ -53,7 +53,7 @@
                                         ;; used in sanity check report
  :content-dir-is-dir    "Turinio katalogas yra katalogas"
                                         ;; used in sanity check report
- :cookies-about         "About cookies" ;; about cookies text
+ :cookies-about         "Apie slapukus" ;; about cookies text
  :cookies-more          "Šis puslapis saugo jūsų sesijų informaciją  jūsų naršyklėje “slapukų” forma. Tai mums leidžia jums rodyti tik tai, ką norite matyti. Slapukai neturi jokių jūsų identifikavimo duomenų ir kiti puslapiai negali jų “perskaityti”. Šie slapukai ištrinami iš karto, vos jūs išjungiate šį puslapį. Šis puslapis nenaudoja jokių trečiųjų asmenų slapukų, ir jūsų apsilankymas čia negali būti atsektas jokio kito puslapio."
                                         ;; more about cookies text
  :default-page-title    "Pristatymas"  ;; title of the default page in this wiki
