@@ -141,7 +141,7 @@
     (timbre/info (format "Showing history of page '%s'" page))
     (layout/render "history.html"
                    (merge (util/standard-params request)
-                          {:title (str "History of " page)
+                          {:title (util/get-message :history-title-prefix request)
                            :page page
                            :history (hist/find-history repo-path file-name)}))))
 

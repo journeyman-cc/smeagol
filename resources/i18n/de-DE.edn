@@ -135,10 +135,10 @@ nicht finden; wahrscheinlich wegen einer Fehlkonfiguration oder fehlenden Umgebu
                                         ;; text of the is admin widget prompt on edit user page
  :user-title-prefix     "Benutzer bearbeiten"     ;; prefix for title of edit user page
  :vers-col-hdr          "Version"       ;; header for the version column in history
- :what-col-hdr          "Wann"          ;; header for the what column in history
+ :what-col-hdr          "Wass"          ;; header for the what column in history
  :what-changed-prompt   "Was haben Sie verändert?"
                                         ;; text of the summary widget prompt on edit
                                         ;; content page
- :when-col-hdr          "When"          ;; header for the when column in history
+ :when-col-hdr          "Was"          ;; header for the when column in history
  :your-uname-prompt     "Ihr Benutzername" ;; text of the username widget prompt on the login page
  }
