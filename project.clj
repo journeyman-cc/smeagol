@@ -59,7 +59,7 @@
   :release-tasks [["vcs" "assert-committed"]
                   ["change" "version" "leiningen.release/bump-version" "release"]
                   ["vcs" "commit"]
-                  ;; ["vcs" "tag"] -- not working, problems with secret key
+                  ["vcs" "tag" "v." "--no-sign"]
                   ["clean"]
                   ["bower" "install"]
                   ["ring" "uberjar"]
