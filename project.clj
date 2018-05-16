@@ -30,7 +30,8 @@
                  [ring/ring-anti-forgery "1.1.0"]
                  [ring-server "0.4.0"]
                  [selmer "1.11.0"]
-                 [com.stuartsierra/component "0.3.2"]]
+                 [com.stuartsierra/component "0.3.2"]
+                 [prismatic/schema "1.1.9"]]
 
   :repl-options {:init-ns smeagol.repl}
 

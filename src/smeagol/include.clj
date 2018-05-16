@@ -1,11 +1,26 @@
 (ns smeagol.include
   (:require
-    [com.stuartsierra.component :as component]))
+    [schema.core :as s]
+    [com.stuartsierra.component :as component]
+    [smeagol.include.resolver :as resolver]))
 
-(defrecord Resolver [resolver-fn])
+(s/defrecord Includer
+  [resolver])
 
-(defn new-resolver [resolver-fn]
-  (map->Resolver {:resolver-fn resolver-fn}))
+(defprotocol IncludeMd
+  (expand-include-md
+    [includer md-src]
+    "return a markfown file content for given uri."))
 
-(defn resolve-include [resolver uri]
-  (apply (:resolver-fn resolver) [uri]))
+(extend-type Includer
+  IncludeMd
+  (expand-include-md [includer md-src]
+    ;parse md-src
+    ;resolve found includes
+    ;indent & integrate
+    md-src))
+
+(s/defn
+  new-includer
+  []
+  (map->Includer {}))
