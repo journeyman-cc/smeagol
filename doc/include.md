@@ -4,7 +4,8 @@ The user can include page title, abstract or the whole content in a given page. 
 
 ## Thoughts & Questions
 * Which include syntax should be used?
-  * page include can be definde alongsite of image includes - sth. like `#[indent-level](relative or absolute url)`
+  * page include can be definde alongsite of image includes - sth. like  
+    `&[:indent-heading s/Num :indent-list s/Num](relative or absolute url s/Str)`
 * Which kind of urls should we accept for page includes?
   * relative local urls (we will need some care to prohibit directory traversal ...)
   * absolute github / gitlab / gitblit urls without authentication.

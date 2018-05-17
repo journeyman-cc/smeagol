@@ -5,6 +5,49 @@
             [smeagol.include.resolver :as resolver]
             [smeagol.include :as sut]))
 
+(def include-simple
+  "# Heading1
+&[](./simple.md)")
+
+(def include-surounding-simple
+  "# Heading1
+Some surounding &[](./simple.md) text")
+
+(def include-heading-0
+  "# Heading1
+&[:indent-heading 0](./with-heading.md)")
+
+(def include-heading-list-1
+  "# Heading1
+&[:indent-heading 1 :indent-list 1](./with-heading-and-list.md)")
+
+(def include-heading-list-0
+  "# Heading1
+&[:indent-heading 0 :indent-list 0](./with-heading-and-list.md)")
+
+(def include-invalid-indent
+  "# Heading1
+&[ invalid input should default to indent 0 ](./simple.md)")
+
+(def include-spaced-indent
+  "# Heading1
+&[ :indent-heading 0   :indent-list 0  ](./with-heading-and-list.md)")
+
+
+(deftest test-parse-include-md
+  (testing "parse include links"
+    (is
+      (= []
+         (sut/parse-include-md "# Heading")))
+    (is
+      (= [{:uri "./simple.md", :indent-heading 0, :indent-list 0}]
+         (sut/parse-include-md
+           include-simple)))
+    (is
+      (= [{:uri "./simple.md", :indent-heading 1, :indent-list 1}]
+         (sut/parse-include-md
+           include-heading-list-1)))))
+
 (s/defmethod resolver/do-resolve-md :test-mock
   [resolver
    uri :- s/Str]
@@ -19,14 +62,13 @@
                 {:resolver :resolver})))
 
 (deftest test-expand-include-md
-  (testing "Rewriting of local links"
+  (testing "The whole integration of include"
     (is
       (= "# Heading"
          (sut/expand-include-md (:includer system-under-test) "# Heading")))
     (is
       (= "# Heading 1
-          Simple content."
+Simple content."
          (sut/expand-include-md
            (:includer system-under-test)
-           "# Heading1
-#[](.simple.md)")))))
+           include-simple)))))
