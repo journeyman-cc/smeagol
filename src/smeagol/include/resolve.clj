@@ -1,4 +1,4 @@
-(ns smeagol.include.resolver
+(ns smeagol.include.resolve
   (:require
     [schema.core :as s]
     [com.stuartsierra.component :as component]))

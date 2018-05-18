@@ -1,6 +1,6 @@
-(ns smeagol.test.include.resolver
+(ns smeagol.test.include.resolve
   (:require [clojure.test :refer :all]
-            [smeagol.include.resolver :as sut]))
+            [smeagol.include.resolve :as sut]))
 
 (deftest test-local-links
   (testing "Rewriting of local links"
