@@ -89,4 +89,18 @@ some text
 more text"
          (sut/expand-include-md
            (:includer system-under-test)
-           include-heading-list-0)))))
+           include-heading-list-0)))
+    (is
+      (= "# Heading1
+### Heading2
+some text
+   * List
+
+## Heading 3
+more text
+some text
+Simple content.
+more text."
+        (sut/expand-include-md
+          (:includer system-under-test)
+          multi)))))
