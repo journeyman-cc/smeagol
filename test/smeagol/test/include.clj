@@ -44,7 +44,15 @@ more text.")
   [resolver
    uri :- s/Str]
   (cond
-    (= uri "./simple.md") "Simple content."))
+    (= uri "./simple.md") "Simple content."
+    (= uri "./with-heading-and-list.md") "# Heading2
+some text
+* List
+
+## Heading 3
+more text"))
+
+
 
 (def system-under-test
   (component/start
@@ -64,4 +72,21 @@ more text.")
 Simple content."
          (sut/expand-include-md
            (:includer system-under-test)
-           include-simple)))))
+           include-simple)))
+    (is
+      (= "# Heading1
+Some surounding Simple content. text"
+         (sut/expand-include-md
+           (:includer system-under-test)
+           include-surounding-simple)))
+    (is
+      (= "# Heading1
+# Heading2
+some text
+* List
+
+## Heading 3
+more text"
+         (sut/expand-include-md
+           (:includer system-under-test)
+           include-heading-list-0)))))
