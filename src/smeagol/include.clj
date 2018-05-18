@@ -4,7 +4,8 @@
     [schema.core :as s]
     [com.stuartsierra.component :as component]
     [smeagol.include.parse :as parse]
-    [smeagol.include.resolve :as resolve]))
+    [smeagol.include.resolve :as resolve]
+    [smeagol.include.indent :as indent]))
 
 (s/defrecord Includer
   [resolver])
@@ -19,8 +20,8 @@
   [includer :- Includer
    include :- parse/IncludeLink
    md-src :- s/Str]
-  (let [{:keys [uri replace]} include]
-    (cs/replace
+  (let [{:keys [uri replace indent-heading indent-list]} include]
+    (cs/replace-first
       md-src
       (re-pattern (cs/escape
                     replace
@@ -28,8 +29,11 @@
                      \] "\\]"
                      \( "\\("
                      \) "\\)"}))
-      (resolve/resolve-md (:resolver includer) uri))))
-      ;indent
+      (indent/do-indent-list
+        indent-list
+        (indent/do-indent-heading
+          indent-heading
+          (resolve/resolve-md (:resolver includer) uri))))))
 
 (s/defn
   do-expand-includes :- s/Str
