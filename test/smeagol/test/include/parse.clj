@@ -45,37 +45,47 @@ more text.")
       (= []
          (sut/parse-include-md "# Heading")))
     (is
-      (= [{:uri "./simple.md", :indent-heading 0, :indent-list 0}]
+      (= [{:replace "&[](./simple.md)" :uri "./simple.md", :indent-heading 0, :indent-list 0}]
          (sut/parse-include-md
            include-simple)))
     (is
-      (= [{:uri "./simple.md", :indent-heading 0, :indent-list 0}]
+      (= [{:replace "&[](./simple.md)" :uri "./simple.md", :indent-heading 0, :indent-list 0}]
          (sut/parse-include-md
            include-surounding-simple)))
     (is
-      (= [{:uri "./with-heading.md", :indent-heading 0, :indent-list 0}]
+      (= [{:replace "&[:indent-heading 0](./with-heading.md)" :uri "./with-heading.md", :indent-heading 0, :indent-list 0}]
          (sut/parse-include-md
            include-heading-0)))
     (is
-      (= [{:uri "./with-heading-and-list.md", :indent-heading 1, :indent-list 1}]
+      (= [{:replace
+            "&[:indent-heading 1 :indent-list 1](./with-heading-and-list.md)"
+           :uri "./with-heading-and-list.md", :indent-heading 1, :indent-list 1}]
          (sut/parse-include-md
            include-heading-list-1)))
     (is
-      (= [{:uri "./with-heading-and-list.md", :indent-heading 0, :indent-list 0}]
+      (= [{:replace
+            "&[:indent-list 0 :indent-heading 0](./with-heading-and-list.md)"
+           :uri "./with-heading-and-list.md", :indent-heading 0, :indent-list 0}]
          (sut/parse-include-md
            include-heading-list-0)))
     (is
-      (= [{:uri "./simple.md", :indent-heading 0, :indent-list 0}]
+      (= [{:replace
+            "&[ invalid input should default to indent 0 ](./simple.md)"
+           :uri "./simple.md", :indent-heading 0, :indent-list 0}]
          (sut/parse-include-md
            include-invalid-indent)))
     (is
-      (= [{:uri "./with-heading-and-list.md", :indent-heading 2, :indent-list 3}]
+      (= [{:replace
+            "&[ :indent-heading 2   :indent-list 33  ](./with-heading-and-list.md)"
+           :uri "./with-heading-and-list.md", :indent-heading 2, :indent-list 3}]
          (sut/parse-include-md
            include-spaced-indent)))
     (is
-      (= [{:uri "./with-heading-and-list.md",
+      (= [{:replace
+            "&[ :indent-heading 2   :indent-list 33  ](./with-heading-and-list.md)"
+           :uri "./with-heading-and-list.md",
            :indent-heading 2,
            :indent-list 3}
-          {:uri "./simple.md", :indent-heading 0, :indent-list 0}]
+          {:replace "&[](./simple.md)" :uri "./simple.md", :indent-heading 0, :indent-list 0}]
          (sut/parse-include-md
            multi)))))

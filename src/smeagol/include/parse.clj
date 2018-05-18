@@ -3,7 +3,8 @@
     [schema.core :as s]))
 
 (def IncludeLink
-  {:uri s/Str
+  {:replace s/Str
+   :uri s/Str
    :indent-heading s/Num
    :indent-list s/Num})
 
@@ -27,7 +28,7 @@
 (s/defn
   parse-include-link
   [md-src :- s/Str]
-  (re-seq #".*&\[\w*(.*)\w*\]\((.*)\).*" md-src))
+  (re-seq #".*(&\[\w*(.*)\w*\]\((.*)\)).*" md-src))
 
 (s/defn
   parse-include-md :- [IncludeLink]
@@ -35,9 +36,11 @@
   (vec
     (map
       (fn [parse-element]
-        (let [uri (nth parse-element 2)
-              indents-text (nth parse-element 1)]
-          {:uri uri
+        (let [replace (nth parse-element 1)
+              uri (nth parse-element 3)
+              indents-text (nth parse-element 2)]
+          {:replace replace
+           :uri uri
            :indent-heading (convert-indent-to-int (parse-indent-heading indents-text))
            :indent-list (convert-indent-to-int (parse-indent-list indents-text))}))
       (parse-include-link md-src))))
