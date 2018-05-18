@@ -47,11 +47,12 @@ more text.")
     (= uri "./simple.md") "Simple content."))
 
 (def system-under-test
-  (component/system-map
-    :resolver (resolve/new-resolver :test-mock)
-    :includer (component/using
-                (sut/new-includer)
-                {:resolver :resolver})))
+  (component/start
+    (component/system-map
+      :resolver (resolve/new-resolver :test-mock)
+      :includer (component/using
+                  (sut/new-includer)
+                  [:resolver]))))
 
 (deftest test-expand-include-md
   (testing "The whole integration of include"
@@ -59,7 +60,7 @@ more text.")
       (= "# Heading"
          (sut/expand-include-md (:includer system-under-test) "# Heading")))
     (is
-      (= "# Heading 1
+      (= "# Heading1
 Simple content."
          (sut/expand-include-md
            (:includer system-under-test)
