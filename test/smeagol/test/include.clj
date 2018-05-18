@@ -23,7 +23,7 @@ Some surounding &[](./simple.md) text")
 
 (def include-heading-list-0
   "# Heading1
-&[:indent-heading 0 :indent-list 0](./with-heading-and-list.md)")
+&[:indent-list 0 :indent-heading 0](./with-heading-and-list.md)")
 
 (def include-invalid-indent
   "# Heading1
@@ -31,7 +31,7 @@ Some surounding &[](./simple.md) text")
 
 (def include-spaced-indent
   "# Heading1
-&[ :indent-heading 0   :indent-list 0  ](./with-heading-and-list.md)")
+&[ :indent-heading 2   :indent-list 33  ](./with-heading-and-list.md)")
 
 
 (deftest test-parse-include-md
@@ -44,9 +44,29 @@ Some surounding &[](./simple.md) text")
          (sut/parse-include-md
            include-simple)))
     (is
-      (= [{:uri "./simple.md", :indent-heading 1, :indent-list 1}]
+      (= [{:uri "./simple.md", :indent-heading 0, :indent-list 0}]
          (sut/parse-include-md
-           include-heading-list-1)))))
+           include-surounding-simple)))
+    (is
+      (= [{:uri "./with-heading.md", :indent-heading 0, :indent-list 0}]
+         (sut/parse-include-md
+           include-heading-0)))
+    (is
+      (= [{:uri "./with-heading-and-list.md", :indent-heading 1, :indent-list 1}]
+         (sut/parse-include-md
+           include-heading-list-1)))
+    (is
+      (= [{:uri "./with-heading-and-list.md", :indent-heading 0, :indent-list 0}]
+         (sut/parse-include-md
+           include-heading-list-0)))
+    (is
+      (= [{:uri "./simple.md", :indent-heading 0, :indent-list 0}]
+         (sut/parse-include-md
+           include-invalid-indent)))
+    (is
+      (= [{:uri "./with-heading-and-list.md", :indent-heading 2, :indent-list 0}]
+         (sut/parse-include-md
+           include-spaced-indent)))))
 
 (s/defmethod resolver/do-resolve-md :test-mock
   [resolver
