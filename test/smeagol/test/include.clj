@@ -33,6 +33,13 @@ Some surounding &[](./simple.md) text")
   "# Heading1
 &[ :indent-heading 2   :indent-list 33  ](./with-heading-and-list.md)")
 
+(def multi
+  "# Heading1
+&[ :indent-heading 2   :indent-list 33  ](./with-heading-and-list.md)
+some text
+&[](./simple.md)
+more text.")
+
 
 (deftest test-parse-include-md
   (testing "parse include links"
@@ -64,9 +71,16 @@ Some surounding &[](./simple.md) text")
          (sut/parse-include-md
            include-invalid-indent)))
     (is
-      (= [{:uri "./with-heading-and-list.md", :indent-heading 2, :indent-list 0}]
+      (= [{:uri "./with-heading-and-list.md", :indent-heading 2, :indent-list 3}]
          (sut/parse-include-md
-           include-spaced-indent)))))
+           include-spaced-indent)))
+    (is
+      (= [{:uri "./with-heading-and-list.md",
+           :indent-heading 2,
+           :indent-list 3}
+          {:uri "./simple.md", :indent-heading 0, :indent-list 0}]
+         (sut/parse-include-md
+           multi)))))
 
 (s/defmethod resolver/do-resolve-md :test-mock
   [resolver
