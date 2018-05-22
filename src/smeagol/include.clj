@@ -1,4 +1,6 @@
-(ns smeagol.include
+(ns ^{:doc "Functions related to the include of markdown-paged in a given markdown."
+      :author "Michael Jerger"}  
+  smeagol.include
   (:require
     [clojure.string :as cs]
     [schema.core :as s]

@@ -1,4 +1,8 @@
-(ns smeagol.include.indent
+(ns ^{:doc "Functions related to the include of markdown-paged - handling the 
+list & heading indents of includes. This namespaces is implementation detail for
+smeagol.include and not inteded for direct usage."
+      :author "Michael Jerger"}
+  smeagol.include.indent
   (:require
     [clojure.string :as cs]
     [schema.core :as s]))

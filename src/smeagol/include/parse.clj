@@ -1,4 +1,8 @@
-(ns smeagol.include.parse
+(ns ^{:doc "Functions related to the include of markdown-paged - parsing of
+include links. This namespaces is implementation detail for 
+smeagol.include and not inteded for direct usage."
+      :author "Michael Jerger"}
+  smeagol.include.parse
   (:require
     [schema.core :as s]))
 

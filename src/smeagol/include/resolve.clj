@@ -1,4 +1,8 @@
-(ns smeagol.include.resolve
+(ns ^{:doc "Functions related to the include of markdown-paged - providing
+a plugable load-content componet. This namespaces is implementation detail for 
+smeagol.include and not inteded for direct usage."
+      :author "Michael Jerger"}
+  smeagol.include.resolve
   (:require
     [schema.core :as s]
     [com.stuartsierra.component :as component]))
