@@ -13,7 +13,7 @@ smeagol.include and not inteded for direct usage."
 (s/defmethod resolve/do-resolve-md :local-file
   [resolver
    uri :- s/Str]
-  (let [file-name (uri)
+  (let [file-name uri
         file-path (cjio/file (:local-base-dir resolver) file-name)
         exists? (.exists (clojure.java.io/as-file file-path))]
     (cond exists?
