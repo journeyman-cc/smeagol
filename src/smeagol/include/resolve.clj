@@ -1,5 +1,5 @@
 (ns ^{:doc "Functions related to the include of markdown-paged - providing
-a plugable load-content componet. This namespaces is implementation detail for 
+a plugable load-content componet. This namespaces is implementation detail for
 smeagol.include and not inteded for direct usage."
       :author "Michael Jerger"}
   smeagol.include.resolve
@@ -8,7 +8,8 @@ smeagol.include and not inteded for direct usage."
     [com.stuartsierra.component :as component]))
 
 (s/defrecord Resolver
-  [type :- s/Keyword])
+  [type :- s/Keyword
+   local-base-dir :- s/Str])
 
 ;As schema does'nt support s/defprotocol we use the dispatcher for annotation & validation.
 (s/defn dispatch-by-resolver-type :- s/Keyword
@@ -38,5 +39,8 @@ smeagol.include and not inteded for direct usage."
 
 (s/defn
   new-resolver
-  [type :- s/Keyword]
-  (map->Resolver {:type type}))
+  ([type :- s/Keyword]
+   (map->Resolver {:type type :local-base-dir nil}))
+  ([type :- s/Keyword
+    local-base-dir :- s/Str]
+   (map->Resolver {:type type :local-base-dir local-base-dir})))
