@@ -11,7 +11,7 @@ smeagol.include and not inteded for direct usage."
   [type :- s/Keyword
    local-base-dir :- s/Str])
 
-;As schema does'nt support s/defprotocol we use the dispatcher for annotation & validation.
+;As schema doesn't support s/defprotocol we use the dispatcher for annotation & validation.
 (s/defn dispatch-by-resolver-type :- s/Keyword
   "Dispatcher for different resolver implementations."
   [resolver :- Resolver
@@ -19,7 +19,7 @@ smeagol.include and not inteded for direct usage."
   (:type resolver))
 
 (defmulti do-resolve-md
-  "Multimethod return a markfown file content for given uri."
+  "Multimethod return a markdown file content for given uri."
   dispatch-by-resolver-type)
 (s/defmethod do-resolve-md :default
   [resolver :- Resolver
@@ -29,7 +29,7 @@ smeagol.include and not inteded for direct usage."
 (defprotocol ResolveMd
   (resolve-md
     [resolver uri]
-    "return a markfown file content for given uru."))
+    "return a markfown file content for given uri."))
 
 (extend-type Resolver
   ResolveMd
