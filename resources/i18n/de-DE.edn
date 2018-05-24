@@ -42,7 +42,7 @@
                                         ;; error text on fail other htan too short or bad match
  :chpass-success        "Your password was changed"
                                         ;; confirmation text on password change
- :chpass-too-short      "Your proposed password wasn't long enough: eight characters required"
+ :chpass-too-short      "You proposed password wasn't long enough: eight characters required"
                                         ;; error text if proposed password is too short
  :chpass-title-prefix   "Change password for"
                                         ;; prefix for title of change password page
