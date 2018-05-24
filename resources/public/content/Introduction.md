@@ -17,6 +17,9 @@ Smeagol uses the Markdown format as provided by [markdown-clj](https://github.co
 ## Security and authentication
 Smeagol now has good security and authentication. While the initial password supplied with the system is not encrypted, when it is changed it will be; and passwords for new users added through the user administration pages are encrypted. Read more about [[Security and authentication]].
 
+## Internationalisation
+Smeagol has built in internationalisation. Currently it has translation files for English, German, Lithuanian and Russian. We'd welcome volunteers to translate it into other languages.
+
 ## Images
 You can (if you're logged in) upload files, including images, using the **Upload a file** link on the top menu bar. You can link to an uploaded image, or to other images already available on the web, like this:
 

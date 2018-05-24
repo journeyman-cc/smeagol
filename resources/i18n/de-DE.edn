@@ -17,7 +17,8 @@
 ;;;; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
 ;;;; USA.
 ;;;;
-;;;; Copyright (C) 2017 Simon Brooke
+;;;; German language translation contributed by and
+;;;; Copyright (C) 2017 Soukyan Blackwood <priority.inc@gmail.com>
 ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -26,118 +27,118 @@
 ;;; through the wiki itself; and the test in the sanity check report.
 
 ;;      ;       ;       ;       ;       ;       ;       ;       ;       ;
-{:add-user-label        "Add new user"  ;; label for the add user link on edit users page
- :change-pass-label     "Change password!"
+{:add-user-label        "Neuen Benutzer zufügen"  ;; label for the add user link on edit users page
+ :change-pass-label     "Kennwort ändern!"
                                         ;; text of the change password widget itself on the
                                         ;; change password page
- :change-pass-link      "Change password"
+ :change-pass-link      "Kennwort ändern"
                                         ;; text of the change password link on the menu
- :change-pass-prompt    "To change your password"
+ :change-pass-prompt    "Um Ihr Kennwort zu ändern"
                                         ;; text of the change password widget prompt on the
                                         ;; change password page
- :change-col-hdr        "Changes"       ;; header for the changes column in history
- :chpass-bad-match      "Your proposed passwords don't match"
+ :change-col-hdr        "Änderungen"    ;; header for the changes column in history
+ :chpass-bad-match      "Die von Ihnen vorgeschlagenen Kennwörter stimmen nicht überein"
                                         ;; error text if proposed passwords don't match
- :chpass-fail           "Your password was not changed"
+ :chpass-fail           "Ihr Kennwort wurde nicht geändert"
                                         ;; error text on fail other htan too short or bad match
- :chpass-success        "Your password was changed"
+ :chpass-success        "Ihr Kennwort wurde geändert"
                                         ;; confirmation text on password change
- :chpass-too-short      "Your proposed password wasn't long enough: eight characters required"
+ :chpass-too-short      "Das von Ihnen vorgeschlagene Kennwort war zu kurz: 8 Zeichen erforderlich"
                                         ;; error text if proposed password is too short
- :chpass-title-prefix   "Change password for"
+ :chpass-title-prefix   "Kennwort ändern für"
                                         ;; prefix for title of change password page
- :content-dir           "The content directory"
+ :content-dir           "Das Inhaltsverzeichnis"
                                         ;; used in sanity check report
- :content-dir-exists    "The content directory exists"
+ :content-dir-exists    "Das Inhaltsverzeichnis existiert"
                                         ;; used in sanity check report
- :content-dir-is-dir    "The content directory is a directory"
+ :content-dir-is-dir    "Das Inhaltsverzeichnis ist ein Verzeichnis"
                                         ;; used in sanity check report
- :cookies-about         "About cookies" ;; about cookies text
- :cookies-more          "This website stores session information as a 'cookie' on  your browser. This helps us show you the content you want to see. This cookie does not identify you, and cannot be read by other websites. It is deleted by your browser as soon as you leave this site. This website does not use any third party cookies, so your visit here cannot be tracked by other websites."
+ :cookies-about         "Über Cookies"  ;; about cookies text
+ :cookies-more          "Es wird von Ihrem Browser gelöscht, sobald Sie diese Seite verlassen. Diese Webseite benutzt keine Cookies von dritten Parteien, daher kann Ihr Besuch hier nicht von anderen Seiten verfolgt werden."
                                         ;; more about cookies text
- :default-page-title    "Introduction"  ;; title of the default page in this wiki
- :del-col-hdr           "Delete"        ;; header for delete column on edit users page
- :del-user-fail         "Could not delete user"
+ :default-page-title    "Einleitung"    ;; title of the default page in this wiki
+ :del-col-hdr           "Löschen"        ;; header for delete column on edit users page
+ :del-user-fail         "Könnte Benutzer nicht löschen"
                                         ;; error message on failure to delete user
- :del-user-success      "Successfully deleted user"
+ :del-user-success      "Benutzer wurde erfolgreich gelöscht"
                                         ;; confirmation message on deletion of user
- :diff-title-prefix     "Changes since version"
+ :diff-title-prefix     "Änderungen seit der Version"
                                         ;; prefix for the header of the changes page
- :does-not-exist        "does not exist"
+ :does-not-exist        "existiert nicht"
                                         ;; (of a file or directory); used in sanity check report
- :edit-col-hdr          "Edit"          ;; header for edit column on edit users page
- :edit-page-link        "Edit this page"
+ :edit-col-hdr          "Bearbeiten"          ;; header for edit column on edit users page
+ :edit-page-link        "Diese Seite bearbeiten"
                                         ;; text of the edit page link on the content frame
- :edit-title-prefix     "Edit"          ;; prefix for title of edit content page
- :edit-users-link       "Edit users"    ;; text of the edit users link on the menu
- :edit-users-title      "Select user to edit"
+ :edit-title-prefix     "Bearbeiten"          ;; prefix for title of edit content page
+ :edit-users-link       "Benutzer bearbeiten"    ;; text of the edit users link on the menu
+ :edit-users-title      "Benutzer zum Bearbeiten auswählen"
                                         ;; title of edit users page
- :email-prompt          "Email address" ;; text of the email widget prompt on edit user page
- :file-or-directory     "File or directory"
+ :email-prompt          "E-Mail Adresse" ;; text of the email widget prompt on edit user page
+ :file-or-directory     "Datei oder Verzeichnis"
                                         ;; used in sanity check report
- :file-summary-prompt   "Description/what's changed"
+ :file-summary-prompt   "Beschreibung/was wurde gändert"
                                         ;; prompt for the file upload summary input
- :file-upload-link-text "You may link to this file using a link of the form"
+ :file-upload-link-text "Sie können auf diese Datei verweisen, mit Hilfe von einer Verknüpfung von der Form"
                                         ;; Text introducing the link to an uploaded file
- :file-upload-prompt    "File to upload" ;; prompt string for the file upload widget
+ :file-upload-prompt    "Datei zum Hochladen" ;; prompt string for the file upload widget
  :file-upload-title     "Upload a file" ;; title for the file upload page
- :is-admin-prompt       "Is administrator?"
- :here                  "here"          ;; used in sanity check report
- :home-link             "Home"          ;; text of the home link on the menu
- :is-not-directory      "is not a directory"
+ :is-admin-prompt       "Ist Administrator?"
+ :here                  "hier"          ;; used in sanity check report
+ :home-link             "Startseite"          ;; text of the home link on the menu
+ :is-not-directory      "ist kein Verzeichnis"
                                         ;; (of a file or directory) used in sanity check report
- :is-not-readable       "is not readable"
+ :is-not-readable       "ist nicht lesbar"
                                         ;; (of a file or directory) used in sanity check report
- :is-not-writable       "is not writable"
+ :is-not-writable       "ist nicht schreibbar"
                                         ;; (of a file or directory) used in sanity check report
  :login-label           "Log in!"       ;; text of the login widget on the login page
  :login-link            "Log in"        ;; text of the login link on the menu
- :login-prompt          "To edit this wiki"
+ :login-prompt          "Um dieses Wiki zu bearbeiten"
                                         ;; text of the action widget prompt on the login page
- :logout-label          "Log out!"      ;; text of the logout widget on the logout page
- :logout-link           "Log out"       ;; text of the logout link on the menu
- :logged-in-as          "You are logged in as"
+ :logout-label          "Abmelden!"      ;; text of the logout widget on the logout page
+ :logout-link           "Abmelden"       ;; text of the logout link on the menu
+ :logged-in-as          "Sie sind angemeldet als"
                                         ;; text of the 'logged in as' label on the menu
- :history-link          "History"       ;; text of the history link on the content frame
- :history-title-prefix  "History of"    ;; prefix of the title on the history page
- :new-pass-prompt       "New password"  ;; text of the new password widget prompt on the change
+ :history-link          "Historie"       ;; text of the history link on the content frame
+ :history-title-prefix  "Historie von"    ;; prefix of the title on the history page
+ :new-pass-prompt       "Neues Kennwort"  ;; text of the new password widget prompt on the change
                                         ;; password and edit user pages
- :no-admin-users        "There are no users in the 'passwd' file with administrative privileges"
+ :no-admin-users        "In der Datei 'passwd' gibt es keine Benutzer mit Administratorrechten"
                                         ;; used in sanity check report
- :old-pass-prompt       "Your password"
+ :old-pass-prompt       "Ihr Kennwort"
                                         ;; text of the old password widget prompt on the change
                                         ;; password page, and password widget on login page
- :password-file         "the password ('passwd') file"
+ :password-file         "Die Kennwort ('passwd') Datei"
                                         ;; used in sanity check report
- :problems-found        "problems were found"
+ :problems-found        "Probleme gefunden"
                                         ;; used in sanity check report
- :rpt-pass-prompt       "And again"     ;; text of the new password widget prompt on the change
+ :rpt-pass-prompt       "und noch einmal"     ;; text of the new password widget prompt on the change
                                         ;; password and edit user pages
- :save-prompt           "When you have finished editing"
+ :save-prompt           "Wenn Sie mit dem Bearbeiten fertig sind"
                                         ;; text of the save widget label on edit content
                                         ;; and edit user page
- :save-label            "Save!"         ;; text of the save widget itself
- :save-user-fail        "Failed to store user"
- :save-user-success     "Successfully stored user"
- :see-documentation     "For more information please see documentation "
+ :save-label            "Speichern!"         ;; text of the save widget itself
+ :save-user-fail        "Benutzer konnte nicht gespeichert werden"
+ :save-user-success     "Benutzer erfolgreich gespeichert"
+ :see-documentation     "Für mehr Information sehen Sie bitte die Dokumentation "
                                         ;; used in sanity check report
  :smeagol-not-initialised
-                        "Smeagol is not initialised correctly"
+                        "Smeagol ist nicht richtig initialisiert"
                                         ;; title of the sanity check report
  :smeagol-misconfiguration
-                        "Smeagol has been unable to find some of the resources on which it depends,
-                         possibly because of misconfiguration or missing environment variables."
+                        "Smeagol konnte einige der Ressourcen, von denen es abhängt,
+nicht finden; wahrscheinlich wegen einer Fehlkonfiguration oder fehlenden Umgebungsvariablen."
                                         ;; used in sanity check report
- :user-lacks-field      "User record in the passwd file lacks a field"
+ :user-lacks-field      "Das Feld für den Benutzereintrag in die passwd Datei fehlt"
                                         ;; used in sanity check report
- :username-prompt       "Username"      ;; text of the username widget prompt on edit user page
+ :username-prompt       "Benutzername"      ;; text of the username widget prompt on edit user page
                                         ;; text of the is admin widget prompt on edit user page
- :user-title-prefix     "Edit user"     ;; prefix for title of edit user page
+ :user-title-prefix     "Benutzer bearbeiten"     ;; prefix for title of edit user page
  :vers-col-hdr          "Version"       ;; header for the version column in history
- :what-col-hdr          "What"          ;; header for the what column in history
- :what-changed-prompt   "What have you changed?"
+ :what-col-hdr          "Wass"          ;; header for the what column in history
+ :what-changed-prompt   "Was haben Sie verändert?"
                                         ;; text of the summary widget prompt on edit
                                         ;; content page
- :when-col-hdr          "When"          ;; header for the when column in history
- :your-uname-prompt     "Your username" ;; text of the username widget prompt on the login page
+ :when-col-hdr          "Was"          ;; header for the when column in history
+ :your-uname-prompt     "Ihr Benutzername" ;; text of the username widget prompt on the login page
  }

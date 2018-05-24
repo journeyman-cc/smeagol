@@ -3,7 +3,7 @@ Smeagol is available as a Docker image
 To run my Docker image, use
 
     docker run -p 127.0.0.1:80:80 simonbrooke/smeagol
-		
+
 Where 127.0.0.1 is the IP address through which you want to forward port 80 (in real life it wouldn't be 127.0.0.1, but that's safe for testing).
 
 You can then browse to Smeagol by pointing your browser at http://localhost/.
@@ -24,7 +24,7 @@ This works for play purposes. However, it means that any edits made to either th
 
 ## Mounting real file systems
 
-It's possible to mount external file systems, and to override environment variables, with arguments to Docker's extraordinarily complex [run command](https://docs.docker.com/engine/reference/commandline/run/). 
+It's possible to mount external file systems, and to override environment variables, with arguments to Docker's extraordinarily complex [run command](https://docs.docker.com/engine/reference/commandline/run/).
 
 I'm currently working with a recipe:
 
@@ -41,7 +41,7 @@ This works, and uses the default values of the environment variables which are s
 
 ## Status
 
-This image is _experimental_, but it does seem to work fairly well. What it does **not** yet do, however, is push the git repository to a remote location, so when you tear the Docker image down your edits will be lost. My next objective for this image is for it to have a cammand line parameter being the git address of a repository from which it can initialise the Wiki content, and to which it will periodically push local changes to the Wiki content.
+This image is _experimental_, but it does seem to work fairly well. What it does **not** yet do, however, is push the git repository to a remote location, so unless you have mounted an external file store, when you tear the Docker image down your edits will be lost. My next objective for this image is for it to have a cammand line parameter being the git address of a repository from which it can initialise the Wiki content, and to which it will periodically push local changes to the Wiki content.
 
 ## Building the Docker image
 

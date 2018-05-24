@@ -1,0 +1,144 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;
+;;;; Smeagol: a very simple Wiki engine.
+;;;;
+;;;; This program is free software; you can redistribute it and/or
+;;;; modify it under the terms of the GNU General Public License
+;;;; as published by the Free Software Foundation; either version 2
+;;;; of the License, or (at your option) any later version.
+;;;;
+;;;; This program is distributed in the hope that it will be useful,
+;;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;;;; GNU General Public License for more details.
+;;;;
+;;;; You should have received a copy of the GNU General Public License
+;;;; along with this program; if not, write to the Free Software
+;;;; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
+;;;; USA.
+;;;;
+;;;; Russian language translation contributed by and
+;;;; Copyright (C) 2017 Soukyan Blackwood <priority.inc@gmail.com>
+;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; en-GB.edn: English-language messages.
+;;; This is essentially all the text in the chrome - that which isn't editable
+;;; through the wiki itself; and the test in the sanity check report.
+
+;;      ;       ;       ;       ;       ;       ;       ;       ;       ;
+{:add-user-label        "добавить нового пользователя"  ;; label for the add user link on edit users page
+ :change-pass-label     "изменить пароль!"
+                                        ;; text of the change password widget itself on the
+                                        ;; change password page
+ :change-pass-link      "изменить пароль"
+                                        ;; text of the change password link on the menu
+ :change-pass-prompt    "Чтобы изменить пароль"
+                                        ;; text of the change password widget prompt on the
+                                        ;; change password page
+ :change-col-hdr        "изменения"       ;; header for the changes column in history
+ :chpass-bad-match      "Ваши предложенные пароли не совпадают"
+                                        ;; error text if proposed passwords don't match
+ :chpass-fail           "Ваш пароль не был изменён"
+                                        ;; error text on fail other htan too short or bad match
+ :chpass-success        "Ваш пароль был изменён"
+                                        ;; confirmation text on password change
+ :chpass-too-short      "Вы предложили пароль недостаточно длины: требуется восемь символов"
+                                        ;; error text if proposed password is too short
+ :chpass-title-prefix   "Изменить пароль для"
+                                        ;; prefix for title of change password page
+ :content-dir           "Каталог содержимого"
+                                        ;; used in sanity check report
+ :content-dir-exists    "Каталог содержимого существуе"
+                                        ;; used in sanity check report
+ :content-dir-is-dir    "Каталог содержимого - это каталог"
+                                        ;; used in sanity check report
+ :cookies-about         "Об кукисах" ;; about cookies text
+ :cookies-more          "Этот сайт хранит информацию о сеансе как «cookie» в вашем браузере. Это поможет нам показать вам контент, который вы хотите увидеть. Этот файл cookie не идентифицирует вас и не может быть прочитан другими веб-сайтами. Он удаляется браузером, как только вы покидаете этот сайт. Этот веб-сайт не использует сторонние файлы cookie, поэтому ваш визит здесь не может быть отслежен другими веб-сайтами"
+                                        ;; more about cookies text
+ :default-page-title    "представление"  ;; title of the default page in this wiki
+ :del-col-hdr           "Удалить"        ;; header for delete column on edit users page
+ :del-user-fail         "Не удалось удалить пользователя"
+                                        ;; error message on failure to delete user
+ :del-user-success      "успешно удалён  пользователь"
+                                        ;; confirmation message on deletion of user
+ :diff-title-prefix     "Изменения с версии"
+                                        ;; prefix for the header of the changes page
+ :does-not-exist        "не существует"
+                                        ;; (of a file or directory); used in sanity check report
+ :edit-col-hdr          "редактировать"          ;; header for edit column on edit users page
+ :edit-page-link        "Редактировать эту страницу"
+                                        ;; text of the edit page link on the content frame
+ :edit-title-prefix     "редактировать"          ;; prefix for title of edit content page
+ :edit-users-link       "Редактировать пользователей"    ;; text of the edit users link on the menu
+ :edit-users-title      "Выберите пользователя для редактирования"
+                                        ;; title of edit users page
+ :email-prompt          "Адрес электронной почты" ;; text of the email widget prompt on edit user page
+ :file-or-directory     "Файл или каталог"
+                                        ;; used in sanity check report
+ :file-summary-prompt   "Описание / что изменилось"
+                                        ;; prompt for the file upload summary input
+ :file-upload-link-text "Вы можете ссылать этот файл, используя ссылку формы"
+                                        ;; Text introducing the link to an uploaded file
+ :file-upload-prompt    "Файл для загрузки" ;; prompt string for the file upload widget
+ :file-upload-title     "Загрузить файл" ;; title for the file upload page
+ :is-admin-prompt       "Администратор?"
+ :here                  "здесь"          ;; used in sanity check report
+ :home-link             "Главная"          ;; text of the home link on the menu
+ :is-not-directory      "не является каталогом"
+                                        ;; (of a file or directory) used in sanity check report
+ :is-not-readable       "не читаемый"
+                                        ;; (of a file or directory) used in sanity check report
+ :is-not-writable       "недоступен для записи"
+                                        ;; (of a file or directory) used in sanity check report
+ :login-label           "Вход!"       ;; text of the login widget on the login page
+ :login-link            "Вход"        ;; text of the login link on the menu
+ :login-prompt          "Чтобы отредактировать эту вики"
+                                        ;; text of the action widget prompt on the login page
+ :logout-label          "Выйти!"      ;; text of the logout widget on the logout page
+ :logout-link           "Выйти"       ;; text of the logout link on the menu
+ :logged-in-as          "Вы вошли как"
+                                        ;; text of the 'logged in as' label on the menu
+ :history-link          "история"       ;; text of the history link on the content frame
+ :history-title-prefix  "История об"    ;; prefix of the title on the history page
+ :new-pass-prompt       "Новый пароль"  ;; text of the new password widget prompt on the change
+                                        ;; password and edit user pages
+ :no-admin-users        "В файле 'passwd' нет пользователей с правами администратора"
+                                        ;; used in sanity check report
+ :old-pass-prompt       "Ваш пароль"
+                                        ;; text of the old password widget prompt on the change
+                                        ;; password page, and password widget on login page
+ :password-file         "файл пароля ('passwd')"
+                                        ;; used in sanity check report
+ :problems-found        "проблемы были найдены"
+                                        ;; used in sanity check report
+ :rpt-pass-prompt       "И опять"     ;; text of the new password widget prompt on the change
+                                        ;; password and edit user pages
+ :save-prompt           "Когда вы закончили редактирование"
+                                        ;; text of the save widget label on edit content
+                                        ;; and edit user page
+ :save-label            "Сохранить!"         ;; text of the save widget itself
+ :save-user-fail        "Не удалось сохранить пользователя"
+ :save-user-success     "Успешно сохранённый пользователь"
+ :see-documentation     "для получения дополнительной информации смотрите документацию "
+                                        ;; used in sanity check report
+ :smeagol-not-initialised
+                        "Смеаголь неправильно инициализирован"
+                                        ;; title of the sanity check report
+ :smeagol-misconfiguration
+                        "Смеаголь не смог найти некоторые ресурсы, от которых это зависит,
+                         возможно, из-за неправильной конфигурации или отсутствующих переменных среды."
+                                        ;; used in sanity check report
+ :user-lacks-field      "В пользовательской записи в файле passwd отсутствует поле"
+                                        ;; used in sanity check report
+ :username-prompt       "Имя пользователя"      ;; text of the username widget prompt on edit user page
+                                        ;; text of the is admin widget prompt on edit user page
+ :user-title-prefix     "Изменить пользователя"     ;; prefix for title of edit user page
+ :vers-col-hdr          "Версия"       ;; header for the version column in history
+ :what-col-hdr          "Что"          ;; header for the what column in history
+ :what-changed-prompt   "Что вы изменили?"
+                                        ;; text of the summary widget prompt on edit
+                                        ;; content page
+ :when-col-hdr          "когда"          ;; header for the when column in history
+ :your-uname-prompt     "Ваш логин" ;; text of the username widget prompt on the login page
+ }
