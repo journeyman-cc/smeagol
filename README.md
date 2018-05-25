@@ -108,7 +108,7 @@ Parameters semantics:
  * indent-heading: You can indent headings of included page to adjust the included content to your surrounding structure. Indents 0-9 are supported.
  * indent-list: In Same manner you can indent lists of included page to adjust the included content to your surrounding structure. Indents 0-9 are supported.
 
- Security warning: At the moment there is no check against directory traversal attack. So include feature may expose files outside of your wiki.
+ Security warning: At the moment there is no check against directory traversal attack. So include feature may expose files outside of your wiki content-dir.
 
 ## Advertisement
 If you like what you see here, I am available for work on open source Clojure projects.
