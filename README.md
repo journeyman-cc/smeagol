@@ -99,14 +99,15 @@ You can (if you're logged in) upload files, including images, using the **Upload
 ![Smeagol](http://vignette3.wikia.nocookie.net/lotr/images/e/e1/Gollum_Render.png/revision/latest?cb=20141218075509)
 
 ## Includes
-You can include pages into the current page youre working on. To do so, you can add a include link:
+You can include pages into the current page you're working on. To do so, you can add a include link:
 
 `&[:indent-heading s/Num :indent-list s/Num](relative or absolute uri s/Str)`
 
 Parameters semantics:
- * uri: The page to include. At the moment only pages of the current wiki are allowed. A page called "PageToBeIncluded" will result in a uri "PageToBeIncluded.md".
+ * uri: The page to include. At the moment only pages from the current wiki are allowed. A page called "PageToBeIncluded" will result in a uri "PageToBeIncluded.md".
  * indent-heading: You can indent headings of included page to adjust the included content to your surrounding structure. Indents 0-9 are supported.
  * indent-list: In Same manner you can indent lists of included page to adjust the included content to your surrounding structure. Indents 0-9 are supported.
+
  Security warning: At the moment there is no check against directory traversal attack. So include feature may expose files outside of your wiki.
 
 ## Advertisement
