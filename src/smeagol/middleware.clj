@@ -6,7 +6,12 @@
             [selmer.middleware :refer [wrap-error-page]]
             [prone.middleware :refer [wrap-exceptions]]
             [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
-            [noir-exception.core :refer [wrap-internal-error]]))
+            [ring.middleware.file :refer [wrap-file]]
+            [ring.middleware.resource :refer [wrap-resource]]
+            [ring.middleware.content-type :refer [wrap-content-type]]
+            [ring.middleware.not-modified :refer [wrap-not-modified]]
+            [noir-exception.core :refer [wrap-internal-error]]
+            [smeagol.util :as util]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;
@@ -44,7 +49,12 @@
 
 
 (def production-middleware
-  [#(wrap-internal-error % :log (fn [e] (timbre/error e)))])
+  [#(wrap-internal-error % :log (fn [e] (timbre/error e)))
+   #(wrap-file % util/content-dir
+               {:index-files? false :prefer-handler? true})
+   #(wrap-resource % "public")
+   #(wrap-content-type %)
+   #(wrap-not-modified %)])
 
 
 (defn load-middleware []
