@@ -52,6 +52,7 @@
   "Process `source-text` and save it to the specified `file-path`, committing it
   to Git and finally redirecting to wiki-page."
   [params suffix request]
+  (timbre/trace (format "process-source: '%s'" request))
   (let [source-text (:src params)
         page (:page params)
         file-name (str page suffix)
@@ -122,6 +123,7 @@
 (defn wiki-page
   "Render the markdown page specified in this `request`, if any. If none found, redirect to edit-page"
   [request]
+  (timbre/trace (format "wiki-page: '%s'" request))
   (or
     (show-sanity-check-error)
     (let [params (keywordize-keys (:params request))
@@ -163,7 +165,7 @@
   "Render a form to allow the upload of a file."
   [request]
   (let [params (keywordize-keys (:params request))
-        data-path (str (io/resource-path) "/content/uploads/")
+        data-path (str util/content-dir "/content/uploads/")
         git-repo (hist/load-or-init-repo util/content-dir)
         upload (:upload params)
         uploaded (if upload (ul/store-upload params data-path))
