@@ -50,9 +50,9 @@
 
 (def production-middleware
   [#(wrap-internal-error % :log (fn [e] (timbre/error e)))
+   #(wrap-resource % "public")
    #(wrap-file % util/content-dir
                {:index-files? false :prefer-handler? true})
-   #(wrap-resource % "public")
    #(wrap-content-type %)
    #(wrap-not-modified %)])
 
