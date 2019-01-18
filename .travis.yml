@@ -31,9 +31,17 @@ jobs:
           skip_cleanup: true
           on:
             #tags: true
-            branch: develope
           draft: true
           overwrite: true
+          api_key:
+            secure: "Z2DuHe8HLtIMVarGpG/TK0x5gL+/1CfaAAxUmWq8bVp229nr0TNbVNlt6j6PqioRu+mFf+wj4GyfN3VqIGcpClTp8tdBQtQQgO0Gjj/5QEDRdporiubg+EC1+BNIs+X0p4phj+w05cSz+D9XKGbJwaEG9CsFLxW8w10xtnkxikhpdEROMXf1lYsk7hiuqK+yBXbgIGNW54mcOBP+KU5GRX97EuL5USZagDNPfmquILP85MN9gXd6UxYW745nhr5P1YCkVT7h51VT42cJmecm/lrk80NDDFJ/CewPKlFtF2xM4gdeqN3FPyn3TtvYIXmJ5/ZjmO9ATM+Qny834uK7exMP6ZZb4pEbqhm4VxjqxB4Z5rTpkVrb8TzDKgKz+ZLb92eKxnkS7z9g6DdwaRgsK01c+/NgQ4qMwyXHQ+1kRFKJzHaCRgtWwInF1XC+pn4JU+EFJBwytjxs9+3p7SFKEtmxS1P/VmZbXpyAphacivzBCPCZ6eDw4Y+vVjdajJ5YrFWzv2CuV4N9ZrSQaPZl17MTv05wUSXfdR+0J7fFFF+/ZUdGMu/nebXhxreVBPN/Xai/qDBX/7VyAQTUYYfsB0Ki4SH7x08E9qU06qPcXvq7uAmUzf2agEmnF2SXaWm0fdK/9j/h4/59A0vWMfO82MnERe+LvOw30EyNnOwJJN0="
+          file:
+            - target/uberjar/smeagol-standalone.jar
+            - target/uberjar/smeagol-standalone.jar.md5
+        - provider: releases
+          skip_cleanup: true
+          on:
+            tags: true
           api_key:
             secure: "Z2DuHe8HLtIMVarGpG/TK0x5gL+/1CfaAAxUmWq8bVp229nr0TNbVNlt6j6PqioRu+mFf+wj4GyfN3VqIGcpClTp8tdBQtQQgO0Gjj/5QEDRdporiubg+EC1+BNIs+X0p4phj+w05cSz+D9XKGbJwaEG9CsFLxW8w10xtnkxikhpdEROMXf1lYsk7hiuqK+yBXbgIGNW54mcOBP+KU5GRX97EuL5USZagDNPfmquILP85MN9gXd6UxYW745nhr5P1YCkVT7h51VT42cJmecm/lrk80NDDFJ/CewPKlFtF2xM4gdeqN3FPyn3TtvYIXmJ5/ZjmO9ATM+Qny834uK7exMP6ZZb4pEbqhm4VxjqxB4Z5rTpkVrb8TzDKgKz+ZLb92eKxnkS7z9g6DdwaRgsK01c+/NgQ4qMwyXHQ+1kRFKJzHaCRgtWwInF1XC+pn4JU+EFJBwytjxs9+3p7SFKEtmxS1P/VmZbXpyAphacivzBCPCZ6eDw4Y+vVjdajJ5YrFWzv2CuV4N9ZrSQaPZl17MTv05wUSXfdR+0J7fFFF+/ZUdGMu/nebXhxreVBPN/Xai/qDBX/7VyAQTUYYfsB0Ki4SH7x08E9qU06qPcXvq7uAmUzf2agEmnF2SXaWm0fdK/9j/h4/59A0vWMfO82MnERe+LvOw30EyNnOwJJN0="
           file:
