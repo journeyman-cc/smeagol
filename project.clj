@@ -33,6 +33,8 @@
                  [ring-server "0.4.0"]
                  [selmer "1.11.0"]]
 
+  :target-path "target/%s/"
+
   :repl-options {:init-ns smeagol.repl}
 
   :jvm-opts ["-server"]
@@ -72,7 +74,8 @@
 
   :profiles {:uberjar {:omit-source true
                        :env {:production true}
-                       :aot :all}
+                       :aot :all
+                       :uberjar-name "smeagol-standalone.jar"}
              :production {:ring {:open-browser? false
                                  :stacktraces?  false
                                  :auto-reload?  false}}
