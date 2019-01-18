@@ -97,6 +97,7 @@
   [xss-protection?]
   (-> site-defaults
       (update-in [:session] merge session-defaults)
+      (dissoc :static)
       (assoc-in [:security :anti-forgery] xss-protection?)))
 
 
