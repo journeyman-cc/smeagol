@@ -28,7 +28,7 @@
 ;;      ;       ;       ;       ;       ;       ;       ;       ;       ;
 {
   :content-dir          "resources/public/content"
-  :start-page           "README"
+  :start-page           "Introduction"
                                         ;; where content is served from.
   :default-locale       "en-GB"         ;; default language used for messages
   :formatters           {"vega"         smeagol.formatting/process-vega
