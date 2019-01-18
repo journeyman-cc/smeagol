@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/DomainDrivenArchitecture/smeagol.svg?branch=develope)](https://travis-ci.org/DomainDrivenArchitecture/smeagol)
+[![Build Status](https://travis-ci.org/DomainDrivenArchitecture/smeagol.svg?branch=master)](https://travis-ci.org/DomainDrivenArchitecture/smeagol)
 
 
 ![One wiki to rule them all](https://www.weft.scot/images/smeagol.png)
