@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/DomainDrivenArchitecture/smeagol.svg?branch=develope)](https://travis-ci.org/DomainDrivenArchitecture/smeagol)
 
+
 ![One wiki to rule them all](https://www.weft.scot/images/smeagol.png)
 
 # Welcome to Smeagol!
