@@ -30,7 +30,7 @@ jobs:
         - provider: releases
           skip_cleanup: true
           on:
-            #tags: true
+            branch: master
           draft: true
           overwrite: true
           api_key:
