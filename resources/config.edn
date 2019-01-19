@@ -28,16 +28,16 @@
 ;;      ;       ;       ;       ;       ;       ;       ;       ;       ;
 {
   :content-dir          "resources/public/content"
+  :start-page           "Introduction"
                                         ;; where content is served from.
-  :default-locale       "lt-LT"         ;; default language used for messages
+  :default-locale       "en-GB"         ;; default language used for messages
   :formatters           {"vega"         smeagol.formatting/process-vega
                          "vis"          smeagol.formatting/process-vega
                          "mermaid"      smeagol.formatting/process-mermaid
                          "backticks"    smeagol.formatting/process-backticks}
-  :log-level            :trace           ;; the minimum logging level; one of
+  :log-level            :info           ;; the minimum logging level; one of
                                         ;; :trace :debug :info :warn :error :fatal
   :passwd               "resources/passwd"
                                         ;; where the password file is stored
-  :site-title           "Smeagol"       ;; overall title of the site, used in
+  :site-title           "Smeagol"}       ;; overall title of the site, used in
                                         ;; page headings
-}

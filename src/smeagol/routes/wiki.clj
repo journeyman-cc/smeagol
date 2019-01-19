@@ -20,7 +20,10 @@
             [smeagol.sanity :refer [show-sanity-check-error]]
             [smeagol.util :as util]
             [smeagol.uploads :as ul]
-            [taoensso.timbre :as timbre]))
+            [taoensso.timbre :as timbre]
+            [com.stuartsierra.component :as component]
+            [smeagol.include.resolve-local-file :as resolve]
+            [smeagol.include :as include]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;
@@ -108,13 +111,21 @@
   (edit-page request "stylesheet" ".css" "edit-css.html" "_edit-side-bar.md"))
 
 
+(def md-include-system
+  (component/start
+    (component/system-map
+      :resolver (resolve/new-resolver util/content-dir)
+      :includer (component/using
+                  (include/new-includer)
+                  [:resolver]))))
+
 (defn wiki-page
   "Render the markdown page specified in this `request`, if any. If none found, redirect to edit-page"
   [request]
   (or
     (show-sanity-check-error)
     (let [params (keywordize-keys (:params request))
-          page (or (:page params) (util/get-message :default-page-title "Introduction" request))
+          page (or (:page params) util/start-page (util/get-message :default-page-title "Introduction" request))
           file-name (str page ".md")
           file-path (cjio/file util/content-dir file-name)
           exists? (.exists (clojure.java.io/as-file file-path))]
@@ -125,7 +136,10 @@
                              (merge (util/standard-params request)
                                     {:title page
                                      :page page
-                                     :content (md->html (slurp file-path))
+                                     :content (md->html
+                                                (include/expand-include-md
+                                                  (:includer md-include-system)
+                                                  (slurp file-path)))
                                      :editable true})))
             true (response/redirect (str "/edit?page=" page))))))
 
