@@ -20,7 +20,10 @@
             [smeagol.sanity :refer [show-sanity-check-error]]
             [smeagol.util :as util]
             [smeagol.uploads :as ul]
-            [taoensso.timbre :as timbre]))
+            [taoensso.timbre :as timbre]
+            [com.stuartsierra.component :as component]
+            [smeagol.include.resolve-local-file :as resolve]
+            [smeagol.include :as include]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;
@@ -45,23 +48,17 @@
 ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
-(defn get-git-repo
-  "Get the git repository for my content, creating it if necessary"
-  []
-  (hist/load-or-init-repo util/content-dir))
-
-
 (defn process-source
   "Process `source-text` and save it to the specified `file-path`, committing it
   to Git and finally redirecting to wiki-page."
   [params suffix request]
+  (timbre/trace (format "process-source: '%s'" request))
   (let [source-text (:src params)
         page (:page params)
         file-name (str page suffix)
         file-path (cjio/file util/content-dir file-name)
         exists? (.exists (cjio/as-file file-path))
-        git-repo (get-git-repo)
+        git-repo (hist/load-or-init-repo util/content-dir)
         user (session/get :user)
         email (auth/get-email user)
         summary (format "%s: %s" user (or (:summary params) "no summary"))]
@@ -115,13 +112,22 @@
   (edit-page request "stylesheet" ".css" "edit-css.html" "_edit-side-bar.md"))
 
 
+(def md-include-system
+  (component/start
+    (component/system-map
+      :resolver (resolve/new-resolver util/content-dir)
+      :includer (component/using
+                  (include/new-includer)
+                  [:resolver]))))
+
 (defn wiki-page
   "Render the markdown page specified in this `request`, if any. If none found, redirect to edit-page"
   [request]
+  (timbre/trace (format "wiki-page: '%s'" request))
   (or
     (show-sanity-check-error)
     (let [params (keywordize-keys (:params request))
-          page (or (:page params) (util/get-message :default-page-title "Introduction" request))
+          page (or (:page params) util/start-page (util/get-message :default-page-title "Introduction" request))
           file-name (str page ".md")
           file-path (cjio/file util/content-dir file-name)
           exists? (.exists (clojure.java.io/as-file file-path))]
@@ -132,7 +138,10 @@
                              (merge (util/standard-params request)
                                     {:title page
                                      :page page
-                                     :content (md->html (slurp file-path))
+                                     :content (md->html
+                                                (include/expand-include-md
+                                                  (:includer md-include-system)
+                                                  (slurp file-path)))
                                      :editable true})))
             true (response/redirect (str "/edit?page=" page))))))
 
@@ -148,7 +157,7 @@
     (timbre/info (format "Showing history of page '%s'" page))
     (layout/render "history.html"
                    (merge (util/standard-params request)
-                          {:title (str "History of " page)
+                          {:title (util/get-message :history-title-prefix request)
                            :page page
                            :history (hist/find-history repo-path file-name)}))))
 
@@ -156,8 +165,8 @@
   "Render a form to allow the upload of a file."
   [request]
   (let [params (keywordize-keys (:params request))
-        data-path (str (io/resource-path) "/content/uploads/")
-        git-repo (get-git-repo)
+        data-path (str util/content-dir "/content/uploads/")
+        git-repo (hist/load-or-init-repo util/content-dir)
         upload (:upload params)
         uploaded (if upload (ul/store-upload params data-path))
         user (session/get :user)

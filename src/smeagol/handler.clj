@@ -2,6 +2,7 @@
       :author "Simon Brooke"}
   smeagol.handler
   (:require [clojure.java.io :as cjio]
+            [clojure.string :refer [lower-case]]
             [compojure.core :refer [defroutes]]
             [compojure.route :as route]
             [cronj.core :as cronj]
@@ -11,6 +12,7 @@
             [noir.util.middleware :refer [app-handler]]
             [ring.middleware.defaults :refer [site-defaults]]
             [selmer.parser :as parser]
+            [smeagol.configuration :refer [config]]
             [smeagol.routes.wiki :refer [wiki-routes]]
             [smeagol.middleware :refer [load-middleware]]
             [smeagol.session-manager :as session-manager]
@@ -43,6 +45,7 @@
 (defn user-access [request]
   (session/get :user))
 
+
 (defroutes base-routes
   (route/resources "/")
   (route/not-found "Not Found"))
@@ -69,14 +72,18 @@
        {:rotor (rotor/rotor-appender
                  {:path "smeagol.log"
                   :max-size (* 512 1024)
-                  :backlog 10})}})
+                  :backlog 10})}
+       :level (or
+                (:log-level config)
+                (if (env :dev) :debug)
+                :info)})
     (cronj/start! session-manager/cleanup-job)
     (if (env :dev) (parser/cache-off!))
     ;;start the expired session cleanup job
     (timbre/info "\n-=[ smeagol started successfully"
                  (when (env :dev) "using the development profile") "]=-")
     (catch Exception any
-      (timbre/error "Failure during startup" any)
+      (timbre/error any "Failure during startup")
       (destroy))))
 
 ;; timeout sessions after 30 minutes
@@ -90,6 +97,7 @@
   [xss-protection?]
   (-> site-defaults
       (update-in [:session] merge session-defaults)
+      (dissoc :static)
       (assoc-in [:security :anti-forgery] xss-protection?)))
 
 

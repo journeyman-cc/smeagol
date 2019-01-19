@@ -1,4 +1,4 @@
-(defproject smeagol "1.0.0-rc3"
+(defproject smeagol "1.0.2"
   :description "A simple Git-backed Wiki inspired by Gollum"
   :url "https://github.com/simon-brooke/smeagol"
   :license {:name "GNU General Public License,version 2.0 or (at your option) any later version"
@@ -7,10 +7,9 @@
                  [clj-yaml "0.4.0"]
                  [com.cemerick/url "0.1.1"]
                  [com.fzakaria/slf4j-timbre "0.3.7"]
+                 [com.stuartsierra/component "0.3.2"]
                  [com.taoensso/encore "2.92.0"]
-                 [com.cemerick/url "0.1.1"]
                  [com.taoensso/timbre "4.10.0"]
-                 [com.fzakaria/slf4j-timbre "0.3.7"]
                  [com.taoensso/tower "3.0.2" :exclusions [com.taoensso/encore]]
                  [crypto-password "0.2.0"]
                  [environ "1.1.0"]
@@ -28,6 +27,7 @@
                  [org.slf4j/log4j-over-slf4j "1.7.25"]
                  [org.slf4j/jul-to-slf4j "1.7.25"]
                  [org.slf4j/jcl-over-slf4j "1.7.25"]
+                 [prismatic/schema "1.1.9"]
                  [prone "1.1.4"]
                  [ring/ring-anti-forgery "1.1.0"]
                  [ring-server "0.4.0"]
@@ -61,10 +61,10 @@
   :release-tasks [["vcs" "assert-committed"]
                   ["change" "version" "leiningen.release/bump-version" "release"]
                   ["vcs" "commit"]
-                  ;; ["vcs" "tag"] -- not working, problems with secret key
+                  ["vcs" "tag" "v." "--no-sign"]
                   ["clean"]
                   ["bower" "install"]
-                  ["ring" "uberwar"]
+                  ["ring" "uberjar"]
                   ["docker" "build"]
                   ["docker" "push"]
                   ["change" "version" "leiningen.release/bump-version"]

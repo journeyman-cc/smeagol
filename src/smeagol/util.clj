@@ -8,7 +8,8 @@
             [scot.weft.i18n.core :as i18n]
             [smeagol.authenticate :as auth]
             [smeagol.configuration :refer [config]]
-            [smeagol.formatting :refer [md->html]]))
+            [smeagol.formatting :refer [md->html]]
+            [taoensso.timbre :as timbre]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;
@@ -34,9 +35,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
+(def start-page
+  (:start-page  config))
+
 (def content-dir
   (or
-    (env :smeagol-content-dir)
+    (:content-dir config)
     (cjio/file (io/resource-path) "content")))
 
 
@@ -55,12 +59,19 @@
   "Return the most acceptable messages collection we have given the
   `Accept-Language` header in this `request`."
   [request]
-  (merge
-    (i18n/get-messages
-      ((:headers request) "accept-language")
-      "i18n"
-      "en-GB")
-    config))
+  (let [specifier ((:headers request) "accept-language")
+        messages (try
+                   (i18n/get-messages specifier "i18n" "en-GB")
+                   (catch Exception any
+                     (timbre/error
+                       any
+                       (str
+                         "Failed to parse accept-language header "
+                         specifier))
+                     {}))]
+    (merge
+      messages
+      config)))
 
 
 (def get-messages (memoize raw-get-messages))

@@ -4,6 +4,7 @@
   (:require [crypto.password.scrypt :as password]
             [environ.core :refer [env]]
             [noir.io :as io]
+            [smeagol.configuration :refer [config]]
             [taoensso.timbre :as timbre]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -37,8 +38,8 @@
 ;; the relative path to the password file.
 (def password-file-path
   (or
-    (env :smeagol-passwd)
-    (str (clojure.java.io/resource "passwd"))))
+    (:passwd config)
+    (str (io/resource-path) "../passwd")))
 
 
 (defn- get-users
@@ -112,7 +113,7 @@
         (timbre/info (str "Successfully changed password for user " username))
           true))
       (catch Exception any
-        (timbre/error
+        (timbre/error any
           (format "Changing password failed for user %s failed: %s (%s)"
                   username (.getName (.getClass any)) (.getMessage any)))
         false))))
@@ -162,7 +163,7 @@
                (timbre/info  "Successfully added user " username)
                true)
              (catch Exception any
-               (timbre/error
+               (timbre/error any
                  (format "Adding user %s failed: %s (%s)"
                          username (.getName (.getClass any)) (.getMessage any)))
                false)))))
@@ -179,7 +180,7 @@
         (timbre/info (str "Successfully deleted user " username))
         true)
       (catch Exception any
-        (timbre/error
+        (timbre/error any
           (format "Deleting user %s failed: %s (%s)"
                   username (.getName (.getClass any)) (.getMessage any)))
         false))))

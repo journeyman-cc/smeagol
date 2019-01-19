@@ -1,0 +1,143 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;
+;;;; Smeagol: a very simple Wiki engine.
+;;;;
+;;;; This program is free software; you can redistribute it and/or
+;;;; modify it under the terms of the GNU General Public License
+;;;; as published by the Free Software Foundation; either version 2
+;;;; of the License, or (at your option) any later version.
+;;;;
+;;;; This program is distributed in the hope that it will be useful,
+;;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;;;; GNU General Public License for more details.
+;;;;
+;;;; You should have received a copy of the GNU General Public License
+;;;; along with this program; if not, write to the Free Software
+;;;; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
+;;;; USA.
+;;;;
+;;;; Lithuanian language translation contributed by and
+;;;; Copyright (C) 2017 Soukyan Blackwood <priority.inc@gmail.com>
+;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; en-GB.edn: English-language messages.
+;;; This is essentially all the text in the chrome - that which isn't editable
+;;; through the wiki itself; and the test in the sanity check report.
+
+;;      ;       ;       ;       ;       ;       ;       ;       ;       ;
+{:add-user-label        "Pridėti naują naudotoją"  ;; label for the add user link on edit users page
+ :change-pass-label     "Pakeiskite slaptažodį!"
+                                        ;; text of the change password widget itself on the
+                                        ;; change password page
+ :change-pass-link      "Pakeiskite slaptažodį"
+                                        ;; text of the change password link on the menu
+ :change-pass-prompt    "Pakeisti slaptažodį"
+                                        ;; text of the change password widget prompt on the
+                                        ;; change password page
+ :change-col-hdr        "Pakeitimai"       ;; header for the changes column in history
+ :chpass-bad-match      "Jūsų siūlomi slaptažodžiai - nesutampa"
+                                        ;; error text if proposed passwords don't match
+ :chpass-fail           "Jūsų slaptažodis nebuvo pakeistas"
+                                        ;; error text on fail other htan too short or bad match
+ :chpass-success        "Jūsų slaptažodis buvo pakeistas"
+                                        ;; confirmation text on password change
+ :chpass-too-short      "Jūsų siūlomas slaptožodis – per trumpas: reikia bent aštuonių ženklų"
+                                        ;; error text if proposed password is too short
+ :chpass-title-prefix   "Pakeisti slaptažodį, dėl"
+                                        ;; prefix for title of change password page
+ :content-dir           "Turinio katalogas"
+                                        ;; used in sanity check report
+ :content-dir-exists    "Turinio katalogas egzistuoja"
+                                        ;; used in sanity check report
+ :content-dir-is-dir    "Turinio katalogas yra katalogas"
+                                        ;; used in sanity check report
+ :cookies-about         "Apie slapukus" ;; about cookies text
+ :cookies-more          "Šis puslapis saugo jūsų sesijų informaciją  jūsų naršyklėje “slapukų” forma. Tai mums leidžia jums rodyti tik tai, ką norite matyti. Slapukai neturi jokių jūsų identifikavimo duomenų ir kiti puslapiai negali jų “perskaityti”. Šie slapukai ištrinami iš karto, vos jūs išjungiate šį puslapį. Šis puslapis nenaudoja jokių trečiųjų asmenų slapukų, ir jūsų apsilankymas čia negali būti atsektas jokio kito puslapio."
+                                        ;; more about cookies text
+ :default-page-title    "Pristatymas"  ;; title of the default page in this wiki
+ :del-col-hdr           "Ištrinti"        ;; header for delete column on edit users page
+ :del-user-fail         "Naudotojas negalėjo būti ištrintas"
+                                        ;; error message on failure to delete user
+ :del-user-success      "Naudotojas sėkmingai ištrintas"
+                                        ;; confirmation message on deletion of user
+ :diff-title-prefix     "Pakeitimai nuo versijos"
+                                        ;; prefix for the header of the changes page
+ :does-not-exist        "neegzsituoja"
+                                        ;; (of a file or directory); used in sanity check report
+ :edit-col-hdr          "Keisti"          ;; header for edit column on edit users page
+ :edit-page-link        "Keisti šį puslapį"
+                                        ;; text of the edit page link on the content frame
+ :edit-title-prefix     "Keisti"          ;; prefix for title of edit content page
+ :edit-users-link       "Keisti naudotojus"    ;; text of the edit users link on the menu
+ :edit-users-title      "Pasirinkti naudotojus keitimui"
+                                        ;; title of edit users page
+ :email-prompt          "el. Paštas" ;; text of the email widget prompt on edit user page
+ :file-or-directory     "Failas ar katalogas"
+                                        ;; used in sanity check report
+ :file-summary-prompt   "Aprašymas/kas pakeista"
+                                        ;; prompt for the file upload summary input
+ :file-upload-link-text "Galite nukreipti į šį failą naudodami formos nuorodą"
+                                        ;; Text introducing the link to an uploaded file
+ :file-upload-prompt    "Failas įkėlimui" ;; prompt string for the file upload widget
+ :file-upload-title     "Įkelti failą" ;; title for the file upload page
+ :is-admin-prompt       "Administratorius?"
+ :here                  "čia"          ;; used in sanity check report
+ :home-link             "Pradinis"          ;; text of the home link on the menu
+ :is-not-directory      "ne katalogas"
+                                        ;; (of a file or directory) used in sanity check report
+ :is-not-readable       "neperskaitomas"
+                                        ;; (of a file or directory) used in sanity check report
+ :is-not-writable       "nerašomas"
+                                        ;; (of a file or directory) used in sanity check report
+ :login-label           "Prisijunkite!"       ;; text of the login widget on the login page
+ :login-link            "Prisijunkite"        ;; text of the login link on the menu
+ :login-prompt          "Pakeisti šį viki"
+                                        ;; text of the action widget prompt on the login page
+ :logout-label          "Atsijunkite!"      ;; text of the logout widget on the logout page
+ :logout-link           "Atsijunkite"       ;; text of the logout link on the menu
+ :logged-in-as          "Jūs prisijungęs, kaip"
+                                        ;; text of the 'logged in as' label on the menu
+ :history-link          "Istorija"       ;; text of the history link on the content frame
+ :history-title-prefix  "Istorija apie"    ;; prefix of the title on the history page
+ :new-pass-prompt       "Naujas slaptažodis"  ;; text of the new password widget prompt on the change
+                                        ;; password and edit user pages
+ :no-admin-users        "Naudotojų ‘passwd’ faile su administatoriaus privilegijomis nėra"
+                                        ;; used in sanity check report
+ :old-pass-prompt       "Jūsų slaptažodis"
+                                        ;; text of the old password widget prompt on the change
+                                        ;; password page, and password widget on login page
+ :password-file         "slaptažodžio (‘passwd’) failas"
+                                        ;; used in sanity check report
+ :problems-found        "rasta problemų"
+                                        ;; used in sanity check report
+ :rpt-pass-prompt       "Ir dar kartą"     ;; text of the new password widget prompt on the change
+                                        ;; password and edit user pages
+ :save-prompt           "Kai baigsite redaguoti"
+                                        ;; text of the save widget label on edit content
+                                        ;; and edit user page
+ :save-label            "Išsaugokite!"         ;; text of the save widget itself
+ :save-user-fail        "Nepavyko išsaugoti naudotojo"
+ :save-user-success     "Naudotojas sėkmingai išsaugotas"
+ :see-documentation     "Daugiau informacijos ieškokite dokumentacijoje "
+                                        ;; used in sanity check report
+ :smeagol-not-initialised
+                        "Smygolas buvo blogai paleistas"
+                                        ;; title of the sanity check report
+ :smeagol-misconfiguration
+                        "Smygolas nerado kai kurių jam reikalingų resursų, taip nutikti galėjo dėl neteisingų nustatymų, arba trūkstamų aplinkos kintamųjų"
+                                        ;; used in sanity check report
+ :user-lacks-field      "Naudotojo passwd failo įraše trūksta laukelio"
+                                        ;; used in sanity check report
+ :username-prompt       "Naudotojo vardas"      ;; text of the username widget prompt on edit user page
+                                        ;; text of the is admin widget prompt on edit user page
+ :user-title-prefix     "Pakeisti naudotoją"     ;; prefix for title of edit user page
+ :vers-col-hdr          "Versija"       ;; header for the version column in history
+ :what-col-hdr          "Kas"          ;; header for the what column in history
+ :what-changed-prompt   "Ką pakeitėte?"
+                                        ;; text of the summary widget prompt on edit
+                                        ;; content page
+ :when-col-hdr          "Kada"          ;; header for the when column in history
+ :your-uname-prompt     "Jūsų naudotojo vardas" ;; text of the username widget prompt on the login page
+ }
