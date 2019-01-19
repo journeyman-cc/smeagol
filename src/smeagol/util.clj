@@ -35,6 +35,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
+(def start-page
+  (:start-page  config))
+
 (def content-dir
   (or
     (:content-dir config)
