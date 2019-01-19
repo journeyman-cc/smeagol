@@ -56,9 +56,11 @@
         filename (:filename upload)]
     (timbre/info
       (str "Storing upload file: " upload))
-      (if tmp-file
-        (do
-          (.renameTo tmp-file
-                     (File. (str path filename)))
-          filename)
-        (throw (Exception. "No file found?")))))
+    (timbre/debug
+      (str "store-upload mv file: " tmp-file " to: " path filename))
+    (if tmp-file
+      (do
+        (.renameTo tmp-file
+                   (File. (str path filename)))
+        filename)
+      (throw (Exception. "No file found?")))))
