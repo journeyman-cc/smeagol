@@ -1,4 +1,4 @@
-(defproject smeagol "1.0.2-SNAPSHOT"
+(defproject smeagol "1.0.2"
   :description "A simple Git-backed Wiki inspired by Gollum"
   :url "https://github.com/simon-brooke/smeagol"
   :license {:name "GNU General Public License,version 2.0 or (at your option) any later version"
@@ -63,7 +63,7 @@
   :release-tasks [["vcs" "assert-committed"]
                   ["change" "version" "leiningen.release/bump-version" "release"]
                   ["vcs" "commit"]
-                  ;; ["vcs" "tag"] -- not working, problems with secret key
+                  ["vcs" "tag" "v." "--no-sign"]
                   ["clean"]
                   ["bower" "install"]
                   ["ring" "uberjar"]
