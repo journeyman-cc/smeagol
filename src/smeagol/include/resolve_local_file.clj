@@ -19,7 +19,11 @@ smeagol.include and not inteded for direct usage."
     (cond exists?
           (do
             (timbre/info (format "Including page '%s' from file '%s'" uri file-path))
-            (slurp file-path)))))
+            (slurp file-path))
+          :else
+            (do
+              (timbre/info (format "Page '%s' not found at '%s'" uri file-path))
+              (str "include not found at " file-path)))))
 
 (s/defn
   new-resolver
