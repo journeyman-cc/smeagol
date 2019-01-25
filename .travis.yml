@@ -25,7 +25,7 @@ jobs:
         - lein test
         - lein bower install
         - lein ring uberjar
-        - md5sum target/smeagol-standalone.jar > target/uberjar/smeagol-standalone.jar.md5
+        - md5sum target/smeagol-standalone.jar > target/smeagol-standalone.jar.md5
       deploy:
         - provider: releases
           skip_cleanup: true
