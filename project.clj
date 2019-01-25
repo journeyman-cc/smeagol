@@ -33,8 +33,6 @@
                  [ring-server "0.4.0"]
                  [selmer "1.11.0"]]
 
-  :target-path "target/%s/"
-
   :repl-options {:init-ns smeagol.repl}
 
   :jvm-opts ["-server"]
