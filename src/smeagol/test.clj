@@ -53,6 +53,6 @@
 (defn process [^String text ^Integer index]
   (let [{:keys [error] :as params} (parse text)]
     (if error
-      (str "<pre class=\"error\">" (pr-str params) "</pre><pre>" text "</pre>")
+      (str "<pre class=\"test-result error\">" (pr-str params) "</pre><pre>" text "</pre>")
       (let [{:keys [result] :as test-result} (do-test params)]
-        (str "<pre class=\"" (name result) "\">" (pr-str test-result) "</pre><pre>" text "</pre>")))))
+        (str "<pre class=\"test-result " (name result) "\">" (pr-str test-result) "</pre><pre>" text "</pre>")))))

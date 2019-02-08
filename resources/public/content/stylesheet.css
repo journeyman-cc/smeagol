@@ -507,3 +507,19 @@ th {
     display: none;
   }
 }
+
+.test-result {
+    color: #ffffff;
+}
+
+.test-result.ok {
+    background-color: #2aa876
+}
+
+.test-result.failure {
+    background-color: #e8554e;
+}
+
+.test-result.error {
+    background-color: #e8554e;
+}
