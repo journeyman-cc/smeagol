@@ -6,7 +6,7 @@
             [cemerick.url :refer (url url-encode url-decode)]
             [clj-yaml.core :as yaml]
             [markdown.core :as md]
-            [smeagol.test :as test]
+            [smeagol.testing :as testing]
             [smeagol.configuration :refer [config]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -104,7 +104,7 @@
 (defn process-test
   "Takes at least 3 lines assuming first is a fn name, last is output, rest inside are arguments"
   [^String text ^Integer index]
-  (test/process text index))
+  (testing/process text index))
 
 
 (defn get-first-token

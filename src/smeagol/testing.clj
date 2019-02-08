@@ -1,4 +1,4 @@
-(ns smeagol.test
+(ns smeagol.testing
   (:require [clojure.string :as s]
             [clojure.edn :as edn]))
 
