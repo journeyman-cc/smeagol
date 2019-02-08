@@ -34,7 +34,8 @@
   :formatters           {"vega"         smeagol.formatting/process-vega
                          "vis"          smeagol.formatting/process-vega
                          "mermaid"      smeagol.formatting/process-mermaid
-                         "backticks"    smeagol.formatting/process-backticks}
+                         "backticks"    smeagol.formatting/process-backticks
+                         "test"         smeagol.formatting/process-test}
   :log-level            :info           ;; the minimum logging level; one of
                                         ;; :trace :debug :info :warn :error :fatal
   :passwd               "resources/passwd"
