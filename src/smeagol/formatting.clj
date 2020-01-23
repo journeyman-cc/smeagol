@@ -49,7 +49,7 @@
   [^String html-src]
   (if html-src
     (cs/replace html-src #"\[\[[^\[\]]*\]\]"
-                #(let [text (clojure.string/replace %1 #"[\[\]]" "")
+                #(let [text (cs/replace %1 #"[\[\]]" "")
                        encoded (url-encode text)
                        ;; I use '\_' to represent '_' in wiki markup, because
                        ;; '_' is meaningful in Markdown. However, this needs to

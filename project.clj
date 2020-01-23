@@ -7,7 +7,7 @@
                  [clj-yaml "0.4.0"]
                  [com.cemerick/url "0.1.1"]
                  [com.fzakaria/slf4j-timbre "0.3.7"]
-                 [com.stuartsierra/component "0.3.2"]
+                 [com.stuartsierra/component "0.4.0"]
                  [com.taoensso/encore "2.92.0"]
                  [com.taoensso/timbre "4.10.0"]
                  [com.taoensso/tower "3.0.2" :exclusions [com.taoensso/encore]]
@@ -43,7 +43,7 @@
             [io.sarnowski/lein-docker "1.0.0"]
             [lein-environ "1.0.0"]
             [lein-marginalia "0.7.1" :exclusions [org.clojure/clojure]]
-            [lein-ring "0.8.13" :exclusions [org.clojure/clojure]]]
+            [lein-ring "0.12.5" :exclusions [org.clojure/clojure]]]
 
   :bower-dependencies [[simplemde "1.11.2"]
                        ;; [vega-embed "3.0.0-beta.20"] ;; vega-embed currently not loaded from Bower because of
