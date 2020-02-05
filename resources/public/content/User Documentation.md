@@ -1,6 +1,7 @@
 ## If you're using a small device
 If you're using a small device, like a mobile phone, the top menu isn't usually displayed. Instead there will be an image like this:
-![Menu icon](/img/three-lines.png)
+
+![Menu icon](img/three-lines.png)
 
 at the top left of the page. Touching this image will cause the top menu to be displayed, and it will have all the options described in this documentation.
 
