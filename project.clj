@@ -59,12 +59,13 @@
          :destroy smeagol.handler/destroy}
 
   :release-tasks [["vcs" "assert-committed"]
+                  ["clean"]
+                  ["codox"]
                   ["change" "version" "leiningen.release/bump-version" "release"]
                   ["vcs" "commit"]
-                  ["vcs" "tag" "v." "--no-sign"]
-                  ["clean"]
                   ["bower" "install"]
                   ["ring" "uberjar"]
+                  ["deploy" "clojars"]
                   ["docker" "build"]
                   ["docker" "push"]
                   ["change" "version" "leiningen.release/bump-version"]
