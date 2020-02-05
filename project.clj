@@ -1,4 +1,4 @@
-(defproject smeagol "1.0.3-SNAPSHOT"
+(defproject smeagol "1.0.3"
   :description "A simple Git-backed Wiki inspired by Gollum"
   :url "https://github.com/simon-brooke/smeagol"
   :license {:name "GNU General Public License,version 2.0 or (at your option) any later version"
@@ -58,6 +58,11 @@
          :init    smeagol.handler/init
          :destroy smeagol.handler/destroy}
 
+  ;; for the time being, I'm not sure that I want to formally deploy this anywhere, and I certainly don't feel
+  ;; it's fair to clutter clojars.org with it.
+  :deploy-repositories [["releases" "file:/tmp"]
+                        ["snapshots" "file:/tmp"]]
+
   :release-tasks [["vcs" "assert-committed"]
                   ["clean"]
                   ["codox"]
@@ -65,7 +70,7 @@
                   ["vcs" "commit"]
                   ["bower" "install"]
                   ["ring" "uberjar"]
-                  ["deploy" "clojars"]
+                  ["deploy"]
                   ["docker" "build"]
                   ["docker" "push"]
                   ["change" "version" "leiningen.release/bump-version"]
