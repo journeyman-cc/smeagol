@@ -59,8 +59,12 @@
     (timbre/debug
       (str "store-upload mv file: " tmp-file " to: " path filename))
     (if tmp-file
-      (do
-        (.renameTo tmp-file
-                   (File. (str path filename)))
-        filename)
+      (try
+        (do
+          (.renameTo tmp-file
+                     (File. (str path filename)))
+          filename)
+        (catch Exception x
+          (timbre/error (str "Failed to move " tmp-file " to " path filename "; " (type x) ": " (.getMessage x)))
+          (throw x)))
       (throw (Exception. "No file found?")))))
