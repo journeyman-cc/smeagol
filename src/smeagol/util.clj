@@ -66,8 +66,9 @@
                      (timbre/error
                        any
                        (str
-                         "Failed to parse accept-language header "
-                         specifier))
+                         "Failed to parse accept-language header '"
+                         specifier
+                         "'"))
                      {}))]
     (merge
       messages
