@@ -1,4 +1,4 @@
-(defproject smeagol "1.0.2"
+(defproject smeagol "1.0.3"
   :description "A simple Git-backed Wiki inspired by Gollum"
   :url "https://github.com/simon-brooke/smeagol"
   :license {:name "GNU General Public License,version 2.0 or (at your option) any later version"
@@ -7,7 +7,7 @@
                  [clj-yaml "0.4.0"]
                  [com.cemerick/url "0.1.1"]
                  [com.fzakaria/slf4j-timbre "0.3.7"]
-                 [com.stuartsierra/component "0.3.2"]
+                 [com.stuartsierra/component "0.4.0"]
                  [com.taoensso/encore "2.92.0"]
                  [com.taoensso/timbre "4.10.0"]
                  [com.taoensso/tower "3.0.2" :exclusions [com.taoensso/encore]]
@@ -43,7 +43,7 @@
             [io.sarnowski/lein-docker "1.0.0"]
             [lein-environ "1.0.0"]
             [lein-marginalia "0.7.1" :exclusions [org.clojure/clojure]]
-            [lein-ring "0.8.13" :exclusions [org.clojure/clojure]]]
+            [lein-ring "0.12.5" :exclusions [org.clojure/clojure]]]
 
   :bower-dependencies [[simplemde "1.11.2"]
                        ;; [vega-embed "3.0.0-beta.20"] ;; vega-embed currently not loaded from Bower because of
@@ -58,13 +58,19 @@
          :init    smeagol.handler/init
          :destroy smeagol.handler/destroy}
 
+  ;; for the time being, I'm not sure that I want to formally deploy this anywhere, and I certainly don't feel
+  ;; it's fair to clutter clojars.org with it.
+  :deploy-repositories [["releases" "file:/tmp"]
+                        ["snapshots" "file:/tmp"]]
+
   :release-tasks [["vcs" "assert-committed"]
+                  ["clean"]
+                  ["codox"]
                   ["change" "version" "leiningen.release/bump-version" "release"]
                   ["vcs" "commit"]
-                  ["vcs" "tag" "v." "--no-sign"]
-                  ["clean"]
                   ["bower" "install"]
                   ["ring" "uberjar"]
+                  ["deploy"]
                   ["docker" "build"]
                   ["docker" "push"]
                   ["change" "version" "leiningen.release/bump-version"]
