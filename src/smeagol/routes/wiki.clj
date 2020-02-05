@@ -165,7 +165,7 @@
   "Render a form to allow the upload of a file."
   [request]
   (let [params (keywordize-keys (:params request))
-        data-path (str util/content-dir "/content/uploads/")
+        data-path (str util/content-dir "/uploads/")
         git-repo (hist/load-or-init-repo util/content-dir)
         upload (:upload params)
         uploaded (if upload (ul/store-upload params data-path))
