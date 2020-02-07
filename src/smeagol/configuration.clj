@@ -111,9 +111,19 @@
   file is read (if it is specified and present), but that individual
   values can be overridden by environment variables."
   (try
+    (timbre/info (str "Reading configuration from " config-file-path))
     (let [file-contents (try
                           (read-string (slurp config-file-path))
-                          (catch Exception _ {}))
+                          (catch Exception x
+                            (timbre/error
+                              (str
+                                "Failed to read configuration from "
+                                config-file-path
+                                " because: "
+                                (type x)
+                                "; "
+                                (.getMessage x)))
+                            {}))
           config (merge
                    file-contents
                    (transform-map
