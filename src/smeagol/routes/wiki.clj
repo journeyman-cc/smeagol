@@ -163,6 +163,9 @@
                            :page page
                            :history (hist/find-history repo-path file-name)}))))
 
+;;;; this next section is all stuff supporting the list-uploads page, and maybe
+;;;; should be moved to its own file.
+
 (def image-extns #{".gif" ".jpg" ".jpeg" ".png"})
 
 (defn format-instant
@@ -221,16 +224,7 @@
                        files)
               }))))
 
-(map
-  #(zipmap
-     [:base-name :is-image :modified :name]
-     [(fs/base-name %)
-      (if
-        (and (fs/extension %) (image-extns (cs/lower-case (fs/extension %))))
-        true false)
-      (fs/mod-time %)
-      (fs/name %)])
-  (file-seq (clojure.java.io/file "resources/public/content/uploads")))
+;;;; end of list-uploads section ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn upload-page
   "Render a form to allow the upload of a file."
@@ -302,12 +296,14 @@
   [request]
   (or
     (show-sanity-check-error)
-    (let [params (keywordize-keys (:form-params request))
-          username (:username params)
-          password (:password params)
-          action (:action params)
+    (let [params (keywordize-keys (:params request))
+          form-params (keywordize-keys (:form-params request))
+          username (:username form-params)
+          password (:password form-params)
+          action (:action form-params)
           user (session/get :user)
-          redirect-to (or (:redirect-to params) "/wiki")]
+          redirect-to (:redirect-to params)]
+      (if redirect-to (timbre/info (str "After auth, redirect to: " redirect-to)))
       (cond
         (= action (util/get-message :logout-label request))
         (do
@@ -324,8 +320,22 @@
                               {:title (if user
                                         (str (util/get-message :logout-link request) " " user)
                                         (util/get-message :login-link request))
-                               :redirect-to ((:headers request) "referer")}))))))
+                               :redirect-to redirect-to}))))))
 
+(defn wrap-restricted-redirect
+  ;; TODO: this is not idiomatic, and it's too late to write something idiomatic just now
+  [f request]
+  (route/restricted
+    (apply
+      f
+      (if
+        (-> request :params :redirect-to) ;; a redirect target has already been set
+        request
+        ;; else merge a redirect target into the params
+        (let
+          [redirect-to (if (:uri request)
+                         (cs/join "?" [(:uri request) (:query-string request)]))]
+          (assoc-in request [:params :redirect-to] redirect-to))))))
 
 (defn passwd-page
   "Render a page to change the user password"
