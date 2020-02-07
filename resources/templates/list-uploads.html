@@ -1,0 +1,34 @@
+{% extends "templates/base.html" %}
+
+{% block content %}
+        <div id="content" class="list-uploads">
+          <form action="list-uploads" method="post">
+            {% csrf-field %}
+            <p class="widget">
+              <label for="search">{% i18n matching %}</label>
+              <input name="search" id="search" type="text" value="{{search}}" required/>
+            </p>
+          </form>
+          <table>
+            <tr>
+              <th>Name</th>
+              <th>Uploaded</th>
+              <th>Type this</th>
+              <th>To get this</th>
+            </tr>
+            {% for entry in files %}
+            <tr>
+              <th>{{entry.base-name}}</th>
+              <td>{{entry.modified}}</td>
+              <td>
+              {% if entry.is-image %} ![{{entry.name|capitalize}}](uploads/{{entry.base-name}}) {% else %} [{{entry.name|capitalize}}](uploads/{{entry.base-name}}) {% endif %}
+              </td>
+              <td>
+              {% if entry.is-image %} <img src="uploads/{{entry.base-name}}" alt="{{entry.name|capitalize}}"/> {% else %} <a href="uploads/{{entry.base-name}}">link</a> {% endif %}
+              </td>
+
+            </tr>
+            {% endfor %}
+          </table>
+        </div>
+{% endblock %}

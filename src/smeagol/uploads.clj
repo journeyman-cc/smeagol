@@ -49,7 +49,9 @@
   "Store an upload both to the file system and to the database.
   The issue with storing an upload is moving it into place.
   If `params` are passed as a map, it is expected that this is a map from
-  an HTTP POST operation of a form with type `multipart/form-data`."
+  an HTTP POST operation of a form with type `multipart/form-data`.
+
+  On success, returns the file object uploaded."
   [params path]
   (let [upload (:upload params)
         tmp-file (:tempfile upload)
@@ -63,7 +65,7 @@
         (do
           (.renameTo tmp-file
                      (File. (str path filename)))
-          filename)
+          (File. (str path filename)))
         (catch Exception x
           (timbre/error (str "Failed to move " tmp-file " to " path filename "; " (type x) ": " (.getMessage x)))
           (throw x)))

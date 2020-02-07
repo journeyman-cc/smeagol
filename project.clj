@@ -5,6 +5,7 @@
             :url "https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html"}
   :dependencies [[clj-jgit "0.8.10"]
                  [clj-yaml "0.4.0"]
+                 [clojure.java-time "0.3.2"]
                  [com.cemerick/url "0.1.1"]
                  [com.fzakaria/slf4j-timbre "0.3.7"]
                  [com.stuartsierra/component "0.4.0"]
@@ -17,6 +18,7 @@
                  [im.chit/cronj "1.4.4"]
                  [lib-noir "0.9.9" :exclusions [org.clojure/tools.reader]]
                  [markdown-clj "0.9.99" :exclusions [com.keminglabs/cljx]]
+                 [me.raynes/fs "1.4.6"]
                  [noir-exception "0.2.5"]
                  [org.clojars.simon_brooke/internationalisation "1.0.3"]
                  [org.clojure/clojure "1.8.0"]

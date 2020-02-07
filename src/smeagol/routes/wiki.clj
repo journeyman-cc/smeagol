@@ -7,6 +7,8 @@
             [clojure.string :as cs]
             [clojure.walk :refer :all]
             [compojure.core :refer :all]
+            [java-time :as jt]
+            [me.raynes.fs :as fs]
             [noir.io :as io]
             [noir.response :as response]
             [noir.util.route :as route]
@@ -161,6 +163,75 @@
                            :page page
                            :history (hist/find-history repo-path file-name)}))))
 
+(def image-extns #{".gif" ".jpg" ".jpeg" ".png"})
+
+(defn format-instant
+  "Format this `unix-time`, expected to be a Long, into something human readable.
+  If `template` is supplied, use that as the formatting template as specified for
+  java.time.Formatter. Assumes system default timezone. Returns a string."
+  ([^Long unix-time]
+   (format-instant unix-time "EEEE, dd MMMM YYYY"))
+  ([^Long unix-time ^String template]
+   (jt/format
+     (java-time/formatter template)
+     (java.time.LocalDateTime/ofInstant
+       (java-time/instant unix-time)
+       (java.time.ZoneOffset/systemDefault)))))
+
+(defn list-uploads-page
+  "Render a list of all uploaded files"
+  [request]
+  (let
+    [params (keywordize-keys (:params request))
+     data-path (str util/content-dir "/uploads/")
+     files
+     (map
+       #(zipmap
+          [:base-name :is-image :modified :name]
+          [(fs/base-name %)
+           (if
+             (and (fs/extension %)
+                  (image-extns (cs/lower-case (fs/extension %))))
+             true false)
+           (if
+             (fs/mod-time %)
+             (format-instant (fs/mod-time %)))
+           (fs/name %)])
+       (remove
+         #(or (cs/starts-with? (fs/name %) ".")
+                     (fs/directory? %))
+         (file-seq (clojure.java.io/file data-path))))]
+    (layout/render
+      "list-uploads.html"
+      (merge (util/standard-params request)
+             {:title (str
+                       (util/get-message :list-files request)
+                       (if
+                         (:search params)
+                         (str " " (util/get-message :matching request))))
+              :search (:search params)
+              :files (if
+                       (:search params)
+                       (try
+                         (let [pattern (re-pattern (:search params))]
+                           (filter
+                             #(re-find pattern (:base-name %))
+                             files))
+                         (catch Exception _ files))
+                       files)
+              }))))
+
+(map
+  #(zipmap
+     [:base-name :is-image :modified :name]
+     [(fs/base-name %)
+      (if
+        (and (fs/extension %) (image-extns (cs/lower-case (fs/extension %))))
+        true false)
+      (fs/mod-time %)
+      (fs/name %)])
+  (file-seq (clojure.java.io/file "resources/public/content/uploads")))
+
 (defn upload-page
   "Render a form to allow the upload of a file."
   [request]
@@ -174,23 +245,17 @@
     (if
       uploaded
       (do
-        (git/git-add git-repo uploaded)
+        (git/git-add git-repo (str data-path (fs/name uploaded)))
         (git/git-commit git-repo summary {:name user :email (auth/get-email user)})))
     (layout/render "upload.html"
                    (merge (util/standard-params request)
                           {:title (util/get-message :file-upload-title request)
-                           :uploaded uploaded
-                           :is-image (and
+                           :uploaded (if uploaded (fs/base-name uploaded))
+                           :is-image (if
                                        uploaded
-                                       (or
-                                         (cs/ends-with? uploaded ".gif")
-                                         (cs/ends-with? uploaded ".jpg")
-                                         (cs/ends-with? uploaded ".jpeg")
-                                         (cs/ends-with? uploaded ".png")
-                                         (cs/ends-with? uploaded ".GIF")
-                                         (cs/ends-with? uploaded ".JPG")
-                                         (cs/ends-with? uploaded ".PNG")))}))))
-
+                                       (image-extns
+                                         (cs/lower-case
+                                           (fs/extension uploaded))))}))))
 
 (defn version-page
   "Render a specific historical version of a page"
@@ -286,8 +351,10 @@
 
 
 (defroutes wiki-routes
-  (GET "/wiki" request (wiki-page request))
   (GET "/" request (wiki-page request))
+  (GET "/auth" request (auth-page request))
+  (POST "/auth" request (auth-page request))
+  (GET "/changes" request (diff-page request))
   (GET "/delete-user" request (route/restricted (admin/delete-user request)))
   (GET "/edit" request (route/restricted (edit-page request)))
   (POST "/edit" request (route/restricted (edit-page request)))
@@ -297,11 +364,12 @@
   (GET "/edit-user" request (route/restricted (admin/edit-user request)))
   (POST "/edit-user" request (route/restricted (admin/edit-user request)))
   (GET "/history" request (history-page request))
+  (GET "/list-uploads" request (route/restricted (list-uploads-page request)))
+  (POST "/list-uploads" request (route/restricted (list-uploads-page request)))
   (GET "/version" request (version-page request))
-  (GET "/changes" request (diff-page request))
-  (GET "/auth" request (auth-page request))
-  (POST "/auth" request (auth-page request))
   (GET "/passwd" request (passwd-page request))
   (POST "/passwd" request (passwd-page request))
   (GET "/upload" request (route/restricted (upload-page request)))
-  (POST "/upload" request (route/restricted (upload-page request))))
+  (POST "/upload" request (route/restricted (upload-page request)))
+  (GET "/wiki" request (wiki-page request))
+  )
