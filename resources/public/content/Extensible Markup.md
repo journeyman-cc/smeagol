@@ -4,7 +4,7 @@ A system of pluggable, extensible formatters is supported. In normal markdown, c
 
 ## The Vega formatter
 
-Inspired by [visdown](http://visdown.amitkaps.com/) and [vega-lite](https://vega.github.io/vega-lite/docs/), the Vega formatter allows you to embed vega data visualisations into Smeagol pages. The graph description should start with a line comprising three back-ticks and then the word '`vega`', and end with a line comprising just three backticks.
+Inspired by [visdown](https://visdown.com/) and [vega-lite](https://vega.github.io/vega-lite/docs/), the Vega formatter allows you to embed vega data visualisations into Smeagol pages. The graph description should start with a line comprising three back-ticks and then the word '`vega`', and end with a line comprising just three backticks.
 
 Here's an example cribbed in its entirety from [here](http://visdown.amitkaps.com/london):
 
@@ -34,7 +34,7 @@ Data files can be uploaded in the same way as images, by using the **upload a fi
 
 ## The Mermaid formatter
 
-Graphs can now be embedded in a page using the [Mermaid](http://knsv.github.io/mermaid/index.html) graph description language. The graph description should start with a line comprising three back-ticks and then the word `mermaid`, and end with a line comprising just three backticks.
+Graphs can now be embedded in a page using the [Mermaid](https://mermaid-js.github.io/mermaid/#/) graph description language. The graph description should start with a line comprising three back-ticks and then the word `mermaid`, and end with a line comprising just three backticks.
 
 Here's an example culled from the Mermaid documentation.
 
