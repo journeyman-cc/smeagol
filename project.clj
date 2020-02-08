@@ -40,18 +40,20 @@
   :jvm-opts ["-server"]
 
   :plugins [[lein-ancient "0.5.5" :exclusions [org.clojure/clojure org.clojure/data.xml]]
-            [lein-bower "0.5.1"]
             [lein-codox "0.10.3"]
             [io.sarnowski/lein-docker "1.0.0"]
             [lein-environ "1.0.0"]
             [lein-marginalia "0.7.1" :exclusions [org.clojure/clojure]]
+            [lein-npm "0.6.2"]
             [lein-ring "0.12.5" :exclusions [org.clojure/clojure]]]
 
-  :bower-dependencies [[simplemde "1.11.2"]
-                       ;; [vega-embed "3.0.0-beta.20"] ;; vega-embed currently not loaded from Bower because of
-                       ;; dependency conflict which will hopefully be resolved soon.
-                       [vega-lite "2.0.0-beta.11"]
-                       [mermaid "6.0.0"]]
+  :npm {:dependencies [[simplemde "1.11.2"]
+                       [vega "5.8.0"]
+                       [vega-embed "6.2.2"]
+                       [vega-lite "4.1.1"]
+                       [mermaid "8.4.6"]
+                       [tablesort "5.2.0"]]
+        :root "resources/public/vendor"}
 
   :docker {:image-name "simonbrooke/smeagol"
            :dockerfile "Dockerfile"}

@@ -50,6 +50,7 @@
   (let [user (session/get :user)]
     {:user user
      :admin (auth/get-admin user)
+     :js-from (:js-from config)
      :side-bar (md->html (slurp (cjio/file content-dir "_side-bar.md")))
      :header (md->html (slurp (cjio/file content-dir "_header.md")))
      :version (System/getProperty "smeagol.version")}))

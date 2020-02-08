@@ -37,7 +37,9 @@
                          "backticks"    smeagol.formatting/process-backticks}
   :log-level            :info           ;; the minimum logging level; one of
                                         ;; :trace :debug :info :warn :error :fatal
+  :js-from              :cloudflare     ;; where to load JavaScript libraries
+                                        ;; from: options are :local, :cloudflare
   :passwd               "resources/passwd"
                                         ;; where the password file is stored
-  :site-title           "Smeagol"}       ;; overall title of the site, used in
+  :site-title           "Smeagol"}      ;; overall title of the site, used in
                                         ;; page headings

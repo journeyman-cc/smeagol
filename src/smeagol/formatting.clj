@@ -78,7 +78,7 @@
     index
     " = "
     (yaml->json (str "$schema: https://vega.github.io/schema/vega-lite/v2.json\n" vega-src))
-    ";\nvega.embed('#vis"
+    ";\nvegaEmbed('#vis"
     index
     "', vl"
     index

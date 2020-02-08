@@ -100,6 +100,7 @@
   '( {:from :smeagol-content-dir :to :content-dir}
      {:from :smeagol-default-locale :to :default-locale}
      {:from :smeagol-formatters :to :formatters :transform read-string}
+     {:from :smeagol-js-from :to :js-from :transform to-keyword}
      {:from :smeagol-log-level :to :log-level :transform to-keyword}
      {:from :smeagol-passwd :to :passwd}
      {:from :smeagol-site-title :to :site-title}))
@@ -131,6 +132,7 @@
                        :smeagol-content-dir
                        :smeagol-default-locale
                        :smeagol-formatters
+                       :smeagol-js-from
                        :smeagol-log-level
                        :smeagol-passwd
                        :smeagol-site-title)
