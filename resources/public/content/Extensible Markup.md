@@ -36,7 +36,7 @@ Data files can be uploaded in the same way as images, by using the **upload a fi
 
 Graphs can now be embedded in a page using the [Mermaid](https://mermaid-js.github.io/mermaid/#/) graph description language. The graph description should start with a line comprising three back-ticks and then the word `mermaid`, and end with a line comprising just three backticks.
 
-Here's an example culled from the Mermaid documentation.
+Here's an example culled from the Mermaid documentation. Edit this page to see the specification.
 
 ### GANTT Chart
 
@@ -56,6 +56,14 @@ gantt
         Future task in critical line        :crit, 5d
         Create tests for renderer           :2d
         Add to mermaid                      :1d
+```
+
+Mermaid graph specifications can also be loaded from URLs. Here's another example; again, edit this page to see how the trick is done.
+
+### Class Diagram
+
+```mermaid
+data/classes.mermaid
 ```
 
 ## Writing your own custom formatters

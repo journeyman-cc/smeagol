@@ -33,7 +33,7 @@
   :default-locale       "en-GB"         ;; default language used for messages
   :formatters           {"vega"         smeagol.formatting/process-vega
                          "vis"          smeagol.formatting/process-vega
-                         "mermaid"      smeagol.formatting/process-mermaid
+                         "mermaid"      smeagol.extensions.mermaid/process-mermaid
                          "backticks"    smeagol.formatting/process-backticks}
   :log-level            :info           ;; the minimum logging level; one of
                                         ;; :trace :debug :info :warn :error :fatal
