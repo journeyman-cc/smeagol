@@ -250,7 +250,6 @@
     (layout/render "upload.html"
                    (merge (util/standard-params request)
                           {:title (util/get-message :file-upload-title request)
-                           :has-uploaded (not (empty? uploaded))
                            :uploaded uploaded}))))
 
 (defn version-page

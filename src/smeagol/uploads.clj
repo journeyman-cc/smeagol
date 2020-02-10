@@ -8,6 +8,7 @@
             [me.raynes.fs :as fs]
             [noir.io :as nio]
             [smeagol.configuration :refer [config]]
+            [smeagol.util :as util]
             [taoensso.timbre :as log])
   (:import [java.io File]
            [java.awt Image]
@@ -80,13 +81,13 @@
   for the file with this `filename` on this `path`, provided that it is a
   scalable image and is larger than the size."
   ([^String path ^String filename]
-    (if
-      (image? filename)
-      (let [original (buffered-image (File. (str path filename)))] ;; fs/file?
-        (map
-          #(auto-thumbnail path filename % original)
-          (keys (config :thumbnails))))
-      (log/info filename " cannot be thumbnailed.")))
+   (if
+     (image? filename)
+     (let [original (buffered-image (File. (str path filename)))] ;; fs/file?
+       (map
+         #(auto-thumbnail path filename % original)
+         (keys (config :thumbnails))))
+     (log/info filename " cannot be thumbnailed.")))
   ([^String path ^String filename size ^RenderedImage image]
    (let [s (-> config :thumbnails size)
          d (dimensions image)
@@ -117,14 +118,16 @@
       (try
         (let [p (io/file path filename)]
           (.renameTo tmp-file p)
-          (remove
-            nil?
-            (cons
-              {:size :original
-               :filename filename
-               :location (str p)
-               :is-image (and (image? filename) true)}
-            (remove nil? (or (auto-thumbnail path filename) '())))))
+          (map
+            #(assoc % :resource (subs (:location %) (inc (count util/content-dir))))
+            (remove
+              nil?
+              (cons
+                {:size :original
+                 :filename filename
+                 :location (str p)
+                 :is-image (and (image? filename) true)}
+                (remove nil? (or (auto-thumbnail path filename) '()))))))
         (catch Exception x
           (log/error (str "Failed to move " tmp-file " to " path filename "; " (type x) ": " (.getMessage x)))
           (throw x)))

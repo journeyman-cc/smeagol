@@ -1,14 +1,14 @@
 {% extends "templates/base.html" %}
 {% block content %}
         <div id="content" class="auth">
-        {% if has-uploaded %}
+        {% if uploaded|not-empty %}
           {% for upload in uploaded %}
-            {{upload.filename}}
-            {% if upload.is-image %)
+            {% if upload.is-image %}
               <p>
                 <img id="uploaded-image" alt="Uploaded image" src="{{upload.resource}}"/>
 
-                {% i18n file-upload-link-text %}:
+                <!-- TODO: i18n needed -->
+                This is the {{upload.size|name}} file. {% i18n file-upload-link-text %}:
 
                 <code>![{{upload.filename}}]({{upload.resource}})</code>
               </p>
@@ -19,6 +19,8 @@
                 <code>[{{upload.filename}}]({{upload.resource}})</code>
               </p>
             {% endif %}
+          <br clear="right"/>
+          <hr/>
           {% endfor %}
         {% else %}
             <form action="{{servlet-context}}/upload" enctype="multipart/form-data" method="POST">
