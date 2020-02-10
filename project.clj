@@ -52,6 +52,7 @@
                        [vega-embed "6.2.2"]
                        [vega-lite "4.1.1"]
                        [mermaid "8.4.6"]
+                       [photoswipe "4.1.3"]
                        [tablesort "5.2.0"]]
         :root "resources/public/vendor"}
 

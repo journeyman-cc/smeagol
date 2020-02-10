@@ -34,7 +34,8 @@
   :formatters           {"vega"         smeagol.formatting/process-vega
                          "vis"          smeagol.formatting/process-vega
                          "mermaid"      smeagol.extensions.mermaid/process-mermaid
-                         "backticks"    smeagol.formatting/process-backticks}
+                         "backticks"    smeagol.formatting/process-backticks
+                         "pswp"         smeagol.formatting/process-photoswipe}
   :log-level            :info           ;; the minimum logging level; one of
                                         ;; :trace :debug :info :warn :error :fatal
   :js-from              :cloudflare     ;; where to load JavaScript libraries

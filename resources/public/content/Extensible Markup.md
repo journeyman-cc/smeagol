@@ -66,6 +66,12 @@ Mermaid graph specifications can also be loaded from URLs. Here's another exampl
 data/classes.mermaid
 ```
 
+## Photoswipe galleries
+
+Not so much a formatter, this is an extension to allow you to embed image galleries in your markdown. To specify a gallery, use three backticks followed by `pswp`, followed on the following lines by a Photoswipe specification in [JSON](https://www.json.org/json-en.html)
+followed by three backticks on a line by themselves. There is an [[Example gallery]] so that you can see how this works.
+
+
 ## Writing your own custom formatters
 
 A custom formatter is simply a Clojure function which takes a string and an integer as arguments and produces a string as output. The string is the text the user has typed into their markdown; the integer is simply a number you can use to keep track of which addition to the page this is, in order, for example, to fix up some JavaScript to render it.

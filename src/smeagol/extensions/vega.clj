@@ -1,7 +1,9 @@
 (ns ^{:doc "Format Semagol's extended markdown format."
       :author "Simon Brooke"}
   smeagol.extensions.vega
-  (:require [smeagol.extensions.utils :refer :all]
+  (:require [clojure.data.json :as json]
+            [clj-yaml.core :as yaml]
+            [smeagol.extensions.utils :refer :all]
             [taoensso.timbre :as log]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -60,6 +62,11 @@
 ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defn yaml->json
+  "Rewrite this string, assumed to be in YAML format, as JSON."
+  [^String yaml-src]
+  (json/write-str (yaml/parse-string yaml-src)))
+
 (defn process-vega
   "If this `src-resource-or-url` is a valid URL, it is assumed to point to a
   plain text file pointing to  valid `vega-src`; otherwise, it is expected to
@@ -68,7 +75,7 @@
   Process this `vega-src` string, assumed to be in YAML format, into a
   specification of a Vega chart, and add the plumbing to render it."
   [^String src-resource-or-url ^Integer index]
-  (let [data (resource-url-or-data->data url-or-graph-spec)
+  (let [data (resource-url-or-data->data src-resource-or-url)
         vega-src (:data data)]
     (log/info "Retrieved vega-src from " (:from data) " `" ((:from data) data) "`")
     (str
