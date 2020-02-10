@@ -16,6 +16,7 @@
                  [environ "1.1.0"]
                  [hiccup "1.0.5"]
                  [im.chit/cronj "1.4.4"]
+                 [image-resizer "0.1.10"]
                  [lib-noir "0.9.9" :exclusions [org.clojure/tools.reader]]
                  [markdown-clj "0.9.99" :exclusions [com.keminglabs/cljx]]
                  [me.raynes/fs "1.4.6"]

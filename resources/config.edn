@@ -42,5 +42,10 @@
                                         ;; from: options are :local, :cloudflare
   :passwd               "resources/passwd"
                                         ;; where the password file is stored
-  :site-title           "Smeagol"}      ;; overall title of the site, used in
+  :site-title           "Smeagol"       ;; overall title of the site, used in
                                         ;; page headings
+  :thumbnails           {:small 64      ;; maximum dimension of thumbnails
+                                        ;; stored in the /small directory
+                         :med 400       ;; maximum dimension of thumbnails
+                                        ;; stored in the /med directory
+                         }}
