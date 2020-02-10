@@ -6,6 +6,7 @@
             [image-resizer.core :refer [resize]]
             [image-resizer.util :refer :all]
             [me.raynes.fs :as fs]
+            [noir.io :as nio]
             [smeagol.configuration :refer [config]]
             [taoensso.timbre :as log])
   (:import [java.io File]
@@ -53,22 +54,26 @@
   "Writes img, a RenderedImage, to dest, something that can be turned into
   a file with clojure.java.io/file.
   Takes the following keys as options:
-      :format  - :gif, :jpg, :png or anything supported by ImageIO
-      :quality - for JPEG images, a number between 0 and 100"
+  :format  - :gif, :jpg, :png or anything supported by ImageIO
+  :quality - for JPEG images, a number between 0 and 100"
   [^RenderedImage img dest & {:keys [format quality] :or {format :jpg}}]
-  (if (or (not quality) (not (contains? #{:jpg :jpeg} format)))
-    (ImageIO/write img (name format) (io/file dest))
-    (let [fmt (rest (fs/extension (cs/lower-case dest)))
-          iw (doto ^ImageWriter (first
-                                  (iterator-seq
-                                    (ImageIO/getImageWritersByFormatName
-                                      "jpeg")))
-               (.setOutput (FileImageOutputStream. (io/file dest))))
-          iw-param (doto ^ImageWriteParam (.getDefaultWriteParam iw)
-                     (.setCompressionMode ImageWriteParam/MODE_EXPLICIT)
-                     (.setCompressionQuality (float (/ quality 100))))
-          iio-img (IIOImage. img nil nil)]
-      (.write iw nil iio-img iw-param))))
+  (log/info "Writing to " dest)
+  (let [fmt (subs (fs/extension (cs/lower-case dest)) 1)
+        iw (doto ^ImageWriter (first
+                                (iterator-seq
+                                  (ImageIO/getImageWritersByFormatName
+                                    fmt)))
+             (.setOutput (FileImageOutputStream. (io/file dest))))
+        iw-param (doto ^ImageWriteParam (.getDefaultWriteParam iw)
+                   (.setCompressionMode ImageWriteParam/MODE_EXPLICIT)
+                   (.setCompressionQuality (float (/ (or quality 75) 100))))
+        iio-img (IIOImage. img nil nil)]
+    (.write iw nil iio-img iw-param)))
+
+(def image?
+  (memoize
+    (fn [filename]
+      (image-file-extns (fs/extension (cs/lower-case (str filename)))))))
 
 (defn auto-thumbnail
   "For each of the thumbnail sizes in the configuration, create a thumbnail
@@ -76,19 +81,21 @@
   scalable image and is larger than the size."
   ([^String path ^String filename]
     (if
-      (image-file-extns (fs/extension (cs/lower-case filename)))
-      (let [original (buffered-image (.File (str path filename)))] ;; fs/file?
+      (image? filename)
+      (let [original (buffered-image (File. (str path filename)))] ;; fs/file?
         (map
           #(auto-thumbnail path filename % original)
           (keys (config :thumbnails))))
       (log/info filename " cannot be thumbnailed.")))
   ([^String path ^String filename size ^RenderedImage image]
    (let [s (-> config :thumbnails size)
-         d (dimensions image)]
+         d (dimensions image)
+         p (io/file path (name size) filename)]
      (if (and (integer? s) (some #(> % s) d))
        (do
-         (write-image (resize image s s) (io/file path (name size) filename))
-         (log/info "Created a " size " thumbnail of " filename))
+         (write-image (resize image s s) p)
+         (log/info "Created a " size " thumbnail of " filename)
+         {:size size :filename filename :location (str p) :is-image true})
        (log/info filename "is smaller than " s "x" s " and was not scaled to " size)))))
 
 (defn store-upload
@@ -108,11 +115,16 @@
       (str "store-upload mv file: " tmp-file " to: " path filename))
     (if tmp-file
       (try
-        (do
-          (.renameTo tmp-file
-                     (File. (str path filename))) ;; TODO: fs/file
-          (auto-thumbnail path filename)
-          (File. (str path filename)))
+        (let [p (io/file path filename)]
+          (.renameTo tmp-file p)
+          (remove
+            nil?
+            (cons
+              {:size :original
+               :filename filename
+               :location (str p)
+               :is-image (and (image? filename) true)}
+            (remove nil? (or (auto-thumbnail path filename) '())))))
         (catch Exception x
           (log/error (str "Failed to move " tmp-file " to " path filename "; " (type x) ": " (.getMessage x)))
           (throw x)))

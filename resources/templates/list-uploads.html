@@ -21,10 +21,10 @@
               <th>{{entry.base-name}}</th>
               <td>{{entry.modified}}</td>
               <td>
-              {% if entry.is-image %} ![{{entry.name|capitalize}}](uploads/{{entry.base-name}}) {% else %} [{{entry.name|capitalize}}](uploads/{{entry.base-name}}) {% endif %}
+              {% if entry.is-image %} ![{{entry.name|capitalize}}]({{entry.resource}}) {% else %} [{{entry.name|capitalize}}](uploads/{{entry.resource}}) {% endif %}
               </td>
               <td>
-              {% if entry.is-image %} <img src="uploads/{{entry.base-name}}" alt="{{entry.name|capitalize}}"/> {% else %} <a href="uploads/{{entry.base-name}}">link</a> {% endif %}
+              {% if entry.is-image %} <img src="{{entry.resource}}" alt="{{entry.name|capitalize}}"/> {% else %} <a href="{{entry.resource}}">link</a> {% endif %}
               </td>
 
             </tr>
