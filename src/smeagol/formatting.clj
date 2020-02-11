@@ -6,9 +6,9 @@
             [cemerick.url :refer (url url-encode url-decode)]
             [clj-yaml.core :as yaml]
             [markdown.core :as md]
-            [noir.io :as io] ;; used by photoswipe, only
             [smeagol.configuration :refer [config]]
-            [smeagol.extensions.mermaid :refer [process-mermaid]]))
+            [smeagol.extensions.mermaid :refer [process-mermaid]]
+            [smeagol.extensions.photoswipe :refer [process-photoswipe]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;
@@ -85,28 +85,6 @@
     "', vl"
     index
     ");\n//]]\n</script>"))
-
-(defn process-photoswipe
-  "Process specification for a photoswipe gallery"
-  [^String spec ^Integer index]
-  (str
-    "<div class=\"pswp\" id=\"pswp-"
-    index "\" tabindex=\"-1\" role=\"dialog\" aria-hidden=\"true\">\n"
-    (slurp (str (io/resource-path) "html-includes/photoswipe-boilerplate.html"))
-    "</div>
-    <script>
-    \n//<![CDATA[\n
-    var pswpElement = document.getElementById('pswp-" index "');
-    var spec" index " = "
-    spec
-    ";
-    var gallery" index
-    " = new PhotoSwipe( pswpElement, PhotoSwipeUI_Default, spec" index ".slides, spec" index ".options);
-    if (spec" index ".openImmediately) { gallery" index ".init(); }
-    \n//]]\n
-    </script>
-    <p><button onclick=\"gallery" index ".init()\">Open the gallery</button></p>
-    </div>"))
 
 
 (defn process-backticks

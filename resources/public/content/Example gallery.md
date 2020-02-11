@@ -1,26 +1,3 @@
-## The Gallery
-
-This page holds an example Photoswipe gallery.
-
-```pswp
-{
-  slides: [
-    { src: 'content/uploads/g1.jpg', w: 2592, h:1944,
-      title: 'Frost on a gate, Laurieston' },
-    { src: 'content/uploads/g2.jpg', w: 2560, h:1920,
-      title: 'Feathered crystals on snow surface, Taliesin' },
-    { src: 'content/uploads/g3.jpg', w: 2560, h:1920,
-      title: 'Feathered snow on log, Taliesin' },
-    { src: 'content/uploads/g4.jpg', w: 2560, h:1920,
-      title: 'Crystaline growth on seed head, Taliesin' }],
-	options: {
-      timeToIdle: 100
-			},
-	openImmediately: true
-}
-
-```
-
 ## How this works
 
 The specification for this gallery is as follows:
@@ -57,3 +34,27 @@ Optional. The value of `options` is a JSON object [as documented here](https://p
 ### openImmediately
 
 Optional. If the value of `openImmediately` is `true`, the gallery will open immediately, covering the whole page. If false, only a button with the label 'Open the gallery' will be shown. Selecting this button will cause the gallery to open.
+
+## The Gallery
+
+This page holds an example Photoswipe gallery.
+
+```pswp
+{
+  slides: [
+    { src: 'content/uploads/g1.jpg', w: 2592, h:1944,
+      title: 'Frost on a gate, Laurieston' },
+    { src: 'content/uploads/g2.jpg', w: 2560, h:1920,
+      title: 'Feathered crystals on snow surface, Taliesin' },
+    { src: 'content/uploads/g3.jpg', w: 2560, h:1920,
+      title: 'Feathered snow on log, Taliesin' },
+    { src: 'content/uploads/g4.jpg', w: 2560, h:1920,
+      title: 'Crystaline growth on seed head, Taliesin' }],
+	options: {
+      timeToIdle: 100
+			},
+	openImmediately: true
+}
+
+```
+

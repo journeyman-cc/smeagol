@@ -1,4 +1,4 @@
-(ns ^{:doc "Format Semagol's extended markdown format."
+(ns ^{:doc "Mermaid formatter for Semagol's extendsible markdown format."
       :author "Simon Brooke"}
   smeagol.extensions.mermaid
   (:require [smeagol.extensions.utils :refer :all]

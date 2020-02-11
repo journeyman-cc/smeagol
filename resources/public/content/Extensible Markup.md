@@ -68,9 +68,8 @@ data/classes.mermaid
 
 ## Photoswipe galleries
 
-Not so much a formatter, this is an extension to allow you to embed image galleries in your markdown. To specify a gallery, use three backticks followed by `pswp`, followed on the following lines by a Photoswipe specification in [JSON](https://www.json.org/json-en.html)
-followed by three backticks on a line by themselves. There is an [[Example gallery]] so that you can see how this works.
-
+Not so much a formatter, this is an extension to allow you to embed image galleries in your markdown. To specify a gallery, use three backticks followed by `pswp`, followed on the following lines by a [Photoswipe](https://photoswipe.com/documentation/getting-started.html) specification in [JSON](https://www.json.org/json-en.html)
+followed by three backticks on a line by themselves. There is an [[Example gallery]] with the full PhotoSwipe configuration, and a [[Simplified example gallery]] using a much simpler syntax, so that you can see how this works.
 
 ## Writing your own custom formatters
 

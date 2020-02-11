@@ -46,6 +46,9 @@
         (:content-dir config)
         (cjio/file (io/resource-path) "content")))))
 
+(def upload-dir
+  (str (cjio/file content-dir "uploads")))
+
 (defn standard-params
   "Return a map of standard parameters to pass to the template renderer."
   [request]
