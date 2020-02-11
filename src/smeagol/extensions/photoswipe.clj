@@ -110,7 +110,9 @@
                      (catch Exception x (.getMessage x)))]
     (if dimensions
       (assoc slide :w (first dimensions) :h (nth dimensions 1))
-      slide)))
+      (do
+        (log/warn "Failed to fetch dimensions of image " url)
+        slide))))
 
 ;; (slide-merge-dimensions
 ;;   {:title "Frost on a gate, Laurieston",
