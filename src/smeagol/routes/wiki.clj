@@ -240,12 +240,13 @@
         uploaded (if upload (ul/store-upload params data-path))
         user (session/get :user)
         summary (format "%s: %s" user (or (:summary params) "no summary"))]
-;;     (if
-;;       uploaded
+;; TODO: Get this working! it MUST work!
+;;     (if-not
+;;       (empty? uploaded)
 ;;       (do
 ;;         (map
 ;;           #(git/git-add git-repo (str :resource %))
-;;           uploaded)
+;;           (remove nil? uploaded))
 ;;         (git/git-commit git-repo summary {:name user :email (auth/get-email user)})))
     (layout/render "upload.html"
                    (merge (util/standard-params request)

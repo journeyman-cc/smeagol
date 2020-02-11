@@ -28,22 +28,25 @@
 ;;      ;       ;       ;       ;       ;       ;       ;       ;       ;
 {
   :content-dir          "resources/public/content"
-  :start-page           "Introduction"
                                         ;; where content is served from.
   :default-locale       "en-GB"         ;; default language used for messages
-  :formatters           {"vega"         smeagol.formatting/process-vega
+  :formatters                           ;; formatters for processing markdown
+                                        ;; extensions.
+                        {"vega"         smeagol.formatting/process-vega
                          "vis"          smeagol.formatting/process-vega
                          "mermaid"      smeagol.extensions.mermaid/process-mermaid
                          "backticks"    smeagol.formatting/process-backticks
                          "pswp"         smeagol.formatting/process-photoswipe}
   :log-level            :info           ;; the minimum logging level; one of
                                         ;; :trace :debug :info :warn :error :fatal
-  :js-from              :cloudflare     ;; where to load JavaScript libraries
-                                        ;; from: options are :local, :cloudflare
+  :js-from              :cdnjs          ;; where to load JavaScript libraries
+                                        ;; from: options are :local, :cdnjs
   :passwd               "resources/passwd"
                                         ;; where the password file is stored
   :site-title           "Smeagol"       ;; overall title of the site, used in
                                         ;; page headings
+  :start-page           "Introduction"  ;; the page shown to a visitor to the
+                                        ;; root URL.
   :thumbnails           {:small 64      ;; maximum dimension of thumbnails
                                         ;; stored in the /small directory
                          :med 400       ;; maximum dimension of thumbnails
