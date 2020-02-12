@@ -44,6 +44,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Error to show if text to be rendered is nil.
+;; TODO: this should go through i18n
 (def no-text-error "No text: does the file exist?")
 
 
@@ -150,28 +151,43 @@
          ;; I need to put the backticks back in.
          remarked (if (odd? index) (str "```" fragment "\n```") fragment)
          first-token (get-first-token fragment)
+         kw (if-not (empty? first-token) (keyword first-token))
          formatter (if-not
                      (empty? first-token)
                      (try
-                       (let [kw (keyword first-token)]
-                         (read-string (-> config :formatters kw :formatter)))
+                         (read-string (-> config :formatters kw :formatter))
                        (catch Exception _
                          (do
-                           (log/info "No formatter found for extension `" first-token "`")
+                           (log/info "No formatter found for extension `" kw "`")
                            ;; no extension registered - there sometimes won't be,
                            ;; and it doesn't matter
                            nil))))]
      (cond
        (empty? fragments)
+       ;; We've come to the end of the list of fragments. Reassemble them into
+       ;; a single HTML text and pass it back.
        (assoc result :text
          (local-links
            (md/md-to-html-string
              (cs/join "\n\n" (reverse processed))
              :heading-anchors true)))
        formatter
-       (apply-formatter index result fragments processed fragment first-token formatter)
+       ;; We've found a formatter to apply to the current fragment, and recurse
+       ;; on down the list
+       (let [result (apply-formatter
+                      index
+                      result
+                      fragments
+                      processed
+                      fragment
+                      first-token
+                      formatter)]
+         (assoc result :extensions (cons kw (:extensions result))))
        true
-       (process-markdown-fragment index result remarked (rest fragments) processed)))))
+       ;; Otherwise process the current fragment as markdown and recurse on
+       ;; down the list
+       (process-markdown-fragment
+         index result remarked (rest fragments) processed)))))
 
 
 (defn reintegrate-inclusions
@@ -182,6 +198,10 @@
   ([inclusions text]
    (let [ks (keys inclusions)]
      (if (empty? (keys inclusions))
+       ;; TODO: this is one opportunity to add scripts at the end of the
+       ;; constructed text. I've a feeling that that would be a mistake and
+       ;; that instead we should hand back a map comprising the text and the
+       ;; keys of the extensions
        text
        (let [kw (first ks)]
          (reintegrate-inclusions

@@ -16,7 +16,7 @@
             [smeagol.routes.wiki :refer [wiki-routes]]
             [smeagol.middleware :refer [load-middleware]]
             [smeagol.session-manager :as session-manager]
-            [taoensso.timbre :as timbre]
+            [taoensso.timbre :as log]
             [taoensso.timbre.appenders.3rd-party.rotor :as rotor]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -55,9 +55,9 @@
   "destroy will be called when your application
    shuts down, put any clean up code here"
   []
-  (timbre/info "smeagol is shutting down...")
+  (log/info "smeagol is shutting down...")
   (cronj/shutdown! session-manager/cleanup-job)
-  (timbre/info "shutdown complete!"))
+  (log/info "shutdown complete!"))
 
 
 (defn init
@@ -67,7 +67,7 @@
   put any initialization code here"
   []
   (try
-    (timbre/merge-config!
+    (log/merge-config!
       {:appenders
        {:rotor (rotor/rotor-appender
                  {:path "smeagol.log"
@@ -80,10 +80,10 @@
     (cronj/start! session-manager/cleanup-job)
     (if (env :dev) (parser/cache-off!))
     ;;start the expired session cleanup job
-    (timbre/info "\n-=[ smeagol started successfully"
+    (log/info "\n-=[ smeagol started successfully"
                  (when (env :dev) "using the development profile") "]=-")
     (catch Exception any
-      (timbre/error any "Failure during startup")
+      (log/error any "Failure during startup")
       (destroy))))
 
 ;; timeout sessions after 30 minutes

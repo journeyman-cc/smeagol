@@ -5,7 +5,7 @@
             [clojure.string :as s]
             [environ.core :refer [env]]
             [noir.io :as io]
-            [taoensso.timbre :as timbre]))
+            [taoensso.timbre :as log]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;
@@ -73,7 +73,7 @@
   and optionally a key :transform, whose value is a function of one
   argument to be used to transform the value of that key."
   [m tuples]
-  (timbre/debug
+  (log/debug
     "transform-map:\n"
     (with-out-str (clojure.pprint/pprint m)))
   (reduce
@@ -112,11 +112,11 @@
   file is read (if it is specified and present), but that individual
   values can be overridden by environment variables."
   (try
-    (timbre/info (str "Reading configuration from " config-file-path))
+    (log/info (str "Reading configuration from " config-file-path))
     (let [file-contents (try
                           (read-string (slurp config-file-path))
                           (catch Exception x
-                            (timbre/error
+                            (log/error
                               (str
                                 "Failed to read configuration from "
                                 config-file-path
@@ -138,12 +138,12 @@
                        :smeagol-site-title)
                      config-env-transforms))]
       (if (env :dev)
-        (timbre/debug
+        (log/debug
           "Loaded configuration\n"
           (with-out-str (clojure.pprint/pprint config))))
       config)
     (catch Exception any
-      (timbre/error any "Could not load configuration")
+      (log/error any "Could not load configuration")
       {})))
 
 (def config (build-config))

@@ -10,7 +10,7 @@
             [smeagol.authenticate :as auth]
             [smeagol.configuration :refer [config]]
             [smeagol.formatting :refer [md->html]]
-            [taoensso.timbre :as timbre]))
+            [taoensso.timbre :as log]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;
@@ -69,7 +69,7 @@
         messages (try
                    (i18n/get-messages specifier "i18n" "en-GB")
                    (catch Exception any
-                     (timbre/error
+                     (log/error
                        any
                        (str
                          "Failed to parse accept-language header '"
