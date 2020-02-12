@@ -67,7 +67,7 @@ To upload a file (including an image file), select the link `Upload a file` from
 
 Selecting the link will take you to the `Upload a file` page. This will prompt you for the file you wish to upload. Select your file, and then select the green `Save!` button.
 
-After your file has uploaded, you will be shown a link which can be copied and pasted into a Wiki page to link to that file.
+After your file has uploaded, you will be shown a link which can be copied and pasted into a Wiki page to link to that file. When you upload a PNG or JPG image file, multiple copies of the file may be saved at different resolutions, and you will be shown links to each of these. The `Upload a file` form also has a link to the list of all files which have been uploaded, to help with finding the one you're looking for!
 
 You must be logged in to upload files.
 

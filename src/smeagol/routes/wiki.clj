@@ -4,6 +4,7 @@
   (:require [cemerick.url :refer (url url-encode url-decode)]
             [clj-jgit.porcelain :as git]
             [clojure.java.io :as cjio]
+            [clojure.pprint :refer [pprint]]
             [clojure.string :as cs]
             [clojure.walk :refer :all]
             [compojure.core :refer :all]
@@ -22,7 +23,7 @@
             [smeagol.sanity :refer [show-sanity-check-error]]
             [smeagol.util :as util]
             [smeagol.uploads :as ul]
-            [taoensso.timbre :as timbre]
+            [taoensso.timbre :as log]
             [com.stuartsierra.component :as component]
             [smeagol.include.resolve-local-file :as resolve]
             [smeagol.include :as include]))
@@ -54,7 +55,7 @@
   "Process `source-text` and save it to the specified `file-path`, committing it
   to Git and finally redirecting to wiki-page."
   [params suffix request]
-  (timbre/trace (format "process-source: '%s'" request))
+  (log/trace (format "process-source: '%s'" request))
   (let [source-text (:src params)
         page (:page params)
         file-name (str page suffix)
@@ -64,7 +65,7 @@
         user (session/get :user)
         email (auth/get-email user)
         summary (format "%s: %s" user (or (:summary params) "no summary"))]
-    (timbre/info (format "Saving %s's changes ('%s') to %s in file '%s'" user summary page file-path))
+    (log/info (format "Saving %s's changes ('%s') to %s in file '%s'" user summary page file-path))
     (spit file-path source-text)
     (git/git-add git-repo file-name)
     (git/git-commit git-repo summary {:name user :email email})
@@ -94,9 +95,9 @@
            user (session/get :user)]
        (if-not
          exists?
-         (timbre/info
+         (log/info
            (format "File '%s' not found; creating a new file" file-path))
-         (timbre/info (format "Opening '%s' for editing" file-path)))
+         (log/info (format "Opening '%s' for editing" file-path)))
        (cond src-text (process-source params suffix request)
              true
              (layout/render template
@@ -125,7 +126,7 @@
 (defn wiki-page
   "Render the markdown page specified in this `request`, if any. If none found, redirect to edit-page"
   [request]
-  (timbre/trace (format "wiki-page: '%s'" request))
+  (log/trace (format "wiki-page: '%s'" request))
   (or
     (show-sanity-check-error)
     (let [params (keywordize-keys (:params request))
@@ -135,7 +136,7 @@
           exists? (.exists (clojure.java.io/as-file file-path))]
       (cond exists?
             (do
-              (timbre/info (format "Showing page '%s' from file '%s'" page file-path))
+              (log/info (format "Showing page '%s' from file '%s'" page file-path))
               (layout/render "wiki.html"
                              (merge (util/standard-params request)
                                     {:title page
@@ -156,7 +157,7 @@
         page (url-decode (or (:page params) (util/get-message :default-page-title request)))
         file-name (str page ".md")
         repo-path util/content-dir]
-    (timbre/info (format "Showing history of page '%s'" page))
+    (log/info (format "Showing history of page '%s'" page))
     (layout/render "history.html"
                    (merge (util/standard-params request)
                           {:title (util/get-message :history-title-prefix request)
@@ -187,10 +188,11 @@
   (let
     [params (keywordize-keys (:params request))
      data-path (str util/content-dir "/uploads/")
+     cl (count (io/resource-path))
      files
      (map
        #(zipmap
-          [:base-name :is-image :modified :name]
+          [:base-name :is-image :modified :name :resource]
           [(fs/base-name %)
            (if
              (and (fs/extension %)
@@ -199,11 +201,13 @@
            (if
              (fs/mod-time %)
              (format-instant (fs/mod-time %)))
-           (fs/name %)])
+           (fs/name %)
+           (subs (str (fs/absolute %)) cl)])
        (remove
          #(or (cs/starts-with? (fs/name %) ".")
                      (fs/directory? %))
          (file-seq (clojure.java.io/file data-path))))]
+    (log/info (with-out-str (pprint files)))
     (layout/render
       "list-uploads.html"
       (merge (util/standard-params request)
@@ -236,20 +240,18 @@
         uploaded (if upload (ul/store-upload params data-path))
         user (session/get :user)
         summary (format "%s: %s" user (or (:summary params) "no summary"))]
-    (if
-      uploaded
-      (do
-        (git/git-add git-repo (str data-path (fs/name uploaded)))
-        (git/git-commit git-repo summary {:name user :email (auth/get-email user)})))
+;; TODO: Get this working! it MUST work!
+;;     (if-not
+;;       (empty? uploaded)
+;;       (do
+;;         (map
+;;           #(git/git-add git-repo (str :resource %))
+;;           (remove nil? uploaded))
+;;         (git/git-commit git-repo summary {:name user :email (auth/get-email user)})))
     (layout/render "upload.html"
                    (merge (util/standard-params request)
                           {:title (util/get-message :file-upload-title request)
-                           :uploaded (if uploaded (fs/base-name uploaded))
-                           :is-image (if
-                                       uploaded
-                                       (image-extns
-                                         (cs/lower-case
-                                           (fs/extension uploaded))))}))))
+                           :uploaded uploaded}))))
 
 (defn version-page
   "Render a specific historical version of a page"
@@ -259,7 +261,7 @@
         version (:version params)
         file-name (str page ".md")
         content (hist/fetch-version util/content-dir file-name version)]
-    (timbre/info (format "Showing version '%s' of page '%s'" version page))
+    (log/info (format "Showing version '%s' of page '%s'" version page))
     (layout/render "wiki.html"
                    (merge (util/standard-params request)
                           {:title (str (util/get-message :vers-col-hdr request) " " version " " (util/get-message :of request) " "  page)
@@ -274,7 +276,7 @@
         page (url-decode (or (:page params) (util/get-message :default-page-title request)))
         version (:version params)
         file-name (str page ".md")]
-    (timbre/info (format "Showing diff between version '%s' of page '%s' and current" version page))
+    (log/info (format "Showing diff between version '%s' of page '%s' and current" version page))
     (layout/render "wiki.html"
                    (merge (util/standard-params request)
                           {:title
@@ -303,11 +305,11 @@
           action (:action form-params)
           user (session/get :user)
           redirect-to (:redirect-to params)]
-      (if redirect-to (timbre/info (str "After auth, redirect to: " redirect-to)))
+      (if redirect-to (log/info (str "After auth, redirect to: " redirect-to)))
       (cond
         (= action (util/get-message :logout-label request))
         (do
-          (timbre/info (str "User " user " logging out"))
+          (log/info (str "User " user " logging out"))
           (session/remove! :user)
           (response/redirect redirect-to))
         (and username password (auth/authenticate username password))

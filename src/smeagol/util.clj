@@ -3,6 +3,7 @@
   smeagol.util
   (:require [clojure.java.io :as cjio]
             [environ.core :refer [env]]
+            [me.raynes.fs :as fs]
             [noir.io :as io]
             [noir.session :as session]
             [scot.weft.i18n.core :as i18n]
@@ -39,10 +40,14 @@
   (:start-page  config))
 
 (def content-dir
-  (or
-    (:content-dir config)
-    (cjio/file (io/resource-path) "content")))
+  (str
+    (fs/absolute
+      (or
+        (:content-dir config)
+        (cjio/file (io/resource-path) "content")))))
 
+(def upload-dir
+  (str (cjio/file content-dir "uploads")))
 
 (defn standard-params
   "Return a map of standard parameters to pass to the template renderer."

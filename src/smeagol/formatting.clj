@@ -1,4 +1,4 @@
-(ns ^{:doc "Format Semagol's enhanced markdown format."
+(ns ^{:doc "Format Semagol's extended markdown format."
       :author "Simon Brooke"}
   smeagol.formatting
   (:require [clojure.data.json :as json]
@@ -6,7 +6,9 @@
             [cemerick.url :refer (url url-encode url-decode)]
             [clj-yaml.core :as yaml]
             [markdown.core :as md]
-            [smeagol.configuration :refer [config]]))
+            [smeagol.configuration :refer [config]]
+            [smeagol.extensions.mermaid :refer [process-mermaid]]
+            [smeagol.extensions.photoswipe :refer [process-photoswipe]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;
@@ -83,14 +85,6 @@
     "', vl"
     index
     ");\n//]]\n</script>"))
-
-
-(defn process-mermaid
-  "Lightly mung this `graph-spec`, assumed to be a mermaid specification."
-  [^String graph-spec ^Integer index]
-  (str "<div class=\"mermaid data-visualisation\">\n"
-       graph-spec
-       "\n</div>"))
 
 
 (defn process-backticks
