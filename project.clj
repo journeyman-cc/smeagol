@@ -27,6 +27,7 @@
                  [org.clojure/core.memoize "0.5.9"]
                  [org.clojure/data.json "0.2.6"]
                  [org.clojure/tools.logging "0.4.0"]
+                 [org.clojure/tools.trace "0.7.10"]
                  [org.slf4j/slf4j-api "1.7.25"]
                  [org.slf4j/log4j-over-slf4j "1.7.25"]
                  [org.slf4j/jul-to-slf4j "1.7.25"]

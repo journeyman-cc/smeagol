@@ -8,7 +8,8 @@
             [markdown.core :as md]
             [smeagol.configuration :refer [config]]
             [smeagol.extensions.mermaid :refer [process-mermaid]]
-            [smeagol.extensions.photoswipe :refer [process-photoswipe]]))
+            [smeagol.extensions.photoswipe :refer [process-photoswipe]]
+            [taoensso.timbre :as log]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;
@@ -149,7 +150,17 @@
          ;; I need to put the backticks back in.
          remarked (if (odd? index) (str "```" fragment "\n```") fragment)
          first-token (get-first-token fragment)
-         formatter (eval ((:formatters config) first-token))]
+         formatter (if-not
+                     (empty? first-token)
+                     (try
+                       (let [kw (keyword first-token)]
+                         (read-string (-> config :formatters kw :formatter)))
+                       (catch Exception _
+                         (do
+                           (log/info "No formatter found for extension `" first-token "`")
+                           ;; no extension registered - there sometimes won't be,
+                           ;; and it doesn't matter
+                           nil))))]
      (cond
        (empty? fragments)
        (assoc result :text

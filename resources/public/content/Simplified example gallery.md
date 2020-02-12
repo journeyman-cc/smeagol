@@ -13,7 +13,7 @@ That's all there is to it - a sequence of image links just as you'd write them a
 
 ## The Gallery
 
-This page holds another example Photoswipe gallery, this time using a simpler, Markdown-based specification. Processing this specification takes more work than the full syntax used in the other [Example gallery], so the gallery may be slower to load; but it's much easier to configure.
+This page holds another example Photoswipe gallery, this time using a simpler, Markdown-based specification. Processing this specification takes more work than the full syntax used in the other [[Example gallery]], so the gallery may be slower to load; but it's much easier to configure.
 
 ```pswp
 ![Frost on a gate, Laurieston](content/uploads/g1.jpg)

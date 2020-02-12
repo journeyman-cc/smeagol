@@ -32,11 +32,12 @@
   :default-locale       "en-GB"         ;; default language used for messages
   :formatters                           ;; formatters for processing markdown
                                         ;; extensions.
-                        {"vega"         smeagol.formatting/process-vega
-                         "vis"          smeagol.formatting/process-vega
-                         "mermaid"      smeagol.extensions.mermaid/process-mermaid
-                         "backticks"    smeagol.formatting/process-backticks
-                         "pswp"         smeagol.extensions.photoswipe/process-photoswipe}
+  {:vega         {:formatter "smeagol.extensions.vega/process-vega" }
+   :vis          {:formatter "smeagol.extensions.vega/process-vega" }
+   :mermaid      {:formatter "smeagol.extensions.mermaid/process-mermaid" }
+   :backticks    {:formatter "smeagol.formatting/process-backticks" }
+   :pswp         {:formatter "smeagol.extensions.photoswipe/process-photoswipe" }
+   }
   :log-level            :info           ;; the minimum logging level; one of
                                         ;; :trace :debug :info :warn :error :fatal
   :js-from              :cdnjs          ;; where to load JavaScript libraries
