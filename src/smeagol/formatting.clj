@@ -182,7 +182,7 @@
                       fragment
                       first-token
                       formatter)]
-         (assoc result :extensions (cons kw (:extensions result))))
+         (assoc-in result [:extensions kw] (-> config :formatters kw)))
        true
        ;; Otherwise process the current fragment as markdown and recurse on
        ;; down the list
@@ -194,7 +194,12 @@
   "Given a map of the form produced by `process-text`, return a string of HTML text
   with the inclusions (if any) reintegrated."
   ([processed-text]
-   (reintegrate-inclusions (:inclusions processed-text) (:text processed-text)))
+   (assoc
+     processed-text
+     :content
+     (reintegrate-inclusions
+       (:inclusions processed-text)
+       (:text processed-text))))
   ([inclusions text]
    (let [ks (keys inclusions)]
      (if (empty? (keys inclusions))
@@ -213,7 +218,10 @@
 
 
 (defn md->html
-  "Take this markdown source, and return HTML."
+  "Take this `md-src` markdown source, and return a map in which:
+  1. the key `:content` is bound to the equivalent HTML source;
+  2. the key `:extensions`. is bound to details of the extensions
+      used."
   [md-src]
   (reintegrate-inclusions (process-text md-src)))
 

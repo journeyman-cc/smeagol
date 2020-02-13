@@ -25,6 +25,7 @@
             [smeagol.uploads :as ul]
             [taoensso.timbre :as log]
             [com.stuartsierra.component :as component]
+            [smeagol.configuration :refer [config]]
             [smeagol.include.resolve-local-file :as resolve]
             [smeagol.include :as include]))
 
@@ -123,6 +124,34 @@
                   (include/new-includer)
                   [:resolver]))))
 
+(defn preferred-source
+  "Here, `component` is expected to be a map with two keys, `:local` and
+  `:remote`. If the value of `:extensions-from` in `config.edn` is remote
+  AND the value of `:remote` is not nil, then the value of `:remote` will
+  be returned. Otherwise, if the value of `:local` is nil and the value of
+  `:remote` is non-nil, the value of `:remote` will be returned. By default,
+  the value of `:local` will be returned."
+  [component]
+  (let [l (:local component) ;; TODO: look at the trick in Selmer to get relative URL
+        r (:remote component)]
+    (cond
+      (= (:extensions-from config) :remote)  (if (empty? r) l r)
+      (empty? l) r
+      :else l)))
+
+(defn collect-preferred
+  "From extensions referenced in this `processed-text`, extract the preferred
+  URLs for this keyword `k`, expected to be either `:scripts` or `:styles`."
+  [processed-text k]
+  (set
+    (remove
+      nil?
+      (map
+        preferred-source
+        (apply
+          concat
+          (map vals (map k (vals (:extensions processed-text)))))))))
+
 (defn wiki-page
   "Render the markdown page specified in this `request`, if any. If none found, redirect to edit-page"
   [request]
@@ -134,19 +163,23 @@
           file-name (str page ".md")
           file-path (cjio/file util/content-dir file-name)
           exists? (.exists (clojure.java.io/as-file file-path))]
-      (cond exists?
-            (do
-              (log/info (format "Showing page '%s' from file '%s'" page file-path))
-              (layout/render "wiki.html"
-                             (merge (util/standard-params request)
-                                    {:title page
-                                     :page page
-                                     :content (md->html
-                                                (include/expand-include-md
-                                                  (:includer md-include-system)
-                                                  (slurp file-path)))
-                                     :editable true})))
-            true (response/redirect (str "/edit?page=" page))))))
+      (if exists?
+        (do
+          (log/info (format "Showing page '%s' from file '%s'" page file-path))
+          (let [processed-text (md->html
+                                 (include/expand-include-md
+                                   (:includer md-include-system)
+                                   (slurp file-path)))]
+            (layout/render "wiki.html"
+                           (merge (util/standard-params request)
+                                  processed-text
+                                  {:title page
+                                   :scripts (collect-preferred processed-text :scripts)
+                                   :styles (collect-preferred processed-text :styles)
+                                   :page page
+                                   :editable true}))))
+        ;else
+        (response/redirect (str "/edit?page=" page))))))
 
 
 (defn history-page

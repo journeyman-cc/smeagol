@@ -32,11 +32,29 @@
   :default-locale       "en-GB"         ;; default language used for messages
   :formatters                           ;; formatters for processing markdown
                                         ;; extensions.
-  {:vega         {:formatter "smeagol.extensions.vega/process-vega" }
-   :vis          {:formatter "smeagol.extensions.vega/process-vega" }
-   :mermaid      {:formatter "smeagol.extensions.mermaid/process-mermaid" }
-   :backticks    {:formatter "smeagol.formatting/process-backticks" }
-   :pswp         {:formatter "smeagol.extensions.photoswipe/process-photoswipe" }
+  {:vega         {:formatter "smeagol.extensions.vega/process-vega"
+                  :scripts {:core {:remote "https://cdnjs.cloudflare.com/ajax/libs/vega/5.9.1/vega.min.js"}
+                            :lite {:remote "https://cdnjs.cloudflare.com/ajax/libs/vega-lite/4.1.1/vega-lite.min.js"}
+                            :embed {:remote "https://cdnjs.cloudflare.com/ajax/libs/vega-embed/6.2.2/vega-embed.min.js"}
+                  :styles {}}}
+   :vis          {:formatter "smeagol.extensions.vega/process-vega"
+                  :scripts {:core {:remote "https://cdnjs.cloudflare.com/ajax/libs/vega/5.9.1/vega.min.js"}
+                            :lite {:remote "https://cdnjs.cloudflare.com/ajax/libs/vega-lite/4.1.1/vega-lite.min.js"}
+                            :embed {:remote "https://cdnjs.cloudflare.com/ajax/libs/vega-embed/6.2.2/vega-embed.min.js"}
+                  :styles {}}}
+   :mermaid      {:formatter "smeagol.extensions.mermaid/process-mermaid"
+                  :scripts {:core {:local "vendor/mermaid/dist/mermaid.js"}}
+                  :styles {}}
+   :backticks    {:formatter "smeagol.formatting/process-backticks"
+                  :scripts {}
+                  :styles {}}
+   :pswp         {:formatter "smeagol.extensions.photoswipe/process-photoswipe"
+                  :scripts {:core {:local "/vendor/node_modules/photoswipe/dist/photoswipe.min.js"
+                                   :remote "https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.3/photoswipe.min.js"}
+                            :ui {:local "/vendor/node_modules/photoswipe/dist/photoswipe-ui-default.min.js"
+                                 :remote "https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.3/photoswipe-ui-default.min.js"}}
+                  :styles {:core {:local "/vendor/node_modules/photoswipe/dist/photoswipe.css"
+                                  :remote "/vendor/node_modules/photoswipe/dist/default-skin/default-skin.css"}}}
    }
   :log-level            :info           ;; the minimum logging level; one of
                                         ;; :trace :debug :info :warn :error :fatal
