@@ -1,6 +1,7 @@
 (ns smeagol.test.formatting
   (:require [clojure.test :refer :all]
-            [smeagol.formatting :refer [local-links no-text-error]]))
+            [smeagol.formatting :refer [local-links no-text-error]]
+            [smeagol.extensions.test :refer :all]))
 
 (deftest test-local-links
   (testing "Rewriting of local links"
@@ -10,3 +11,10 @@
     (let [text (str "# This is a heading"
                              "[This is a foreign link](http://to.somewhere)")]
       (is (= (local-links text) text) "Foreign links should be unchanged"))))
+
+(deftest test-process-text
+  (testing "The process-text flow"
+    (let [expected process-test-return-value
+          actual (process-text "```test
+                               ```")]
+      (is (= actual expected)))))

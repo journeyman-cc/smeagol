@@ -93,10 +93,20 @@
     fragments
     (cons fragment processed)))
 
+(defn deep-merge [v & vs]
+  "Cripped in its entirety from https://clojuredocs.org/clojure.core/merge."
+  (letfn [(rec-merge [v1 v2]
+                     (if (and (map? v1) (map? v2))
+                       (merge-with deep-merge v1 v2)
+                       v2))]
+    (if (some identity vs)
+      (reduce #(rec-merge %1 %2) v vs)
+      (last vs))))
+
 
 (defn apply-formatter
   "Within the context of `process-text`, process a fragment for which an explicit
-  §formatter has been identified.
+  `formatter` has been identified.
 
   As with `process-text`, this function returns a map with two top-level keys:
   `:inclusions`, a map of constructed keywords to inclusion specifications,
@@ -104,16 +114,28 @@
   corresponding inclusion should be inserted."
   [index result fragments processed fragment token formatter]
   (let
-    [kw (keyword (str "inclusion-" index))]
-    (assoc-in
-      (process-text
-        (inc index)
+    [ident (keyword (str "inclusion-" index))]
+    (process-text
+      (inc index)
+      (deep-merge
         result
-        (rest fragments)
-        (cons kw processed))
-      [:inclusions kw]
-      (apply formatter (list (subs fragment (count token)) index)))))
+        {:inclusions {ident (apply formatter (list (subs fragment (count token)) index))}
+         :extensions (cons (keyword token) (:extensions result))})
+      fragments
+      (cons ident processed))))
 
+(apply-formatter
+  3
+  {:inclusions {}}
+  '()
+  '()
+  "pswp
+  ![Frost on a gate, Laurieston](content/uploads/g1.jpg)
+  ![Feathered crystals on snow surface, Taliesin](content/uploads/g2.jpg)
+  ![Feathered snow on log, Taliesin](content/uploads/g3.jpg)
+  ![Crystaline growth on seed head, Taliesin](content/uploads/g4.jpg)"
+  "pswp"
+  smeagol.extensions.photoswipe/process-photoswipe)
 
 (defn process-text
   "Process this `text`, assumed to be markdown potentially containing both local links
@@ -124,7 +146,7 @@
   inclusion specifications, and `:text`, an HTML text string with the keywords
   present where the corresponding inclusion should be inserted."
   ([^String text]
-   (process-text 0 {:inclusions {}} (cs/split (or text "") #"```") '()))
+   (process-text 0 {} (cs/split (or text "") #"```") '()))
   ([index result fragments processed]
    (let [fragment (first fragments)
          ;; if I didn't find a formatter for a back-tick marked fragment,
@@ -154,24 +176,28 @@
        formatter
        ;; We've found a formatter to apply to the current fragment, and recurse
        ;; on down the list
-       (let [result (apply-formatter
-                      index
-                      result
-                      fragments
-                      processed
-                      fragment
-                      first-token
-                      formatter)]
-         ;; TODO: consistency: either these things are `extensions`, or
-         ;; they're `formatters`. I incline to the view that they're
-         ;; `:extensions`
-         (assoc-in result [:extensions kw] (-> config :formatters kw)))
+       (let
+         [ident (keyword (str "inclusion-" index))]
+         (deep-merge
+           (process-text
+             (inc index)
+             result
+             (rest fragments)
+             (cons ident processed))
+           {:inclusions {ident (apply formatter (list (subs fragment (count first-token)) index))}
+            :extensions (cons kw (:extensions result))}))
        :else
        ;; Otherwise process the current fragment as markdown and recurse on
        ;; down the list
        (process-markdown-fragment
          index result remarked (rest fragments) processed)))))
 
+(process-text
+  "pswp
+  ![Frost on a gate, Laurieston](content/uploads/g1.jpg)
+  ![Feathered crystals on snow surface, Taliesin](content/uploads/g2.jpg)
+  ![Feathered snow on log, Taliesin](content/uploads/g3.jpg)
+  ![Crystaline growth on seed head, Taliesin](content/uploads/g4.jpg)" )
 
 (defn reintegrate-inclusions
   "Given a map of the form produced by `process-text`, return a string of HTML text

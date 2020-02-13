@@ -1,4 +1,4 @@
-(ns ^{:doc "Format Semagol's extended markdown format."
+(ns ^{:doc "Format vega/vis extensions to Semagol's extended markdown format."
       :author "Simon Brooke"}
   smeagol.extensions.vega
   (:require [clojure.data.json :as json]

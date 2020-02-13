@@ -176,12 +176,8 @@
 (defn process-photoswipe
   [^String url-or-pswp-spec ^Integer index]
   (let [data (resource-url-or-data->data url-or-pswp-spec)
-        spec (cs/trim (:data data))
-        result
+        spec (cs/trim (:data data))]
         (if
           (cs/starts-with? spec "![")
           (process-simple-photoswipe spec index)
-          (process-full-photoswipe spec index))]
-;;    (log/info "process-photoswipe returning `" result "`.")
-    result
-    ))
+          (process-full-photoswipe spec index))))

@@ -61,33 +61,31 @@
      :version (System/getProperty "smeagol.version")}))
 
 
-(defn- raw-get-messages
+(def get-messages
   "Return the most acceptable messages collection we have given the
   `Accept-Language` header in this `request`."
-  [request]
-  (let [specifier ((:headers request) "accept-language")
-        messages (try
-                   (i18n/get-messages specifier "i18n" "en-GB")
-                   (catch Exception any
-                     (log/error
-                       any
-                       (str
-                         "Failed to parse accept-language header '"
-                         specifier
-                         "'"))
-                     {}))]
+  (memoize
+    (fn [request]
+      (let [specifier ((:headers request) "accept-language")
+            messages (try
+                       (i18n/get-messages specifier "i18n" "en-GB")
+                       (catch Exception any
+                         (log/error
+                           any
+                           (str
+                             "Failed to parse accept-language header '"
+                             specifier
+                             "'"))
+                         {}))]
     (merge
       messages
-      config)))
-
-
-(def get-messages (memoize raw-get-messages))
+      config)))))
 
 
 (defn get-message
   "Return the message with this `message-key` from this `request`.
-   if not found, return this `default`, if provided; else return the
-   `message-key`."
+  if not found, return this `default`, if provided; else return the
+  `message-key`."
   ([message-key request]
    (get-message message-key message-key request))
   ([message-key default request]
