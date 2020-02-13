@@ -63,30 +63,7 @@
     no-text-error))
 
 
-(defn yaml->json
-  "Rewrite this string, assumed to be in YAML format, as JSON."
-  [^String yaml-src]
-  (json/write-str (yaml/parse-string yaml-src)))
-
-
 (declare process-text)
-
-
-(defn process-vega
-  "Process this `vega-src` string, assumed to be in YAML format, into a specification
-  of a Vega chart, and add the plumbing to render it."
-  [^String vega-src ^Integer index]
-  (str
-    "<div class='data-visualisation' id='vis" index "'></div>\n"
-    "<script>\n//<![CDATA[\nvar vl"
-    index
-    " = "
-    (yaml->json (str "$schema: https://vega.github.io/schema/vega-lite/v2.json\n" vega-src))
-    ";\nvegaEmbed('#vis"
-    index
-    "', vl"
-    index
-    ");\n//]]\n</script>"))
 
 
 (defn process-backticks
@@ -117,7 +94,7 @@
     (cons fragment processed)))
 
 
-(defn- apply-formatter
+(defn apply-formatter
   "Within the context of `process-text`, process a fragment for which an explicit
   §formatter has been identified.
 
@@ -128,11 +105,14 @@
   [index result fragments processed fragment token formatter]
   (let
     [kw (keyword (str "inclusion-" index))]
-    (process-text
-      (inc index)
-      (assoc-in result [:inclusions kw] (apply formatter (list (subs fragment (count token)) index)))
-      (rest fragments)
-      (cons kw processed))))
+    (assoc-in
+      (process-text
+        (inc index)
+        result
+        (rest fragments)
+        (cons kw processed))
+      [:inclusions kw]
+      (apply formatter (list (subs fragment (count token)) index)))))
 
 
 (defn process-text
@@ -182,8 +162,11 @@
                       fragment
                       first-token
                       formatter)]
+         ;; TODO: consistency: either these things are `extensions`, or
+         ;; they're `formatters`. I incline to the view that they're
+         ;; `:extensions`
          (assoc-in result [:extensions kw] (-> config :formatters kw)))
-       true
+       :else
        ;; Otherwise process the current fragment as markdown and recurse on
        ;; down the list
        (process-markdown-fragment
