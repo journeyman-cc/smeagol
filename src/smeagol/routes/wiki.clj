@@ -15,6 +15,7 @@
             [noir.util.route :as route]
             [noir.session :as session]
             [smeagol.authenticate :as auth]
+            [smeagol.configuration :refer [config]]
             [smeagol.diff2html :as d2h]
             [smeagol.formatting :refer [md->html]]
             [smeagol.history :as hist]
@@ -187,7 +188,6 @@
   [request]
   (let
     [params (keywordize-keys (:params request))
-     data-path (str util/content-dir "/uploads/")
      cl (count (io/resource-path))
      files
      (map
@@ -202,11 +202,19 @@
              (fs/mod-time %)
              (format-instant (fs/mod-time %)))
            (fs/name %)
-           (subs (str (fs/absolute %)) cl)])
+           (try
+             (subs (str (fs/absolute %)) cl)
+             (catch StringIndexOutOfBoundsException x
+               (log/error "Could not resolve relative path for" %
+                          ";\n resource-path is:" (io/resource-path)
+                          ";\n absolute path is:" (fs/absolute %)
+                          ";\n data-path is:" util/upload-dir
+                          ";\n content path is:" (:content-dir config))
+               %))])
        (remove
          #(or (cs/starts-with? (fs/name %) ".")
                      (fs/directory? %))
-         (file-seq (clojure.java.io/file data-path))))]
+         (file-seq (clojure.java.io/file util/upload-dir))))]
     (log/info (with-out-str (pprint files)))
     (layout/render
       "list-uploads.html"
