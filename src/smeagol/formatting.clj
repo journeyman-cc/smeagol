@@ -43,6 +43,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Error to show if text to be rendered is nil.
+;; TODO: should go through i18n
 (def no-text-error "No text: does the file exist?")
 
 
@@ -185,5 +186,6 @@
   "Take this markdown source, and return HTML."
   [md-src]
   (reintegrate-inclusions (process-text md-src)))
+
 
 
