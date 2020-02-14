@@ -1,11 +1,11 @@
 {% extends "templates/base.html" %}
 {% block extra-headers %}
-  {% ifequal js-from ":cloudflare" %}
+  {% ifequal js-from ":cdnjs" %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/simplemde/1.11.2/simplemde.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/simplemde/1.11.2/simplemde.min.css" rel="stylesheet" type="text/css" />
   {% else %}
-    {% style "/vendor/simplemde/dist/simplemde.min.css" %}
-    {% script "/vendor/simplemde/dist/simplemde.min.js" %}
+    {% style "vendor/simplemde/dist/simplemde.min.css" %}
+    {% script "vendor/simplemde/dist/simplemde.min.js" %}
   {% endifequal %}
 {% endblock %}
 

@@ -15,6 +15,7 @@
             [noir.util.route :as route]
             [noir.session :as session]
             [smeagol.authenticate :as auth]
+            [smeagol.configuration :refer [config]]
             [smeagol.diff2html :as d2h]
             [smeagol.formatting :refer [md->html]]
             [smeagol.history :as hist]
@@ -193,7 +194,8 @@
     (log/info (format "Showing history of page '%s'" page))
     (layout/render "history.html"
                    (merge (util/standard-params request)
-                          {:title (util/get-message :history-title-prefix request)
+                          {:title (str (util/get-message :history-title-prefix request)
+                                       " " page)
                            :page page
                            :history (hist/find-history repo-path file-name)}))))
 
@@ -207,7 +209,7 @@
   If `template` is supplied, use that as the formatting template as specified for
   java.time.Formatter. Assumes system default timezone. Returns a string."
   ([^Long unix-time]
-   (format-instant unix-time "EEEE, dd MMMM YYYY"))
+   (format-instant unix-time "dd MMMM YYYY"))
   ([^Long unix-time ^String template]
    (jt/format
      (java-time/formatter template)
@@ -220,26 +222,26 @@
   [request]
   (let
     [params (keywordize-keys (:params request))
-     data-path (str util/content-dir "/uploads/")
-     cl (count (io/resource-path))
      files
-     (map
-       #(zipmap
-          [:base-name :is-image :modified :name :resource]
-          [(fs/base-name %)
-           (if
-             (and (fs/extension %)
-                  (image-extns (cs/lower-case (fs/extension %))))
-             true false)
-           (if
-             (fs/mod-time %)
-             (format-instant (fs/mod-time %)))
-           (fs/name %)
-           (subs (str (fs/absolute %)) cl)])
-       (remove
-         #(or (cs/starts-with? (fs/name %) ".")
-                     (fs/directory? %))
-         (file-seq (clojure.java.io/file data-path))))]
+     (sort-by
+       (juxt :name (fn [x] (- 0 (count (:resource x)))))
+       (map
+         #(zipmap
+            [:base-name :is-image :modified :name :resource]
+            [(fs/base-name %)
+             (if
+               (and (fs/extension %)
+                    (image-extns (cs/lower-case (fs/extension %))))
+               true false)
+             (if
+               (fs/mod-time %)
+               (format-instant (fs/mod-time %)))
+             (fs/name %)
+             (util/local-url %)])
+         (remove
+           #(or (cs/starts-with? (fs/name %) ".")
+                (fs/directory? %))
+           (file-seq (clojure.java.io/file util/upload-dir)))))]
     (log/info (with-out-str (pprint files)))
     (layout/render
       "list-uploads.html"
@@ -260,6 +262,7 @@
                          (catch Exception _ files))
                        files)
               }))))
+
 
 ;;;; end of list-uploads section ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

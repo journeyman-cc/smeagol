@@ -2,6 +2,7 @@
       :author "Simon Brooke"}
   smeagol.util
   (:require [clojure.java.io :as cjio]
+            [clojure.string :as cs]
             [environ.core :refer [env]]
             [me.raynes.fs :as fs]
             [noir.io :as io]
@@ -48,6 +49,51 @@
 
 (def upload-dir
   (str (cjio/file content-dir "uploads")))
+
+(def local-url-base
+  (let [a (str (fs/absolute content-dir))]
+    (subs a 0 (- (count a) (count "content")))))
+
+(defn not-servable-reason
+  "As a string, the reason this `file-path` cannot safely be served, or `nil`
+  if it is safe to serve. This reason may be logged, but should *not* be
+  shown to remote users, as it would allow file system probing."
+  [file-path]
+  (let [path (fs/absolute file-path)]
+    (cond
+      (cs/includes? file-path "..")
+      (cs/join " " file-path
+               "Attempts to ascend the file hierarchy are disallowed.")
+      (not (cs/starts-with? path local-url-base))
+      (cs/join " " [path "is not servable"])
+      (not (fs/exists? path))
+      (cs/join " " [path "does not exist"])
+      (not (fs/readable? path))
+      (cs/join " " [path "is not readable"]))))
+
+(defn local-url?
+  "True if this `file-path` can be served as a local URL, else false."
+  [file-path]
+  (empty? (not-servable-reason file-path)))
+
+(defn local-url
+  "Return a local URL for this `file-path`, or a deliberate 404 if none
+  can be safely served."
+  [file-path]
+  (try
+    (let [path (fs/absolute file-path)
+          problem (not-servable-reason path)]
+      (if
+        (empty? problem)
+        (subs (str path) (count local-url-base))
+        (do
+          (log/error
+            "In `smeagol.util/local-url `" file-path "` is not a servable resource.")
+          (str "404-not-found?path=" file-path))))
+    (catch Exception any
+        (log/error
+          "In `smeagol.util/local-url `" file-path "` is not a servable resource:" any)
+        (str "404-not-found?path=" file-path))))
 
 (defn standard-params
   "Return a map of standard parameters to pass to the template renderer."
