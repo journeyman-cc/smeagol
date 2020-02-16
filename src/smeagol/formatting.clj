@@ -93,6 +93,7 @@
     fragments
     (cons fragment processed)))
 
+
 (defn deep-merge [v & vs]
   "Cripped in its entirety from https://clojuredocs.org/clojure.core/merge."
   (letfn [(rec-merge [v1 v2]
@@ -124,18 +125,18 @@
       fragments
       (cons ident processed))))
 
-(apply-formatter
-  3
-  {:inclusions {}}
-  '()
-  '()
-  "pswp
-  ![Frost on a gate, Laurieston](content/uploads/g1.jpg)
-  ![Feathered crystals on snow surface, Taliesin](content/uploads/g2.jpg)
-  ![Feathered snow on log, Taliesin](content/uploads/g3.jpg)
-  ![Crystaline growth on seed head, Taliesin](content/uploads/g4.jpg)"
-  "pswp"
-  smeagol.extensions.photoswipe/process-photoswipe)
+;; (apply-formatter
+;;   3
+;;   {:inclusions {}}
+;;   '()
+;;   '()
+;;   "pswp
+;;   ![Frost on a gate, Laurieston](content/uploads/g1.jpg)
+;;   ![Feathered crystals on snow surface, Taliesin](content/uploads/g2.jpg)
+;;   ![Feathered snow on log, Taliesin](content/uploads/g3.jpg)
+;;   ![Crystaline growth on seed head, Taliesin](content/uploads/g4.jpg)"
+;;   "pswp"
+;;   smeagol.extensions.photoswipe/process-photoswipe)
 
 (defn process-text
   "Process this `text`, assumed to be markdown potentially containing both local links
@@ -145,6 +146,8 @@
   The map has two top-level keys: `:inclusions`, a map of constructed keywords to
   inclusion specifications, and `:text`, an HTML text string with the keywords
   present where the corresponding inclusion should be inserted."
+
+  ;; TODO: the inclusion->index bug is in here somewhere.
   ([^String text]
    (process-text 0 {} (cs/split (or text "") #"```") '()))
   ([index result fragments processed]
@@ -185,19 +188,19 @@
              (rest fragments)
              (cons ident processed))
            {:inclusions {ident (apply formatter (list (subs fragment (count first-token)) index))}
-            :extensions (cons kw (:extensions result))}))
+            :extensions (assoc (or (:extensions result) {}) kw (-> config :formatters kw))}))
        :else
        ;; Otherwise process the current fragment as markdown and recurse on
        ;; down the list
        (process-markdown-fragment
          index result remarked (rest fragments) processed)))))
 
-(process-text
-  "pswp
-  ![Frost on a gate, Laurieston](content/uploads/g1.jpg)
-  ![Feathered crystals on snow surface, Taliesin](content/uploads/g2.jpg)
-  ![Feathered snow on log, Taliesin](content/uploads/g3.jpg)
-  ![Crystaline growth on seed head, Taliesin](content/uploads/g4.jpg)" )
+;; (process-text
+;;   "pswp
+;;   ![Frost on a gate, Laurieston](content/uploads/g1.jpg)
+;;   ![Feathered crystals on snow surface, Taliesin](content/uploads/g2.jpg)
+;;   ![Feathered snow on log, Taliesin](content/uploads/g3.jpg)
+;;   ![Crystaline growth on seed head, Taliesin](content/uploads/g4.jpg)" )
 
 (defn reintegrate-inclusions
   "Given a map of the form produced by `process-text`, return a string of HTML text
@@ -233,6 +236,7 @@
       used."
   [md-src]
   (reintegrate-inclusions (process-text md-src)))
+
 
 
 

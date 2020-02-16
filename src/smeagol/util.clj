@@ -51,6 +51,8 @@
   (str (cjio/file content-dir "uploads")))
 
 (def local-url-base
+  "Essentially, the slash-terminated absolute path of the `public` resource
+  directory."
   (let [a (str (fs/absolute content-dir))]
     (subs a 0 (- (count a) (count "content")))))
 
@@ -59,7 +61,11 @@
   if it is safe to serve. This reason may be logged, but should *not* be
   shown to remote users, as it would allow file system probing."
   [file-path]
-  (let [path (fs/absolute file-path)]
+  (try
+  (let [path (if
+               (cs/starts-with? (str file-path) "/")
+               file-path
+               (cjio/file local-url-base file-path))]
     (cond
       (cs/includes? file-path "..")
       (cs/join " " file-path
@@ -69,31 +75,57 @@
       (not (fs/exists? path))
       (cs/join " " [path "does not exist"])
       (not (fs/readable? path))
-      (cs/join " " [path "is not readable"]))))
+      (cs/join " " [path "is not readable"])))
+    (catch Exception any (cs/join " " file-path "is not servable because" (.getMessage any)))))
+
+
+;; (not-servable-reason "/home/simon/workspace/smeagol/resources/public/content/vendor/node_modules/photoswipe/dist/photoswipe.min.js")
+;; (not-servable-reason "/root/froboz")
 
 (defn local-url?
   "True if this `file-path` can be served as a local URL, else false."
   [file-path]
-  (empty? (not-servable-reason file-path)))
+  (try
+    (if
+      (empty? (not-servable-reason file-path))
+      true
+      (do
+        (log/error
+          "In `smeagol.util/local-url? `" file-path "` is not a servable resource.")
+        false))
+    (catch Exception any
+      (log/error
+        "In `smeagol.util/local-url `" file-path "` is not a servable resource:" any)
+      false)))
 
 (defn local-url
   "Return a local URL for this `file-path`, or a deliberate 404 if none
   can be safely served."
+  ;; TODO: this actually returns a relative URL relative to local-url-base.
+  ;; That's not quite what we want because in Tomcat contexts the absolute
+  ;; URL may be different. We *ought* to be able to extract the offset from the
+  ;; servlet context, but it may be simpler to jam it in the config.
   [file-path]
   (try
-    (let [path (fs/absolute file-path)
+    (let [path (if
+                 (cs/starts-with? file-path local-url-base)
+                 (subs file-path (count local-url-base))
+                 file-path)
           problem (not-servable-reason path)]
       (if
         (empty? problem)
-        (subs (str path) (count local-url-base))
+        path
         (do
           (log/error
             "In `smeagol.util/local-url `" file-path "` is not a servable resource.")
           (str "404-not-found?path=" file-path))))
     (catch Exception any
-        (log/error
-          "In `smeagol.util/local-url `" file-path "` is not a servable resource:" any)
-        (str "404-not-found?path=" file-path))))
+      (log/error
+        "In `smeagol.util/local-url `" file-path "` is not a servable resource:" any)
+      (str "404-not-found?path=" file-path))))
+
+(local-url? "vendor/node_modules/photoswipe/dist/photoswipe.min.js")
+(local-url? "/home/simon/workspace/smeagol/resources/public/vendor/node_modules/photoswipe/dist/photoswipe.min.js")
 
 (defn standard-params
   "Return a map of standard parameters to pass to the template renderer."

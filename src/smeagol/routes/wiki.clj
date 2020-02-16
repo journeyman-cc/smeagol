@@ -28,7 +28,8 @@
             [com.stuartsierra.component :as component]
             [smeagol.configuration :refer [config]]
             [smeagol.include.resolve-local-file :as resolve]
-            [smeagol.include :as include]))
+            [smeagol.include :as include]
+            [smeagol.util :refer [content-dir local-url]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;
@@ -118,12 +119,16 @@
 
 
 (def md-include-system
+  "Allowing Markdown includes. Unfortunately the contributor who contributed
+  this didn't document it, and I haven't yet worked out how it works. TODO:
+  investigate and document."
   (component/start
     (component/system-map
       :resolver (resolve/new-resolver util/content-dir)
       :includer (component/using
                   (include/new-includer)
                   [:resolver]))))
+
 
 (defn preferred-source
   "Here, `component` is expected to be a map with two keys, `:local` and
@@ -132,26 +137,51 @@
   be returned. Otherwise, if the value of `:local` is nil and the value of
   `:remote` is non-nil, the value of `:remote` will be returned. By default,
   the value of `:local` will be returned."
-  [component]
-  (let [l (:local component) ;; TODO: look at the trick in Selmer to get relative URL
-        r (:remote component)]
-    (cond
-      (= (:extensions-from config) :remote)  (if (empty? r) l r)
-      (empty? l) r
-      :else l)))
+  [component ks]
+  (try
+    (let [l (:local component)
+          l' (if-not (empty? l) (local-url l) l)
+          r (:remote component)]
+      (cond
+        (= (:extensions-from config) :remote)
+        (if (empty? r) l' r)
+        (empty? l') r
+        :else l'))
+    (catch Exception any
+      (log/error "Failed to find appropriate source for component" ks "because:" any)
+      nil)))
+
+;; (preferred-source {:local "vendor/node_modules/photoswipe/dist/photoswipe.min.js",
+;;                    :remote "https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.3/photoswipe.min.js"} :core)
 
 (defn collect-preferred
-  "From extensions referenced in this `processed-text`, extract the preferred
-  URLs for this keyword `k`, expected to be either `:scripts` or `:styles`."
-  [processed-text k]
-  (set
-    (remove
-      nil?
-      (map
-        preferred-source
-        (apply
-          concat
-          (map vals (map k (vals (:extensions processed-text)))))))))
+  ([processed-text]
+   (concat
+     (collect-preferred processed-text :scripts)
+     (collect-preferred processed-text :styles)))
+  ([processed-text resource-type]
+   (reduce concat
+   (map
+     (fn [extension-key]
+       (map
+         (fn [requirement]
+           (let [r (preferred-source
+             (-> processed-text :extensions extension-key resource-type requirement)
+             requirement)]
+             (if (empty? r)
+               (log/warn "Found no valid URL for requirement"
+                         requirement "of extension" extension-key))
+             r))
+          (keys (-> processed-text :extensions extension-key resource-type))))
+     (keys (:extensions processed-text))))))
+
+(cjio/file content-dir "vendor/node_modules/photoswipe/dist/photoswipe.min.js")
+
+(def processed-text (md->html (slurp "resources/public/content/Simplified example gallery.md" )))
+
+(preferred-source (-> processed-text :extensions :pswp :scripts :core) :pswp)
+
+(collect-preferred processed-text :scripts)
 
 (defn wiki-page
   "Render the markdown page specified in this `request`, if any. If none found, redirect to edit-page"

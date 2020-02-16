@@ -30,37 +30,35 @@
   :content-dir          "resources/public/content"
                                         ;; where content is served from.
   :default-locale       "en-GB"         ;; default language used for messages
+  :extensions-from      :local          ;; where to load JavaScript libraries
+                                        ;; from: options are :local, :remote.
   :formatters                           ;; formatters for processing markdown
                                         ;; extensions.
   {:backticks    {:formatter "smeagol.formatting/process-backticks"
                   :scripts {}
                   :styles {}}
    :mermaid      {:formatter "smeagol.extensions.mermaid/process-mermaid"
-                  :scripts {:core {:local "vendor/mermaid/dist/mermaid.js"}}
+                  :scripts {:core {:local "vendor/mermaid/dist/mermaid.js"
+                                   :remote "https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.4.6/mermaid.min.js"}}
                   :styles {}}
    :pswp         {:formatter "smeagol.extensions.photoswipe/process-photoswipe"
-                  :scripts {:core {:local "/vendor/node_modules/photoswipe/dist/photoswipe.min.js"
+                  :scripts {:core {:local "vendor/node_modules/photoswipe/dist/photoswipe.min.js"
                                    :remote "https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.3/photoswipe.min.js"}
-                            :ui {:local "/vendor/node_modules/photoswipe/dist/photoswipe-ui-default.min.js"
+                            :ui {:local "vendor/node_modules/photoswipe/dist/photoswipe-ui-default.min.js"
                                  :remote "https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.3/photoswipe-ui-default.min.js"}}
-                  :styles {:core {:local "/vendor/node_modules/photoswipe/dist/photoswipe.css"
-                                  :remote "/vendor/node_modules/photoswipe/dist/default-skin/default-skin.css"}}}
+                  :styles {:core {:local "vendor/node_modules/photoswipe/dist/photoswipe.css"}
+                           :skin {:local "vendor/node_modules/photoswipe/dist/default-skin/default-skin.css"}}}
    :test         {:formatter "smeagol.extensions.test/process-test" }
    :vega         {:formatter "smeagol.extensions.vega/process-vega"
                   :scripts {:core {:remote "https://cdnjs.cloudflare.com/ajax/libs/vega/5.9.1/vega.min.js"}
                             :lite {:remote "https://cdnjs.cloudflare.com/ajax/libs/vega-lite/4.1.1/vega-lite.min.js"}
-                            :embed {:remote "https://cdnjs.cloudflare.com/ajax/libs/vega-embed/6.2.2/vega-embed.min.js"}
-                  :styles {}}}
+                            :embed {:remote "https://cdnjs.cloudflare.com/ajax/libs/vega-embed/6.2.2/vega-embed.min.js"}}}
    :vis          {:formatter "smeagol.extensions.vega/process-vega"
                   :scripts {:core {:remote "https://cdnjs.cloudflare.com/ajax/libs/vega/5.9.1/vega.min.js"}
                             :lite {:remote "https://cdnjs.cloudflare.com/ajax/libs/vega-lite/4.1.1/vega-lite.min.js"}
-                            :embed {:remote "https://cdnjs.cloudflare.com/ajax/libs/vega-embed/6.2.2/vega-embed.min.js"}
-                  :styles {}}}
-   }
+                            :embed {:remote "https://cdnjs.cloudflare.com/ajax/libs/vega-embed/6.2.2/vega-embed.min.js"}}}}
   :log-level            :info           ;; the minimum logging level; one of
                                         ;; :trace :debug :info :warn :error :fatal
-  :js-from              :cdnjs          ;; where to load JavaScript libraries
-                                        ;; from: options are :local, :cdnjs
   :passwd               "resources/passwd"
                                         ;; where the password file is stored
   :site-title           "Smeagol"       ;; overall title of the site, used in
@@ -71,4 +69,10 @@
                                         ;; stored in the /small directory
                          :med 400       ;; maximum dimension of thumbnails
                                         ;; stored in the /med directory
-                         }}
+                         ;; you can add as many extra keys and values as
+                         ;; you like here for additional sizes of images.
+                         ;; Images will only be scaled if their maximum
+                         ;; dimension (in pixels) is greater than the value;
+                         ;; only JPEG and PNG images will be scaled.
+                         }
+  }
