@@ -131,6 +131,8 @@
                         "Smeagol has been unable to find some of the resources on which it depends,
                          possibly because of misconfiguration or missing environment variables."
                                         ;; used in sanity check report
+ :sortable              "You can sort this table by selecting column headers"
+                                        ;; used for sortable tables
  :user-lacks-field      "User record in the passwd file lacks a field"
                                         ;; used in sanity check report
  :username-prompt       "Username"      ;; text of the username widget prompt on edit user page

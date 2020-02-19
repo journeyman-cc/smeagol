@@ -1,4 +1,10 @@
 {% extends "templates/base.html" %}
+{% block extra-headers %}
+ {% script "/vendor/node_modules/tablesort/dist/tablesort.min.js" %}
+ {% script "/vendor/node_modules/tablesort/dist/sorts/tablesort.number.min.js" %}
+ {% script "/vendor/node_modules/tablesort/dist/sorts/tablesort.date.min.js" %}
+ {% script "/vendor/node_modules/tablesort/dist/sorts/tablesort.monthname.min.js" %}
+{% endblock %}
 
 {% block content %}
         <div id="content" class="list-uploads">
@@ -9,26 +15,31 @@
               <input name="search" id="search" type="text" value="{{search}}" required/>
             </p>
           </form>
-          <table>
-            <tr>
+          <p>
+            {% i18n sortable %}
+          </p>
+          <table id="uploads">
+            <tr data-sort-method='none'>
               <th>Name</th>
               <th>Uploaded</th>
               <th>Type this</th>
-              <th>To get this</th>
+              <th data-sort-method='none'>To get this</th>
             </tr>
             {% for entry in files %}
             <tr>
               <th>{{entry.base-name}}</th>
               <td>{{entry.modified}}</td>
               <td>
-              {% if entry.is-image %} ![{{entry.name|capitalize}}](uploads/{{entry.base-name}}) {% else %} [{{entry.name|capitalize}}](uploads/{{entry.base-name}}) {% endif %}
+              {% if entry.is-image %} ![{{entry.name|capitalize}}]({{entry.resource}}) {% else %} [{{entry.name|capitalize}}](uploads/{{entry.resource}}) {% endif %}
               </td>
               <td>
-              {% if entry.is-image %} <img src="uploads/{{entry.base-name}}" alt="{{entry.name|capitalize}}"/> {% else %} <a href="uploads/{{entry.base-name}}">link</a> {% endif %}
+              {% if entry.is-image %} <img src="{{entry.resource}}" alt="{{entry.name|capitalize}}"/> {% else %} <a href="{{entry.resource}}">link</a> {% endif %}
               </td>
-
             </tr>
             {% endfor %}
           </table>
         </div>
+        <script>
+          new Tablesort(document.getElementById('uploads'));
+        </script>
 {% endblock %}

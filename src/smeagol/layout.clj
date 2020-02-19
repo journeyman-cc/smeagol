@@ -12,8 +12,7 @@
             [selmer.parser :as parser]
             [smeagol.configuration :refer [config]]
             [smeagol.sanity :refer :all]
-            [smeagol.util :as util]
-            [taoensso.timbre :as timbre]))
+            [smeagol.util :as util]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;

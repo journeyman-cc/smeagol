@@ -36,7 +36,7 @@ Data files can be uploaded in the same way as images, by using the **upload a fi
 
 Graphs can now be embedded in a page using the [Mermaid](https://mermaid-js.github.io/mermaid/#/) graph description language. The graph description should start with a line comprising three back-ticks and then the word `mermaid`, and end with a line comprising just three backticks.
 
-Here's an example culled from the Mermaid documentation.
+Here's an example culled from the Mermaid documentation. Edit this page to see the specification.
 
 ### GANTT Chart
 
@@ -57,6 +57,19 @@ gantt
         Create tests for renderer           :2d
         Add to mermaid                      :1d
 ```
+
+Mermaid graph specifications can also be loaded from URLs. Here's another example; again, edit this page to see how the trick is done.
+
+### Class Diagram
+
+```mermaid
+data/classes.mermaid
+```
+
+## Photoswipe galleries
+
+Not so much a formatter, this is an extension to allow you to embed image galleries in your markdown. To specify a gallery, use three backticks followed by `pswp`, followed on the following lines by a [Photoswipe](https://photoswipe.com/documentation/getting-started.html) specification in [JSON](https://www.json.org/json-en.html)
+followed by three backticks on a line by themselves. There is an [[Example gallery]] with the full PhotoSwipe configuration, and a [[Simplified example gallery]] using a much simpler syntax, so that you can see how this works.
 
 ## Writing your own custom formatters
 

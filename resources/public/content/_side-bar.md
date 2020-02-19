@@ -1,6 +1,7 @@
 * [[Introduction]]
 * [[Change log]]
 * [[User Documentation]]
+* [[Configuring Smeagol]]
 * [[Deploying Smeagol]]
 * [[Developing Smeagol]]
 

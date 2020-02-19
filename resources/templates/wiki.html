@@ -1,16 +1,10 @@
 {% extends "templates/base.html" %}
 
 {% block extra-headers %}
-  <!-- ifequal js-from ":cloudflare" -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.4.6/mermaid.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vega/5.9.1/vega.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vega-lite/4.1.1/vega-lite.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vega-embed/6.2.2/vega-embed.min.js"></script>
-  <!-- else -->
-    <!-- TODO: currently `lein npm install` fails to build packages on all platforms, and
-      fails SILENTLY. Consequently setting js-from to local is not advised. Investigting. -->
-    <!-- script "vendor/mermaid/dist/mermaid.js" %}
-  <!-- endifequal -->
+  {% for script in scripts %}
+    <script src="{{script}}"></script>{% endfor %}
+  {% for style in styles %}
+    <link href="{{style}}" rel="stylesheet" type="text/css" />{% endfor %}
 {% endblock %}
 
 {% block content %}
