@@ -115,15 +115,12 @@
   corresponding inclusion should be inserted."
   [index result fragments processed fragment token formatter]
   (let
-    [ident (keyword (str "inclusion-" index))]
+    [kw (keyword (str "inclusion-" index))]
     (process-text
       (inc index)
-      (deep-merge
-        result
-        {:inclusions {ident (apply formatter (list (subs fragment (count token)) index))}
-         :extensions (cons (keyword token) (:extensions result))})
-      fragments
-      (cons ident processed))))
+      (assoc-in result [:inclusions kw] (apply formatter (list (subs fragment (count token)) index)))
+      (rest fragments)
+      (cons kw processed))))
 
 ;; (apply-formatter
 ;;   3
@@ -177,23 +174,9 @@
              (cs/join "\n\n" (reverse processed))
              :heading-anchors true)))
        formatter
-       ;; We've found a formatter to apply to the current fragment, and recurse
-       ;; on down the list
-       (let
-         [ident (keyword (str "inclusion-" index))]
-         (deep-merge
-           (process-text
-             (inc index)
-             result
-             (rest fragments)
-             (cons ident processed))
-           {:inclusions {ident (apply formatter (list (subs fragment (count first-token)) index))}
-            :extensions (assoc (or (:extensions result) {}) kw (-> config :formatters kw))}))
-       :else
-       ;; Otherwise process the current fragment as markdown and recurse on
-       ;; down the list
-       (process-markdown-fragment
-         index result remarked (rest fragments) processed)))))
+       (apply-formatter index result fragments processed fragment first-token formatter)
+       true
+       (process-markdown-fragment index result remarked (rest fragments) processed)))))
 
 ;; (process-text
 ;;   "pswp
