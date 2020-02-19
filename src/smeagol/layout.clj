@@ -37,7 +37,11 @@
 ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(def template-path "templates/")
+(def template-path
+  "Path to the resource directory in which Selmer templates are stored. These
+  should be in a place which is not editable from the Wiki, otherwise
+  users may break things which they cannot subsequently fix!"
+  "templates/")
 
 (parser/add-tag! :csrf-field (fn [_ _] (anti-forgery-field)))
 
@@ -48,10 +52,14 @@
   (fn [args context-map]
     (let [messages (:i18n context-map)
           default (or (second args) (first args))]
-      (if (map? messages) (or (messages (keyword (first args))) default) default))))
+      (if (map? messages) (or (messages (keyword (first args))) default)
+        default))))
 
 
-(deftype RenderableTemplate [template params]
+(deftype RenderableTemplate
+;;   Boilerplate from Luminus. Load a template file into an object which may
+;;   be rendered.
+  [template params]
   Renderable
   (render [this request]
           (try
@@ -75,6 +83,8 @@
 
 
 (defn render
+  "Boilerplate from Luminus. Render an HTML page based on this `template` and
+  these `params`. Returns HTML source as a string."
   [template & [params]]
   (try
     (RenderableTemplate. template params)

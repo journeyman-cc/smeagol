@@ -1,3 +1,10 @@
+# 1.0.4
+
+* New gallery extension `pswp` using [Photoswipe](https://photoswipe.com/);
+* Automatic thumbnailing of uploaded images;
+* Javascript supporting extensions is only loaded for those pages on which the extensions are actually used;
+* Many minor bug fixes.
+
 # 1.0.2
 Two fixes contributed by a user:
 

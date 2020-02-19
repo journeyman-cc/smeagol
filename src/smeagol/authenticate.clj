@@ -37,6 +37,8 @@
 
 ;; the relative path to the password file.
 (def password-file-path
+  "Path to the password file."
+  ;; TODO: portability; elegance. Not very happy with this.
   (or
     (:passwd config)
     (str (io/resource-path) "../passwd")))

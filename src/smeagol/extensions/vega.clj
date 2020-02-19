@@ -1,9 +1,7 @@
 (ns ^{:doc "Format vega/vis extensions to Semagol's extended markdown format."
       :author "Simon Brooke"}
   smeagol.extensions.vega
-  (:require [clojure.data.json :as json]
-            [clj-yaml.core :as yaml]
-            [smeagol.extensions.utils :refer :all]
+  (:require [smeagol.extensions.utils :refer :all]
             [taoensso.timbre :as log]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -61,11 +59,6 @@
 ;;;; ```
 ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defn yaml->json
-  "Rewrite this string, assumed to be in YAML format, as JSON."
-  [^String yaml-src]
-  (json/write-str (yaml/parse-string yaml-src)))
 
 (defn process-vega
   "If this `src-resource-or-url` is a valid URL, it is assumed to point to a

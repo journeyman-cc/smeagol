@@ -72,6 +72,7 @@
     (.write iw nil iio-img iw-param)))
 
 (def image?
+  "True if the file at this `filename` appears as though it may be an image"
   (memoize
     (fn [filename]
       (image-file-extns (fs/extension (cs/lower-case (str filename)))))))

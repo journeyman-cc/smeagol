@@ -100,17 +100,17 @@
   '( {:from :smeagol-content-dir :to :content-dir}
      {:from :smeagol-default-locale :to :default-locale}
      {:from :smeagol-formatters :to :formatters :transform read-string}
-     {:from :smeagol-js-from :to :js-from :transform to-keyword}
+     {:from :smeagol-js-from :to :extensions-from :transform to-keyword}
      {:from :smeagol-log-level :to :log-level :transform to-keyword}
      {:from :smeagol-passwd :to :passwd}
      {:from :smeagol-site-title :to :site-title}))
 
 
-(defn build-config
-  []
+(defn- build-config
   "The actual configuration, as a map. The idea here is that the config
   file is read (if it is specified and present), but that individual
   values can be overridden by environment variables."
+  []
   (try
     (log/info (str "Reading configuration from " config-file-path))
     (let [file-contents (try
@@ -146,4 +146,6 @@
       (log/error any "Could not load configuration")
       {})))
 
-(def config (build-config))
+(def config
+  "The actual configuration, as a map."
+  (memoize build-config))

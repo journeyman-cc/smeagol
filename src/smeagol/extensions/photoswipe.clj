@@ -11,6 +11,7 @@
             [noir.io :as io]
             [smeagol.configuration :refer [config]]
             [smeagol.extensions.utils :refer :all]
+            [smeagol.util :refer [content-dir upload-dir]]
             [taoensso.timbre :as log]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -75,7 +76,7 @@
                 src := #'[^)]*' ;
                 SPACE := #'[\\r\\n\\W]*'"))
 
-(defn simplify
+(defn- simplify
   [tree]
   (if
     (coll? tree)
@@ -87,16 +88,6 @@
       :END-CAPTION nil
       :END-SRC nil
       (remove empty? (map simplify tree)))))
-
-(defn uploaded?
-  "Does this `url` string appear to be one that has been uploaded to our
-  `uploads` directory?"
-  [url]
-  (and
-    (cs/starts-with? (str url) "content/uploads")
-    (fs/exists? (cio/file upload-dir (fs/base-name url)))))
-
-;; (uploaded? "content/uploads/g1.jpg")
 
 (defn slide-merge-dimensions
   "If this `slide` appears to be local, return it decorated with the
@@ -118,7 +109,7 @@
 ;;   {:title "Frost on a gate, Laurieston",
 ;;    :src "content/uploads/g1.jpg"})
 
-(defn process-simple-slide
+(defn- process-simple-slide
   [slide-spec]
   (let [s (simplify (simple-grammar slide-spec))
         s'(zipmap (map first s) (map #(nth % 1) s))
@@ -174,6 +165,8 @@
 ;;   1)
 
 (defn process-photoswipe
+  "Process a Photoswipe specification which may conform either to the
+  `full` or the `simple` syntax."
   [^String url-or-pswp-spec ^Integer index]
   (let [data (resource-url-or-data->data url-or-pswp-spec)
         spec (cs/trim (:data data))]

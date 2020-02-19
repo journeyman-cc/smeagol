@@ -2,12 +2,15 @@
       :author "Simon Brooke"}
   smeagol.extensions.utils
   (:require [cemerick.url :refer (url url-encode url-decode)]
+            [clj-yaml.core :as yaml]
+            [clojure.data.json :as json]
             [clojure.java.io :as cjio]
             [clojure.string :as cs]
             [me.raynes.fs :as fs]
             [noir.io :as io]
             [smeagol.configuration :refer [config]]
-            [taoensso.timbre :as log]))
+            [taoensso.timbre :as log]
+            [smeagol.util :refer [content-dir upload-dir]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;
@@ -31,16 +34,6 @@
 ;;;; Copyright (C) 2017 Simon Brooke
 ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(def content-dir
-  (str
-    (fs/absolute
-      (or
-        (:content-dir config)
-        (cjio/file (io/resource-path) "content")))))
-
-(def upload-dir
-  (str (cjio/file content-dir "uploads")))
 
 (def resource-url-or-data->data
   "Interpret this `resource-url-or-data` string as data to be digested by a
@@ -83,3 +76,19 @@
               (.getName (.getClass x))
               (.getMessage x) )
             default))))))
+
+(defn uploaded?
+  "Does this `url` string appear to be one that has been uploaded to our
+  `uploads` directory?"
+  [url]
+  (and
+    (cs/starts-with? (str url) "content/uploads")
+    (fs/exists? (cjio/file upload-dir (fs/base-name url)))))
+
+;; (uploaded? "content/uploads/g1.jpg")
+
+(defn yaml->json
+  "Rewrite this string, assumed to be in YAML format, as JSON."
+  [^String yaml-src]
+  (json/write-str (yaml/parse-string yaml-src)))
+

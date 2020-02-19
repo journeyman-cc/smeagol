@@ -39,9 +39,12 @@
 
 
 (def start-page
+  "The page to load on startup, taken from configuration."
   (:start-page  config))
 
 (def content-dir
+  "The absolute path to the directory in which Wiki content (i.e., Markdown
+  files) are stored."
   (str
     (fs/absolute
       (or
@@ -49,6 +52,7 @@
         (cjio/file (io/resource-path) "content")))))
 
 (def upload-dir
+  "The absolute path to the directory in which uploaded files are stored."
   (str (cjio/file content-dir "uploads")))
 
 (def local-url-base
