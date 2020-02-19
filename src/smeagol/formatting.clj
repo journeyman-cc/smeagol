@@ -10,6 +10,7 @@
             [smeagol.extensions.mermaid :refer [process-mermaid]]
             [smeagol.extensions.photoswipe :refer [process-photoswipe]]
             [smeagol.extensions.vega :refer [process-vega]]
+            [smeagol.local-links :refer :all]
             [taoensso.timbre :as log]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -43,26 +44,6 @@
 ;;;; tokens with the transformed visualisation specification.
 ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; Error to show if text to be rendered is nil.
-;; TODO: this should go through i18n
-(def no-text-error "No text: does the file exist?")
-
-
-(defn local-links
-  "Rewrite text in `html-src` surrounded by double square brackets as a local link into this wiki."
-  [^String html-src]
-  (if html-src
-    (cs/replace html-src #"\[\[[^\[\]]*\]\]"
-                #(let [text (cs/replace %1 #"[\[\]]" "")
-                       encoded (url-encode text)
-                       ;; I use '\_' to represent '_' in wiki markup, because
-                       ;; '_' is meaningful in Markdown. However, this needs to
-                       ;; be stripped out when interpreting local links.
-                       munged (cs/replace encoded #"%26%2395%3B" "_")]
-                   (format "<a href='wiki?page=%s'>%s</a>" munged text)))
-    no-text-error))
-
 
 (declare process-text)
 
@@ -133,25 +114,9 @@
         result
         {:inclusions {inky (eval (list formatter (subs fragment (count token)) index))}
          :extensions {fkey (-> config :formatters fkey)}})
-;;       (assoc-in
-;;         (assoc-in result [:inclusions inky] (eval (list formatter (subs fragment (count token)) index)))
-;;         [:extensions fkey] (-> config :formatters fkey))
        (rest fragments)
       (cons inky processed))))
 
-
-;; (apply-formatter
-;;   3
-;;   {:inclusions {}}
-;;   '()
-;;   '()
-;;   "pswp
-;;   ![Frost on a gate, Laurieston](content/uploads/g1.jpg)
-;;   ![Feathered crystals on snow surface, Taliesin](content/uploads/g2.jpg)
-;;   ![Feathered snow on log, Taliesin](content/uploads/g3.jpg)
-;;   ![Crystaline growth on seed head, Taliesin](content/uploads/g4.jpg)"
-;;   "pswp"
-;;   smeagol.extensions.photoswipe/process-photoswipe)
 
 (defn reassemble-text
   "Reassemble these processed strings into a complete text, and process it as

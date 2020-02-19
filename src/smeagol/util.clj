@@ -11,6 +11,7 @@
             [scot.weft.i18n.core :as i18n]
             [smeagol.authenticate :as auth]
             [smeagol.configuration :refer [config]]
+            [smeagol.local-links :refer :all]
             [taoensso.timbre :as log]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -135,9 +136,13 @@
      :admin (auth/get-admin user)
      :js-from (:js-from config)
      :side-bar (md/md-to-html-string
-                 (slurp (cjio/file content-dir "_side-bar.md")):heading-anchors true)
+                 (local-links
+                   (slurp (cjio/file content-dir "_side-bar.md")))
+                 :heading-anchors true)
      :header (md/md-to-html-string
-               (slurp (cjio/file content-dir "_header.md")) :heading-anchors true)
+               (local-links
+                 (slurp (cjio/file content-dir "_header.md")))
+                 :heading-anchors true)
      :version (System/getProperty "smeagol.version")}))
 
 

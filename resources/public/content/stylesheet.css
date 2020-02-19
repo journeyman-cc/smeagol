@@ -24,16 +24,6 @@
  ## html elements generally in alphabetic order
  */
 
-a {
-  color: darkgray;
-  font-weight: bold;
-}
-
-a:hover {
-  color: darkgray;
-  background:rgba(200,200,200,0.8);
-}
-
 body {
   margin: 0;
   padding: 0;
@@ -62,15 +52,14 @@ dd {
 
 /* footer of the page - not-editable, provided by Smeagol */
 footer {
-  border-top: thin solid silver;
-  color: gray;
-  background:rgba(200,200,200,0.8);
+  border-top: thin solid gray;
   clear: both;
   font-size: smaller;
   text-align: center;
+  color: gray;
+  background: rgba(224,224,224,0.95);
   width: 100%;
   margin: 0;
-  min-height: 4px;
   padding: 0.25em 0;
   bottom:0;
   position:fixed;
@@ -82,12 +71,7 @@ footer {
 }
 
 footer div {
-  display: none;
   padding: 0.1em;
-}
-
-footer:hover div {
-  display: block;
 }
 
 form {
@@ -99,6 +83,8 @@ header {
   margin-top: 0;
   width:100%;
   max-width: 100%;
+  background-color: gray;
+  color: white;
 }
 
 header h1 {
@@ -107,6 +93,7 @@ header h1 {
 
 header a {
   font-weight: bold;
+  color: white;
 }
 
 header a:hover {
@@ -144,12 +131,12 @@ ins {
 label {
   width: 20%;
   min-width: 20em;
-  border-right: thin solid silver;
+  border-right: thin solid gray;
   display: inline-block;
 }
 
 table {
-  border: thin solid silver;
+  border: 2px solid black;
   border-collapse: collapse;
 }
 
@@ -161,7 +148,7 @@ th, td {
 	text-align: left;
   vertical-align: top;
 	padding: 0.15em 1.5em;
-  border: 1px solid silver;
+  border: 1px solid gray;
 }
 
 th {
@@ -179,7 +166,6 @@ th {
 
 /* left bar for all pages in the Wiki - editable, provided by users. Within main-container */
 #side-bar {
-  display: none;
   width: 17%;
   height: 100%;
   float: left;
@@ -187,10 +173,10 @@ th {
 
 /* cookies information box, fixed, in right margin, just above footer */
 #cookies {
-	width: 20%;
+	width: 30%;
 	float: right;
   position: fixed;
-  bottom: 8px;
+  bottom: 3.5em;
   right: 0;
 	z-index: 175;
   background: transparent;
@@ -204,8 +190,8 @@ th {
   text-align: right;
   padding: 0.25em 2em;
   border-radius: 0.25em;
-	color: gray;
-  background:rgba(200,200,200,0.8);
+	color: white;
+  background:rgba(40,40,40,0.8);
 }
 
 /* more-about-cookies box, normally hidden */
@@ -213,9 +199,9 @@ th {
   display: none;
 	padding: 0.5em 2em;
   border-radius: 0.5em;
-	color: gray;
-  background:rgba(200,200,200,0.8);
-	border-bottom: thin solid gray;
+	color: white;
+  background:rgba(40,40,40,0.8);
+	border-bottom: thin solid white;
 }
 
 /* but magically appears on mouseover */
@@ -256,8 +242,8 @@ th {
   right: 0;
   padding: 0.25em 2em;
   border-radius: 0.25em;
-	color: gray;
-  background:rgba(200,200,200,0.8);
+  color: white;
+  background:rgba(40,40,40,0.8);
   font-size: 66%;
 }
 
@@ -268,11 +254,7 @@ th {
 .minor-controls a {
   float: right;
   padding: 0.25em 2em;
-  color: gray;
-}
-
-.minor-controls a:hover {
-  color: darkgray;
+  color: white;
 }
 
 .pseudo-input {
@@ -321,7 +303,8 @@ th {
   /* content of the current page in the Wiki - editable, provided by users. Within main-container */
   #content {
     border: thin solid silver;
-    width: 100%;
+    width: 80%;
+    float: right;
     padding-bottom: 5em;
   }
 
@@ -329,29 +312,16 @@ th {
     display: none;
   }
 
-  #header {
-    font-size: smaller;
-  }
-
   /* top-of-page navigation, not editable, provided by Smeagol */
   #nav{
     margin: 0;
     padding: 0;
     top: 0;
-    min-height: 4px;
+    width: 100%;
     _position: absolute;
     _top: expression(document.documentElement.scrollTop);
     z-index: 149;
-    color: gray;
-    background:rgba(200,200,200,0.8);
- }
-
-  #nav #nav-menu {
-    display: none;
-  }
-
-  #nav:hover #nav-menu {
-    display: block;
+    background:rgba(40,40,40,0.8);
   }
 
   /* only needed for fly-out menu effect on tablet and phone stylesheets */
@@ -371,14 +341,14 @@ th {
   }
 
   #nav menu li a {
-    color: gray;
+    color: white;
     text-decoration: none;
     font-weight: bold;
     padding: 0.1em 0.75em;
     margin: 0;
   }
 
-  #nav menu li.active a { background: gray; color: white;}
+  #nav menu li.active a { background: gray;}
   li.nav-item a:hover { background: rgb( 240, 240, 240) }
   li.nav-item a:active { background: gray; color: white; }
 
@@ -409,15 +379,17 @@ th {
     padding: 0;
     position: fixed;
     z-index: 149;
-    color: black;
-    background:rgba(200,200,200,0.9);
+    color: silver;
+    background:rgba(40,40,40,0.9);
   }
 
   #nav a {
+    color: white;
+    text-decoration: none;
     font-weight: bold;
   }
 
-  #nav:hover #nav-menu, #nav:hover #phone-side-bar {
+  #nav:hover #nav-menu {
     display: block;
     list-style-type: none;
     width: 100%;
@@ -483,21 +455,18 @@ th {
     display: none;
   }
 
-  #header {
-    display: none;
-  }
-
   #nav{
     margin: 0;
     padding: 0;
     position: fixed;
     z-index: 149;
-    color: black;
-    background:rgba(200,200,200,0.9);
+    color: silver;
+    background:rgba(40,40,40,0.9);
   }
 
   #nav a {
-    color: black;
+    color: white;
+    text-decoration: none;
     font-weight: bold;
   }
 
@@ -522,8 +491,6 @@ th {
   }
 
   #nav menu li a {
-    color: black;
-    font-weight: bold;
   }
 
   #nav ul li.active a { background: silver;}
