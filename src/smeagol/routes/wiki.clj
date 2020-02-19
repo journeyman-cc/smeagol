@@ -9,6 +9,7 @@
             [clojure.walk :refer :all]
             [compojure.core :refer :all]
             [java-time :as jt]
+            [markdown.core :as md]
             [me.raynes.fs :as fs]
             [noir.io :as io]
             [noir.response :as response]
@@ -20,6 +21,7 @@
             [smeagol.formatting :refer [md->html]]
             [smeagol.history :as hist]
             [smeagol.layout :as layout]
+            [smeagol.local-links :refer :all]
             [smeagol.routes.admin :as admin]
             [smeagol.sanity :refer [show-sanity-check-error]]
             [smeagol.util :as util]
@@ -107,7 +109,10 @@
                             (merge (util/standard-params request)
                                    {:title (str (util/get-message :edit-title-prefix request) " " page)
                                     :page page
-                                    :side-bar (md->html (assoc request :source (slurp (cjio/file util/content-dir side-bar))))
+                                    :side-bar (md/md-to-html-string
+                                                (local-links
+                                                  (slurp (cjio/file content-dir side-bar)))
+                                                :heading-anchors true)
                                     :content (if exists? (slurp file-path) "")
                                     :exists exists?})))))))
 
@@ -155,25 +160,29 @@
 ;;                    :remote "https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.3/photoswipe.min.js"} :core)
 
 (defn collect-preferred
+  "Collect preferred variants of resources required by extensions used in the
+  page described in this `processed-text`."
   ([processed-text]
    (concat
      (collect-preferred processed-text :scripts)
      (collect-preferred processed-text :styles)))
   ([processed-text resource-type]
-   (reduce concat
-   (map
-     (fn [extension-key]
-       (map
-         (fn [requirement]
-           (let [r (preferred-source
-             (-> processed-text :extensions extension-key resource-type requirement)
-             requirement)]
-             (if (empty? r)
-               (log/warn "Found no valid URL for requirement"
-                         requirement "of extension" extension-key))
-             r))
-          (keys (-> processed-text :extensions extension-key resource-type))))
-     (keys (:extensions processed-text))))))
+   (reduce
+     concat
+     (map
+       (fn [extension-key]
+         (map
+           (fn [requirement]
+             (let [r (preferred-source
+                       (-> processed-text :extensions extension-key
+                           resource-type requirement)
+                       requirement)]
+               (if (empty? r)
+                 (log/warn "Found no valid URL for requirement"
+                           requirement "of extension" extension-key))
+               r))
+           (keys (-> processed-text :extensions extension-key resource-type))))
+       (keys (:extensions processed-text))))))
 
 ;; (cjio/file content-dir "vendor/node_modules/photoswipe/dist/photoswipe.min.js")
 
@@ -235,7 +244,9 @@
 ;;;; this next section is all stuff supporting the list-uploads page, and maybe
 ;;;; should be moved to its own file.
 
-(def image-extns #{".gif" ".jpg" ".jpeg" ".png"})
+(def image-extns
+  "File name extensions suggesting files which can be considered to be images."
+  #{".gif" ".jpg" ".jpeg" ".png"})
 
 (defn format-instant
   "Format this `unix-time`, expected to be a Long, into something human readable.
@@ -322,6 +333,7 @@
                           {:title (util/get-message :file-upload-title request)
                            :uploaded uploaded}))))
 
+
 (defn version-page
   "Render a specific historical version of a page"
   [request]
@@ -363,7 +375,7 @@
 
 
 (defn auth-page
-  "Render the auth page"
+  "Render the authentication (login) page"
   [request]
   (or
     (show-sanity-check-error)
@@ -395,6 +407,7 @@
 
 (defn wrap-restricted-redirect
   ;; TODO: this is not idiomatic, and it's too late to write something idiomatic just now
+  ;; TODO TODO: it's also not working.
   [f request]
   (route/restricted
     (apply

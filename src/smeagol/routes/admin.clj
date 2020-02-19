@@ -33,7 +33,7 @@
 
 
 (defn edit-users
-  "Put a list of users on-screen for editing."
+  "Render a page showing a list of users for editing."
   [request]
   (let [params (keywordize-keys (:params request))
         user (session/get :user)]
@@ -43,7 +43,8 @@
                            :users (auth/list-users)}))))
 
 (defn delete-user
-  "Delete a user."
+  "Render a form allowing a user to be deleted; and
+  process that form.."
   [request]
   (let [params (keywordize-keys (:params request))
         target (:target params)
@@ -59,7 +60,8 @@
 
 
 (defn edit-user
-  "Put an individual user's details on screen for editing."
+  "Render a form showing an individual user's details for editing; and
+  process that form."
   [request]
   (let [params (keywordize-keys (:params request))]
     (try

@@ -1,5 +1,7 @@
 (ns ^{:doc "Functions related to sanity checks and error reporting in conditions
-      where the environment may not be sane."
+      where the environment may not be sane. Generally, the functions in this
+      file are called (via `sanity-check-installation`, which is the only
+      supported entry point) at first start-up."
       :author "Simon Brooke"}
   smeagol.sanity
   (:import (java.util Locale))
