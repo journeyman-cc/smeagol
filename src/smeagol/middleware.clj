@@ -1,17 +1,17 @@
 (ns ^{:doc "In truth, boilerplate provided by LuminusWeb."
       :author "Simon Brooke"}
   smeagol.middleware
-  (:require [taoensso.timbre :as timbre]
-            [environ.core :refer [env]]
-            [selmer.middleware :refer [wrap-error-page]]
+  (:require [environ.core :refer [env]]
+            [noir-exception.core :refer [wrap-internal-error]]
             [prone.middleware :refer [wrap-exceptions]]
             [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
             [ring.middleware.file :refer [wrap-file]]
             [ring.middleware.resource :refer [wrap-resource]]
             [ring.middleware.content-type :refer [wrap-content-type]]
             [ring.middleware.not-modified :refer [wrap-not-modified]]
-            [noir-exception.core :refer [wrap-internal-error]]
-            [smeagol.util :as util]))
+            [selmer.middleware :refer [wrap-error-page]]
+            [smeagol.util :as util]
+            [taoensso.timbre :as log]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;
@@ -39,7 +39,7 @@
 
 (defn log-request [handler]
   (fn [req]
-    (timbre/debug req)
+    (log/debug req)
     (handler req)))
 
 
@@ -49,7 +49,7 @@
 
 
 (def production-middleware
-  [#(wrap-internal-error % :log (fn [e] (timbre/error e)))
+  [#(wrap-internal-error % :log (fn [e] (log/error e)))
    #(wrap-resource % "public")
    #(wrap-file % util/content-dir
                {:index-files? false :prefer-handler? true})

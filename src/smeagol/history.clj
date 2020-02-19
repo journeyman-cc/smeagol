@@ -1,10 +1,10 @@
 (ns ^{:doc "Explore the history of a page."
       :author "Simon Brooke"}
   smeagol.history
-  (:require [taoensso.timbre :as timbre]
-            [clj-jgit.porcelain :as git]
+  (:require [clj-jgit.porcelain :as git]
             [clj-jgit.internal :as i]
-            [clj-jgit.querying :as q])
+            [clj-jgit.querying :as q]
+            [taoensso.timbre :as log])
   (:import  [org.eclipse.jgit.api Git]
             [org.eclipse.jgit.lib Repository ObjectId]
             [org.eclipse.jgit.revwalk RevCommit RevTree RevWalk]
@@ -39,7 +39,7 @@
   "If this `log-entry` contains a reference to this `file-path`, return the entry;
    else nil."
   [^String log-entry ^String file-path]
-  (timbre/info (format "searching '%s' for '%s'" log-entry file-path))
+  (log/info (format "searching '%s' for '%s'" log-entry file-path))
   (cond
     (seq (filter (fn* [p1__341301#] (= (first p1__341301#) file-path)) (:changed_files log-entry)))
     log-entry))
@@ -54,6 +54,7 @@
   (try
     (git/load-repo git-directory-path)
     (catch java.io.FileNotFoundException fnf
+      (log/info "Initialising Git repository at" git-directory-path)
       (git/git-init git-directory-path)
       (let [repo (git/load-repo git-directory-path)]
         (git/git-add-and-commit repo "Initial commit")

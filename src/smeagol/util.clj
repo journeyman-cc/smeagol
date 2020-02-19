@@ -2,14 +2,17 @@
       :author "Simon Brooke"}
   smeagol.util
   (:require [clojure.java.io :as cjio]
+            [clojure.string :as cs]
             [environ.core :refer [env]]
+            [markdown.core :as md]
+            [me.raynes.fs :as fs]
             [noir.io :as io]
             [noir.session :as session]
             [scot.weft.i18n.core :as i18n]
             [smeagol.authenticate :as auth]
             [smeagol.configuration :refer [config]]
-            [smeagol.formatting :refer [md->html]]
-            [taoensso.timbre :as timbre]))
+            [smeagol.local-links :refer :all]
+            [taoensso.timbre :as log]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;
@@ -39,10 +42,91 @@
   (:start-page  config))
 
 (def content-dir
-  (or
-    (:content-dir config)
-    (cjio/file (io/resource-path) "content")))
+  (str
+    (fs/absolute
+      (or
+        (:content-dir config)
+        (cjio/file (io/resource-path) "content")))))
 
+(def upload-dir
+  (str (cjio/file content-dir "uploads")))
+
+(def local-url-base
+  "Essentially, the slash-terminated absolute path of the `public` resource
+  directory."
+  (let [a (str (fs/absolute content-dir))]
+    (subs a 0 (- (count a) (count "content")))))
+
+(defn not-servable-reason
+  "As a string, the reason this `file-path` cannot safely be served, or `nil`
+  if it is safe to serve. This reason may be logged, but should *not* be
+  shown to remote users, as it would allow file system probing."
+  [file-path]
+  (try
+  (let [path (if
+               (cs/starts-with? (str file-path) "/")
+               file-path
+               (cjio/file local-url-base file-path))]
+    (cond
+      (cs/includes? file-path "..")
+      (cs/join " " file-path
+               "Attempts to ascend the file hierarchy are disallowed.")
+      (not (cs/starts-with? path local-url-base))
+      (cs/join " " [path "is not servable"])
+      (not (fs/exists? path))
+      (cs/join " " [path "does not exist"])
+      (not (fs/readable? path))
+      (cs/join " " [path "is not readable"])))
+    (catch Exception any (cs/join " " file-path "is not servable because" (.getMessage any)))))
+
+
+;; (not-servable-reason "/home/simon/workspace/smeagol/resources/public/content/vendor/node_modules/photoswipe/dist/photoswipe.min.js")
+;; (not-servable-reason "/root/froboz")
+
+(defn local-url?
+  "True if this `file-path` can be served as a local URL, else false."
+  [file-path]
+  (try
+    (if
+      (empty? (not-servable-reason file-path))
+      true
+      (do
+        (log/error
+          "In `smeagol.util/local-url? `" file-path "` is not a servable resource.")
+        false))
+    (catch Exception any
+      (log/error
+        "In `smeagol.util/local-url `" file-path "` is not a servable resource:" any)
+      false)))
+
+(defn local-url
+  "Return a local URL for this `file-path`, or a deliberate 404 if none
+  can be safely served."
+  ;; TODO: this actually returns a relative URL relative to local-url-base.
+  ;; That's not quite what we want because in Tomcat contexts the absolute
+  ;; URL may be different. We *ought* to be able to extract the offset from the
+  ;; servlet context, but it may be simpler to jam it in the config.
+  [file-path]
+  (try
+    (let [path (if
+                 (cs/starts-with? file-path local-url-base)
+                 (subs file-path (count local-url-base))
+                 file-path)
+          problem (not-servable-reason path)]
+      (if
+        (empty? problem)
+        path
+        (do
+          (log/error
+            "In `smeagol.util/local-url `" file-path "` is not a servable resource.")
+          (str "404-not-found?path=" file-path))))
+    (catch Exception any
+      (log/error
+        "In `smeagol.util/local-url `" file-path "` is not a servable resource:" any)
+      (str "404-not-found?path=" file-path))))
+
+;; (local-url? "vendor/node_modules/photoswipe/dist/photoswipe.min.js")
+;; (local-url? "/home/simon/workspace/smeagol/resources/public/vendor/node_modules/photoswipe/dist/photoswipe.min.js")
 
 (defn standard-params
   "Return a map of standard parameters to pass to the template renderer."
@@ -50,37 +134,43 @@
   (let [user (session/get :user)]
     {:user user
      :admin (auth/get-admin user)
-     :side-bar (md->html (slurp (cjio/file content-dir "_side-bar.md")))
-     :header (md->html (slurp (cjio/file content-dir "_header.md")))
+     :js-from (:js-from config)
+     :side-bar (md/md-to-html-string
+                 (local-links
+                   (slurp (cjio/file content-dir "_side-bar.md")))
+                 :heading-anchors true)
+     :header (md/md-to-html-string
+               (local-links
+                 (slurp (cjio/file content-dir "_header.md")))
+                 :heading-anchors true)
      :version (System/getProperty "smeagol.version")}))
 
 
-(defn- raw-get-messages
+(def get-messages
   "Return the most acceptable messages collection we have given the
   `Accept-Language` header in this `request`."
-  [request]
-  (let [specifier ((:headers request) "accept-language")
-        messages (try
-                   (i18n/get-messages specifier "i18n" "en-GB")
-                   (catch Exception any
-                     (timbre/error
-                       any
-                       (str
-                         "Failed to parse accept-language header "
-                         specifier))
-                     {}))]
+  (memoize
+    (fn [request]
+      (let [specifier ((:headers request) "accept-language")
+            messages (try
+                       (i18n/get-messages specifier "i18n" "en-GB")
+                       (catch Exception any
+                         (log/error
+                           any
+                           (str
+                             "Failed to parse accept-language header '"
+                             specifier
+                             "'"))
+                         {}))]
     (merge
       messages
-      config)))
-
-
-(def get-messages (memoize raw-get-messages))
+      config)))))
 
 
 (defn get-message
   "Return the message with this `message-key` from this `request`.
-   if not found, return this `default`, if provided; else return the
-   `message-key`."
+  if not found, return this `default`, if provided; else return the
+  `message-key`."
   ([message-key request]
    (get-message message-key message-key request))
   ([message-key default request]

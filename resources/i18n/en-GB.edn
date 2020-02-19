@@ -83,6 +83,8 @@
  :file-upload-title     "Upload a file" ;; title for the file upload page
  :is-admin-prompt       "Is administrator?"
  :here                  "here"          ;; used in sanity check report
+ :history-link          "History"       ;; text of the history link on the content frame
+ :history-title-prefix  "History of"    ;; prefix of the title on the history page
  :home-link             "Home"          ;; text of the home link on the menu
  :is-not-directory      "is not a directory"
                                         ;; (of a file or directory) used in sanity check report
@@ -90,6 +92,8 @@
                                         ;; (of a file or directory) used in sanity check report
  :is-not-writable       "is not writable"
                                         ;; (of a file or directory) used in sanity check report
+ :list-files            "List uploaded files"
+                                        ;; title of the 'List uploaded Files' page
  :login-label           "Log in!"       ;; text of the login widget on the login page
  :login-link            "Log in"        ;; text of the login link on the menu
  :login-prompt          "To edit this wiki"
@@ -98,8 +102,7 @@
  :logout-link           "Log out"       ;; text of the logout link on the menu
  :logged-in-as          "You are logged in as"
                                         ;; text of the 'logged in as' label on the menu
- :history-link          "History"       ;; text of the history link on the content frame
- :history-title-prefix  "History of"    ;; prefix of the title on the history page
+ :matching              "matching"      ;; 'matching' in e.g. 'list files matching fred'
  :new-pass-prompt       "New password"  ;; text of the new password widget prompt on the change
                                         ;; password and edit user pages
  :no-admin-users        "There are no users in the 'passwd' file with administrative privileges"
@@ -128,6 +131,8 @@
                         "Smeagol has been unable to find some of the resources on which it depends,
                          possibly because of misconfiguration or missing environment variables."
                                         ;; used in sanity check report
+ :sortable              "You can sort this table by selecting column headers"
+                                        ;; used for sortable tables
  :user-lacks-field      "User record in the passwd file lacks a field"
                                         ;; used in sanity check report
  :username-prompt       "Username"      ;; text of the username widget prompt on edit user page

@@ -1,10 +1,11 @@
-(defproject smeagol "1.0.3"
+(defproject smeagol "1.0.4"
   :description "A simple Git-backed Wiki inspired by Gollum"
   :url "https://github.com/simon-brooke/smeagol"
   :license {:name "GNU General Public License,version 2.0 or (at your option) any later version"
             :url "https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html"}
   :dependencies [[clj-jgit "0.8.10"]
                  [clj-yaml "0.4.0"]
+                 [clojure.java-time "0.3.2"]
                  [com.cemerick/url "0.1.1"]
                  [com.fzakaria/slf4j-timbre "0.3.7"]
                  [com.stuartsierra/component "0.4.0"]
@@ -15,14 +16,18 @@
                  [environ "1.1.0"]
                  [hiccup "1.0.5"]
                  [im.chit/cronj "1.4.4"]
+                 [image-resizer "0.1.10"]
+                 [instaparse "1.4.10"]
                  [lib-noir "0.9.9" :exclusions [org.clojure/tools.reader]]
                  [markdown-clj "0.9.99" :exclusions [com.keminglabs/cljx]]
+                 [me.raynes/fs "1.4.6"]
                  [noir-exception "0.2.5"]
                  [org.clojars.simon_brooke/internationalisation "1.0.3"]
                  [org.clojure/clojure "1.8.0"]
                  [org.clojure/core.memoize "0.5.9"]
                  [org.clojure/data.json "0.2.6"]
                  [org.clojure/tools.logging "0.4.0"]
+                 [org.clojure/tools.trace "0.7.10"]
                  [org.slf4j/slf4j-api "1.7.25"]
                  [org.slf4j/log4j-over-slf4j "1.7.25"]
                  [org.slf4j/jul-to-slf4j "1.7.25"]
@@ -38,18 +43,21 @@
   :jvm-opts ["-server"]
 
   :plugins [[lein-ancient "0.5.5" :exclusions [org.clojure/clojure org.clojure/data.xml]]
-            [lein-bower "0.5.1"]
             [lein-codox "0.10.3"]
             [io.sarnowski/lein-docker "1.0.0"]
             [lein-environ "1.0.0"]
             [lein-marginalia "0.7.1" :exclusions [org.clojure/clojure]]
+            [lein-npm "0.6.2"]
             [lein-ring "0.12.5" :exclusions [org.clojure/clojure]]]
 
-  :bower-dependencies [[simplemde "1.11.2"]
-                       ;; [vega-embed "3.0.0-beta.20"] ;; vega-embed currently not loaded from Bower because of
-                       ;; dependency conflict which will hopefully be resolved soon.
-                       [vega-lite "2.0.0-beta.11"]
-                       [mermaid "6.0.0"]]
+  :npm {:dependencies [[simplemde "1.11.2"]
+                       [vega "5.8.0"]
+                       [vega-embed "6.2.2"]
+                       [vega-lite "4.1.1"]
+                       [mermaid "8.4.6"]
+                       [photoswipe "4.1.3"]
+                       [tablesort "5.2.0"]]
+        :root "resources/public/vendor"}
 
   :docker {:image-name "simonbrooke/smeagol"
            :dockerfile "Dockerfile"}

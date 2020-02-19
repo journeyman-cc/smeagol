@@ -5,7 +5,7 @@
             [clojure.string :as s]
             [environ.core :refer [env]]
             [noir.io :as io]
-            [taoensso.timbre :as timbre]))
+            [taoensso.timbre :as log]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;
@@ -73,7 +73,7 @@
   and optionally a key :transform, whose value is a function of one
   argument to be used to transform the value of that key."
   [m tuples]
-  (timbre/debug
+  (log/debug
     "transform-map:\n"
     (with-out-str (clojure.pprint/pprint m)))
   (reduce
@@ -100,6 +100,7 @@
   '( {:from :smeagol-content-dir :to :content-dir}
      {:from :smeagol-default-locale :to :default-locale}
      {:from :smeagol-formatters :to :formatters :transform read-string}
+     {:from :smeagol-js-from :to :js-from :transform to-keyword}
      {:from :smeagol-log-level :to :log-level :transform to-keyword}
      {:from :smeagol-passwd :to :passwd}
      {:from :smeagol-site-title :to :site-title}))
@@ -111,9 +112,19 @@
   file is read (if it is specified and present), but that individual
   values can be overridden by environment variables."
   (try
+    (log/info (str "Reading configuration from " config-file-path))
     (let [file-contents (try
                           (read-string (slurp config-file-path))
-                          (catch Exception _ {}))
+                          (catch Exception x
+                            (log/error
+                              (str
+                                "Failed to read configuration from "
+                                config-file-path
+                                " because: "
+                                (type x)
+                                "; "
+                                (.getMessage x)))
+                            {}))
           config (merge
                    file-contents
                    (transform-map
@@ -121,17 +132,18 @@
                        :smeagol-content-dir
                        :smeagol-default-locale
                        :smeagol-formatters
+                       :smeagol-js-from
                        :smeagol-log-level
                        :smeagol-passwd
                        :smeagol-site-title)
                      config-env-transforms))]
       (if (env :dev)
-        (timbre/debug
+        (log/debug
           "Loaded configuration\n"
           (with-out-str (clojure.pprint/pprint config))))
       config)
     (catch Exception any
-      (timbre/error any "Could not load configuration")
+      (log/error any "Could not load configuration")
       {})))
 
 (def config (build-config))

@@ -1,7 +1,12 @@
 {% extends "templates/base.html" %}
 {% block extra-headers %}
-{% style "/vendor/simplemde/dist/simplemde.min.css" %}
-{% script "/vendor/simplemde/dist/simplemde.min.js" %}
+  {% ifequal js-from ":cdnjs" %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/simplemde/1.11.2/simplemde.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/simplemde/1.11.2/simplemde.min.css" rel="stylesheet" type="text/css" />
+  {% else %}
+    {% style "vendor/simplemde/dist/simplemde.min.css" %}
+    {% script "vendor/simplemde/dist/simplemde.min.js" %}
+  {% endifequal %}
 {% endblock %}
 
 {% block content %}
@@ -13,7 +18,7 @@
                 <p class="widget">
                     <label for="summary">{% i18n what-changed-prompt %}</label>
                     <input name="summary" id="summary" type="text"
-                        value="{%if exists%}{%else%}New file {{title}}{%endif%}" required/>
+                        value="{%if exists%}{%else%}New file {{page}}{%endif%}" required/>
                 </p>
                 <p class="widget">
                     <label for="submit">{% i18n save-prompt %}</label>

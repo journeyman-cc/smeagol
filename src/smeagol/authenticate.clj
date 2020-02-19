@@ -5,7 +5,7 @@
             [environ.core :refer [env]]
             [noir.io :as io]
             [smeagol.configuration :refer [config]]
-            [taoensso.timbre :as timbre]))
+            [taoensso.timbre :as log]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;
@@ -52,7 +52,7 @@
   "Return `true` if this `username`/`password` pair match, `false` otherwise"
   [username password]
   (let [user ((keyword username) (get-users))]
-    (timbre/info (str "Authenticating " username " against " password-file-path))
+    (log/info (str "Authenticating " username " against " password-file-path))
     (and user
          (:password user)
          (or
@@ -92,7 +92,7 @@
   Return `true` if password was successfully changed. Subsequent to user change, their
   password will be encrypted."
   [username oldpass newpass]
-  (timbre/info (format "Changing password for user %s" username))
+  (log/info (format "Changing password for user %s" username))
   (let [users (get-users)
         keywd (keyword username)
         user (keywd users)
@@ -110,10 +110,10 @@
                          {keywd
                           (merge user
                                  {:password (password/encrypt newpass)})})))
-        (timbre/info (str "Successfully changed password for user " username))
+        (log/info (str "Successfully changed password for user " username))
           true))
       (catch Exception any
-        (timbre/error any
+        (log/error any
           (format "Changing password failed for user %s failed: %s (%s)"
                   username (.getName (.getClass any)) (.getMessage any)))
         false))))
@@ -138,7 +138,7 @@
   `email` address and `admin`  flag; *or*, modify an existing user. Return true
   if user is successfully stored, false otherwise."
   [username newpass email admin]
-  (timbre/info  "Trying to add user " username)
+  (log/info  "Trying to add user " username)
   (cond
     (not (string? username)) (throw (Exception. "Username must be a string."))
     (zero? (count username)) (throw (Exception. "Username cannot be zero length"))
@@ -160,10 +160,10 @@
              (locking password-file-path
                (spit password-file-path
                      (assoc users (keyword username) (merge user full-details)))
-               (timbre/info  "Successfully added user " username)
+               (log/info  "Successfully added user " username)
                true)
              (catch Exception any
-               (timbre/error any
+               (log/error any
                  (format "Adding user %s failed: %s (%s)"
                          username (.getName (.getClass any)) (.getMessage any)))
                false)))))
@@ -177,10 +177,10 @@
       (locking password-file-path
         (spit password-file-path
               (dissoc users (keyword username)))
-        (timbre/info (str "Successfully deleted user " username))
+        (log/info (str "Successfully deleted user " username))
         true)
       (catch Exception any
-        (timbre/error any
+        (log/error any
           (format "Deleting user %s failed: %s (%s)"
                   username (.getName (.getClass any)) (.getMessage any)))
         false))))

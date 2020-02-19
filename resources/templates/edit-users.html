@@ -1,10 +1,18 @@
 {% extends "templates/base.html" %}
+{% block extra-headers %}
+ {% script "/vendor/node_modules/tablesort/dist/tablesort.min.js" %}
+{% endblock %}
 
 {% block content %}
         <div id="content">
-          <table>
-            <tr>
-              <th/><th>{% i18n edit-col-hdr %}</th><th>{% i18n del-col-hdr %}</th>
+          <p>
+            {% i18n sortable %}
+          </p>
+          <table id="userstable">
+            <tr data-sort-method='none'>
+              <th>{% i18n user-title-prefix %}</th>
+              <th data-sort-method='none'>{% i18n edit-col-hdr %}</th>
+              <th data-sort-method='none'>{% i18n del-col-hdr %}</th>
             </tr>
             {% for user in users %}
             <tr>
@@ -13,11 +21,12 @@
               <td><a href="delete-user?target={{user}}">{% i18n del-col-hdr %} {{user}}</a></td>
             </tr>
             {% endfor %}
-            <tr>
-              <td><a href="edit-user">{% i18n add-user-label %}</a></td>
-              <td></td>
-              <td></td>
+            <tr data-sort-method='none'>
+              <td colspan="3"><a href="edit-user">{% i18n add-user-label %}</a></td>
             </tr>
           </table>
         </div>
+        <script>
+          new Tablesort(document.getElementById('userstable'));
+        </script>
 {% endblock %}

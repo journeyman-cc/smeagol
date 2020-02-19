@@ -46,7 +46,9 @@
         </div>
       </div>
       <h1>{% i18n site-title %}: {{title}}</h1>
-      {{header|safe}}
+      <div id="header">
+        {{header|safe}}
+      </div>
       {% if message %}
       <div id="message">
         <p class="message">{{message}}</p>
