@@ -12,9 +12,9 @@
                              "[This is a foreign link](http://to.somewhere)")]
       (is (= (local-links text) text) "Foreign links should be unchanged"))))
 
-(deftest test-process-text
-  (testing "The process-text flow"
-    (let [expected process-test-return-value
-          actual (process-text "```test
-                               ```")]
-      (is (= actual expected)))))
+;; (deftest test-process-text
+;;   (testing "The process-text flow"
+;;     (let [expected process-test-return-value
+;;           actual (process-text "```test
+;;                                ```")]
+;;       (is (= actual expected)))))

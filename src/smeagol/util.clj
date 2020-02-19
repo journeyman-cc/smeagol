@@ -4,13 +4,13 @@
   (:require [clojure.java.io :as cjio]
             [clojure.string :as cs]
             [environ.core :refer [env]]
+            [markdown.core :as md]
             [me.raynes.fs :as fs]
             [noir.io :as io]
             [noir.session :as session]
             [scot.weft.i18n.core :as i18n]
             [smeagol.authenticate :as auth]
             [smeagol.configuration :refer [config]]
-            [smeagol.formatting :refer [md->html]]
             [taoensso.timbre :as log]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -124,8 +124,8 @@
         "In `smeagol.util/local-url `" file-path "` is not a servable resource:" any)
       (str "404-not-found?path=" file-path))))
 
-(local-url? "vendor/node_modules/photoswipe/dist/photoswipe.min.js")
-(local-url? "/home/simon/workspace/smeagol/resources/public/vendor/node_modules/photoswipe/dist/photoswipe.min.js")
+;; (local-url? "vendor/node_modules/photoswipe/dist/photoswipe.min.js")
+;; (local-url? "/home/simon/workspace/smeagol/resources/public/vendor/node_modules/photoswipe/dist/photoswipe.min.js")
 
 (defn standard-params
   "Return a map of standard parameters to pass to the template renderer."
@@ -134,8 +134,10 @@
     {:user user
      :admin (auth/get-admin user)
      :js-from (:js-from config)
-     :side-bar (:content (md->html (slurp (cjio/file content-dir "_side-bar.md"))))
-     :header (:content (md->html (slurp (cjio/file content-dir "_header.md"))))
+     :side-bar (md/md-to-html-string
+                 (slurp (cjio/file content-dir "_side-bar.md")):heading-anchors true)
+     :header (md/md-to-html-string
+               (slurp (cjio/file content-dir "_header.md")) :heading-anchors true)
      :version (System/getProperty "smeagol.version")}))
 
 

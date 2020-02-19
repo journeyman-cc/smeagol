@@ -107,7 +107,7 @@
                             (merge (util/standard-params request)
                                    {:title (str (util/get-message :edit-title-prefix request) " " page)
                                     :page page
-                                    :side-bar (md->html (slurp (cjio/file util/content-dir side-bar)))
+                                    :side-bar (md->html (assoc request :source (slurp (cjio/file util/content-dir side-bar))))
                                     :content (if exists? (slurp file-path) "")
                                     :exists exists?})))))))
 
@@ -175,13 +175,15 @@
           (keys (-> processed-text :extensions extension-key resource-type))))
      (keys (:extensions processed-text))))))
 
-(cjio/file content-dir "vendor/node_modules/photoswipe/dist/photoswipe.min.js")
+;; (cjio/file content-dir "vendor/node_modules/photoswipe/dist/photoswipe.min.js")
 
-(def processed-text (md->html (slurp "resources/public/content/Simplified example gallery.md" )))
+;; (def processed-text (md->html {:source (slurp "resources/public/content/Simplified example gallery.md" )}))
 
-(preferred-source (-> processed-text :extensions :pswp :scripts :core) :pswp)
+;; (preferred-source (-> processed-text :extensions :pswp :scripts :core) :pswp)
 
-(collect-preferred processed-text :scripts)
+;; (-> processed-text :extensions)
+
+;; (collect-preferred processed-text :scripts)
 
 (defn wiki-page
   "Render the markdown page specified in this `request`, if any. If none found, redirect to edit-page"
@@ -198,9 +200,10 @@
         (do
           (log/info (format "Showing page '%s' from file '%s'" page file-path))
           (let [processed-text (md->html
-                                 (include/expand-include-md
-                                   (:includer md-include-system)
-                                   (slurp file-path)))]
+                                 (assoc request :source
+                                   (include/expand-include-md
+                                     (:includer md-include-system)
+                                     (slurp file-path))))]
             (layout/render "wiki.html"
                            (merge (util/standard-params request)
                                   processed-text
