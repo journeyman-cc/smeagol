@@ -104,7 +104,6 @@
    ^String fragment
    ^String token
    formatter]
-  (log/info "index:" index "(type result):" (type result) "(type fragments):" (type fragments) "fragment:" fragment "token:" token ":formatter" formatter)
   (let
     [inky (keyword (str "inclusion-" index))
      fkey (keyword token)]
