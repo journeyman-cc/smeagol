@@ -38,9 +38,8 @@
                   :scripts {}
                   :styles {}}
    :mermaid      {:formatter "smeagol.extensions.mermaid/process-mermaid"
-                  :scripts {:core {:local "vendor/mermaid/dist/mermaid.js"
-                                   :remote "https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.4.6/mermaid.min.js"}}
-                  :styles {}}
+                  :scripts {:core {:local "vendor/node_modules/mermaid/dist/mermaid.min.js"
+                                   :remote "https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.4.6/mermaid.min.js"}}}
    :pswp         {:formatter "smeagol.extensions.photoswipe/process-photoswipe"
                   :scripts {:core {:local "vendor/node_modules/photoswipe/dist/photoswipe.min.js"
                                    :remote "https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.3/photoswipe.min.js"}
