@@ -106,46 +106,46 @@
      {:from :smeagol-site-title :to :site-title}))
 
 
-(defn- build-config
+(def build-config
   "The actual configuration, as a map. The idea here is that the config
   file is read (if it is specified and present), but that individual
   values can be overridden by environment variables."
-  []
-  (try
-    (log/info (str "Reading configuration from " config-file-path))
-    (let [file-contents (try
-                          (read-string (slurp config-file-path))
-                          (catch Exception x
-                            (log/error
-                              (str
-                                "Failed to read configuration from "
-                                config-file-path
-                                " because: "
-                                (type x)
-                                "; "
-                                (.getMessage x)))
-                            {}))
-          config (merge
-                   file-contents
-                   (transform-map
-                     (from-env-vars
-                       :smeagol-content-dir
-                       :smeagol-default-locale
-                       :smeagol-formatters
-                       :smeagol-js-from
-                       :smeagol-log-level
-                       :smeagol-passwd
-                       :smeagol-site-title)
-                     config-env-transforms))]
-      (if (env :dev)
-        (log/debug
-          "Loaded configuration\n"
-          (with-out-str (clojure.pprint/pprint config))))
-      config)
-    (catch Exception any
-      (log/error any "Could not load configuration")
-      {})))
+  (memoize (fn []
+             (try
+               (log/info (str "Reading configuration from " config-file-path))
+               (let [file-contents (try
+                                     (read-string (slurp config-file-path))
+                                     (catch Exception x
+                                       (log/error
+                                         (str
+                                           "Failed to read configuration from "
+                                           config-file-path
+                                           " because: "
+                                           (type x)
+                                           "; "
+                                           (.getMessage x)))
+                                       {}))
+                     config (merge
+                              file-contents
+                              (transform-map
+                                (from-env-vars
+                                  :smeagol-content-dir
+                                  :smeagol-default-locale
+                                  :smeagol-formatters
+                                  :smeagol-js-from
+                                  :smeagol-log-level
+                                  :smeagol-passwd
+                                  :smeagol-site-title)
+                                config-env-transforms))]
+                 (if (env :dev)
+                   (log/debug
+                     "Loaded configuration\n"
+                     (with-out-str (clojure.pprint/pprint config))))
+                 config)
+               (catch Exception any
+                 (log/error any "Could not load configuration")
+                 {})))))
 
 (def config
   "The actual configuration, as a map."
-  (memoize build-config))
+  (build-config))

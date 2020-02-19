@@ -48,7 +48,7 @@
 (declare process-text)
 
 
-(defn- process-backticks
+(defn process-backticks
   "Effectively, escape the backticks surrounding this `text`, by protecting them
   from the `process-text` filter.
 
