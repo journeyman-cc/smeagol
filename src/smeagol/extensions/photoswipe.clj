@@ -42,11 +42,14 @@
   specification based on that documented on the Photoswipe website."
   [^String spec ^Integer index]
   (str
-    "<div class=\"pswp\" id=\"pswp-"
+    "<div class='gallery'>
+    <div class=\"pswp\" id=\"pswp-"
     index "\" tabindex=\"-1\" role=\"dialog\" aria-hidden=\"true\">\n"
     (slurp
       (str (io/resource-path) "html-includes/photoswipe-boilerplate.html"))
     "</div>
+    <p><button id=\"open-gallery-" index "\" onclick=\"gallery" index
+    ".init(); document.getElementById(`open-gallery-" index "`).style.display = 'none';\">Open the gallery</button></p>
     <script>
     \n//<![CDATA[\n
     var pswpElement = document.getElementById('pswp-" index "');
@@ -56,11 +59,12 @@
     var gallery" index
     " = new PhotoSwipe( pswpElement, PhotoSwipeUI_Default, spec"
     index ".slides, spec" index ".options);
-    if (spec" index ".openImmediately) { gallery" index ".init(); }
+    if (spec" index ".openImmediately) {
+    document.getElementById(`open-gallery-" index "`).style.display = 'none';
+    gallery" index ".init();
+    }
     \n//]]\n
     </script>
-    <p><button onclick=\"gallery" index
-    ".init()\">Open the gallery</button></p>
     </div>"))
 
 
@@ -68,19 +72,25 @@
   "Parser to transform a sequence of Markdown image links into something we
   can build into JSON. Yes, this could all have been done with regexes, but
   they are very inscrutable."
-  (insta/parser "SLIDE := START-CAPTION title END-CAPTION src END-SRC;
+  (insta/parser "SLIDES := SLIDE | SLIDE SPACE SLIDES;
+                SLIDE := START-CAPTION title END-CAPTION src END-SRC;
                 START-CAPTION := '![' ;
                 END-CAPTION := '](' ;
                 END-SRC := ')' ;
                 title := #'[^]]*' ;
                 src := #'[^)]*' ;
-                SPACE := #'[\\r\\n\\W]*'"))
+                SPACE := #'[\\s]*'"))
 
-(defn- simplify
+
+(defn simplify
+  "Simplify a parse-`tree` created by `simple-grammar`, q.v."
   [tree]
   (if
     (coll? tree)
     (case (first tree)
+      :SLIDES (cons
+                (simplify (first (rest tree)))
+                (first (simplify (rest (rest tree)))))
       :SLIDE (remove empty? (map simplify (rest tree)))
       :title tree
       :src tree
@@ -88,6 +98,7 @@
       :END-CAPTION nil
       :END-SRC nil
       (remove empty? (map simplify tree)))))
+
 
 (defn slide-merge-dimensions
   "If this `slide` appears to be local, return it decorated with the
@@ -109,29 +120,40 @@
 ;;   {:title "Frost on a gate, Laurieston",
 ;;    :src "content/uploads/g1.jpg"})
 
-(defn- process-simple-slide
-  [slide-spec]
-  (let [s (simplify (simple-grammar slide-spec))
-        s'(zipmap (map first s) (map #(nth % 1) s))
+(defn find-thumb
+  [url thumbsize]
+  (if
+    (and
+      (uploaded? url)
+      thumbsize)
+    (let [p (str (cio/file "uploads" (name thumbsize) (fs/base-name url)))
+          p' (cio/file content-dir p)
+          r (str (cio/file "content" p))]
+      (if
+        (and (fs/exists? p') (fs/readable? p'))
+        r))))
+
+(defn process-simple-slide
+  "Process a single `slide`, as decoded by `simple-grammar`. At this stage a
+  slide is expected to be represented as a sequence of vectors, one for each
+  property of the slide (`:title`, `:src`). Each vector contains the name of
+  the property as a keyword as its first element, and the value of the
+  property as its second element.
+
+  Returns a map of these properties, with, if possible, `:w` (width), `:h`
+  (height), and `:msrc` (source URL of a low resolution variant) added."
+  [slide]
+  (let [s' (zipmap (map first slide) (map #(nth % 1) slide))
         thumbsizes (:thumbnails config)
         thumbsize (first
                     (sort
                       #(> (%1 thumbsizes) (%2 thumbsizes))
                       (keys thumbsizes)))
-        url (:url s')
-        thumb (if
-                (and
-                  (uploaded? url)
-                  thumbsize)
-                (let [p (str (cio/file "uploads" (name thumbsize) (fs/base-name url)))
-                      p' (cio/file content-dir p)]
-                  (if
-                    (and (fs/exists? p') (fs/readable? p'))
-                    p)))]
+        url (:src s')]
     (slide-merge-dimensions
-      (if thumb
-        (assoc s' :msrc thumb)
-        s'))))
+      (assoc s' :msrc (find-thumb url thumbsize)))))
+
+(process-simple-slide '([:title "Frost on a gate, Laurieston"] [:src "content/uploads/g1.jpg"]))
 
 (def process-simple-photoswipe
   "Process a simplified specification for a photoswipe gallery, comprising just
@@ -144,8 +166,7 @@
         (json/write-str
           {:slides (map
                      process-simple-slide
-                     (re-seq #"!\[[^(]*\([^)]*\)"  spec))
-           ;; TODO: better to split slides in instaparse
+                     (simplify (simple-grammar spec)))
            :options { :timeToIdle 100 }
            :openImmediately true}) index))))
 
@@ -157,12 +178,12 @@
 ;;           ![Feathered snow on log, Taliesin](content/uploads/g3.jpg)
 ;;           ![Crystaline growth on seed head, Taliesin](content/uploads/g4.jpg)"))
 
-;; (process-simple-photoswipe
-;;   "![Frost on a gate, Laurieston](content/uploads/g1.jpg)
-;;   ![Feathered crystals on snow surface, Taliesin](content/uploads/g2.jpg)
-;;   ![Feathered snow on log, Taliesin](content/uploads/g3.jpg)
-;;   ![Crystaline growth on seed head, Taliesin](content/uploads/g4.jpg)"
-;;   1)
+(process-simple-photoswipe
+  "![Frost on a gate, Laurieston](content/uploads/g1.jpg)
+  ![Feathered crystals on snow surface, Taliesin](content/uploads/g2.jpg)
+  ![Feathered snow on log, Taliesin](content/uploads/g3.jpg)
+  ![Crystaline growth on seed head, Taliesin](content/uploads/g4.jpg)"
+  1)
 
 (defn process-photoswipe
   "Process a Photoswipe specification which may conform either to the

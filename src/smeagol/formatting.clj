@@ -165,10 +165,6 @@
   ([inclusions text]
    (let [ks (keys inclusions)]
      (if (empty? (keys inclusions))
-       ;; TODO: this is one opportunity to add scripts at the end of the
-       ;; constructed text. I've a feeling that that would be a mistake and
-       ;; that instead we should hand back a map comprising the text and the
-       ;; keys of the extensions
        text
        (let [kw (first ks)]
          (reintegrate-inclusions

@@ -11,7 +11,7 @@
 
 {% block content %}
         <div id="content" class="edit">
-            <form action="{{servlet-context}}/edit" method="POST">
+            <form id="edit-form" action="{{servlet-context}}/edit" method="POST">
                 {% csrf-field %}
                 <input type="hidden" name="page" value="{{page}}"/>
                 <textarea name="src" id="src" rows="25" cols="80">{{content}}</textarea>
@@ -21,12 +21,20 @@
                         value="{%if exists%}{%else%}New file {{page}}{%endif%}" required/>
                 </p>
                 <p class="widget">
-                    <label for="submit">{% i18n save-prompt %}</label>
-                    <input name="submit" id="submit" type="submit" class="action" value="{% i18n save-label %}"/>
+                    <label for="submit-button">{% i18n save-prompt %}</label>
+                    <input name="submit-button" id="submit-button" type="submit" class="action" value="{% i18n save-label %}"/>
                 </p>
             </form>
         </div>
         <script>
+          // intercept control-S (or on Mac meta-S) and submit the form. Saves much annoyance.
+          document.addEventListener("keydown", function(e) {
+            if (e.keyCode == 83 && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey))      {
+              e.preventDefault();
+              document.getElementById('edit-form').submit();
+            }
+          }, false);
+          // initialise the editor
           var simplemde = new SimpleMDE({
             autosave: {
               enabled: true,

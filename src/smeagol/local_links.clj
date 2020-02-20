@@ -29,7 +29,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Error to show if text to be rendered is nil.
-;; TODO: this should go through i18n
+;; TODO: this should go through i18n, but for that to happen we need the
+;; request passed through to here.
 (def no-text-error "No text: does the file exist?")
 
 

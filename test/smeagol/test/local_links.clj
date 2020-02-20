@@ -1,7 +1,6 @@
 (ns smeagol.test.local-links
   (:require [clojure.test :refer :all]
             [clojure.string :as cs]
-            [smeagol.local-links :refer [local-links no-text-error]]
             [smeagol.extensions.test :refer :all]
             [smeagol.local-links :refer :all]))
 

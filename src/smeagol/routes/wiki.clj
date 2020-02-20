@@ -320,14 +320,14 @@
         uploaded (if upload (ul/store-upload params data-path))
         user (session/get :user)
         summary (format "%s: %s" user (or (:summary params) "no summary"))]
-;; TODO: Get this working! it MUST work!
-;;     (if-not
-;;       (empty? uploaded)
-;;       (do
-;;         (map
-;;           #(git/git-add git-repo (str :resource %))
-;;           (remove nil? uploaded))
-;;         (git/git-commit git-repo summary {:name user :email (auth/get-email user)})))
+    (log/info (session/get :user) "has uploaded" (cs/join "; " (map :resource uploaded)))
+    (if-not
+      (empty? uploaded)
+      (do
+        (map
+          #(git/git-add git-repo (str :resource %))
+          (remove nil? uploaded))
+        (git/git-commit git-repo summary {:name user :email (auth/get-email user)})))
     (layout/render "upload.html"
                    (merge (util/standard-params request)
                           {:title (util/get-message :file-upload-title request)
@@ -408,7 +408,13 @@
 (defn wrap-restricted-redirect
   ;; TODO: this is not idiomatic, and it's too late to write something idiomatic just now
   ;; TODO TODO: it's also not working.
+  ;; TODO: probably I need to use either the 'buddy' or 'friend' authentication libraries
+  ;; see https://github.com/cemerick/friend and
+  ;; https://github.com/metosin/compojure-api/wiki/Authentication-and-Authorization
+  ;; but I don't yet see even so how to do redirect to the failed page after successful
+  ;; authorisation.
   [f request]
+  (log/info "wrap-restricted-redirect: f:" f "; request " (with-out-str (clojure.pprint/pprint request)))
   (route/restricted
     (apply
       f

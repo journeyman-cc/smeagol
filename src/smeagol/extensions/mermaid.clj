@@ -79,7 +79,22 @@
     (log/info "Retrieved graph-spec from " (:from data) " `" ((:from data) data) "`")
     (str "<div class=\"mermaid data-visualisation\" id=\"mermaid" index "\">\n"
          graph-spec
-         "\n</div>")))
+         "\n</div>
+         <script>
+           //<![CDATA[
+              /* don't do this twice! */
+              if ( document.mermaidListenerAdded != true)
+              {
+                 if (document.addEventListener) {
+                     document.addEventListener(\"DOMContentLoaded\", function(event) {
+                       mermaid.initialize({startOnLoad:true});
+                   });
+                    document.mermaidListenerAdded = true;
+                 }
+              }
+            //]]
+          </script>
+         ")))
 
 ;; (fs/file? (str (nio/resource-path) "data/classes.mermaid"))
 ;;  (slurp (str (nio/resource-path) "data/classes.mermaid"))
