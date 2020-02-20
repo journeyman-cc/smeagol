@@ -22,14 +22,15 @@
                 </p>
                 <p class="widget">
                     <label for="submit-button">{% i18n save-prompt %}</label>
-                    <input name="submit-button" id="submit-button" type="submit" class="action" value="{% i18n save-label %}"/>
+                    <input name="submit-button" id="submit-button" type="submit"
+                           class="action" value="{% i18n save-label %}"/>
                 </p>
             </form>
         </div>
         <script>
-          // intercept control-S (or on Mac meta-S) and submit the form. Saves much annoyance.
+          /* intercept control-S (or on Mac meta-S) and submit the form. Saves much annoyance. */
           document.addEventListener("keydown", function(e) {
-            if (e.keyCode == 83 && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey))      {
+            if (e.keyCode == 83 && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
               e.preventDefault();
               document.getElementById('edit-form').submit();
             }
@@ -37,6 +38,9 @@
           // initialise the editor
           var simplemde = new SimpleMDE({
             autosave: {
+              /* there's an unlovely bug that if you have two Smeagol instances on the same host,
+               * and you edit their files in the same browser, the autosave gets confused as to
+               * which site the autosave buffer belongs to. Better to disable in that case? */
               enabled: true,
               uniqueId: "Smeagol-{{page}}",
               delay: 1000,

@@ -24,6 +24,11 @@
           actual (find-thumb "passwd" :med)]
       (is (= actual expected) "`resources/passwd` is in
           the repository, but is not uploaded so should NOT be found")))
+  (testing "Merging image dimensions"
+    (let [expected {:title "Frost on a gate, Laurieston", :src "content/uploads/g1.jpg", :w 2592, :h 1944}
+          actual (slide-merge-dimensions {:title "Frost on a gate, Laurieston",
+                                          :src "content/uploads/g1.jpg"})]
+      (is (= actual expected))))
   (testing "Simple slide grammar"
     (let [expected '(([:title "Frost on a gate, Laurieston"] [:src "content/uploads/g1.jpg"]))
           actual (simplify

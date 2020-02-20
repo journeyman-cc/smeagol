@@ -1,0 +1,544 @@
+/*
+ ## Smeagol: a very simple Wiki engine
+
+ ## Stylesheet variant for Ginny Reed
+
+ ## Copyright and licence
+ Copyright (C) 2014 Simon Brooke
+
+ This program is free software; you can redistribute it and/or
+ modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 2
+ of the License, or (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+ USA.
+
+ # The Stylesheet
+
+ ## html elements generally in alphabetic order
+ */
+
+a {
+  color: darkgray;
+  font-weight: bold;
+}
+
+a:hover {
+  color: darkgray;
+  background:rgba(200,200,200,0.8);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+del {
+  color: red;
+}
+
+div.content, div.error, div.message, form, p, pre, h1, h2, h3, h4, h5 {
+  padding: 0.1em 5% 0 5%;
+}
+
+dl, menu, ol, table, ul {
+  margin: 0.25em 5%;
+}
+
+dt {
+  font-weight: bold;
+}
+
+dd {
+  font-style: italic;
+}
+
+/* footer of the page - not-editable, provided by Smeagol */
+footer {
+  border-top: thin solid silver;
+  color: gray;
+  background:rgba(200,200,200,0.8);
+  clear: both;
+  font-size: smaller;
+  text-align: center;
+  width: 100%;
+  margin: 0;
+  min-height: 4px;
+  padding: 0.25em 0;
+  bottom:0;
+  position:fixed;
+  vertical-align: top;
+  z-index:150;
+  _position:absolute;
+  _top:expression(eval(document.documentElement.scrollTop+
+        (document.documentElement.clientHeight-this.offsetHeight)));
+}
+
+footer div {
+  display: none;
+  padding: 0.1em;
+}
+
+footer:hover div {
+  display: block;
+}
+
+form {
+  border: thin solid silver;
+}
+
+/* header for all pages in the Wiki - editable, provided by users. */
+header {
+  margin-top: 0;
+  width:100%;
+  max-width: 100%;
+}
+
+header h1 {
+  margin-top: 0;
+}
+
+header a {
+  font-weight: bold;
+}
+
+header a:hover {
+  color: darkgray;
+}
+
+img {
+  border: 0;
+  padding: 0;
+  vertical-align: middle;
+}
+
+input {
+  background-color: white;
+}
+
+input.action {
+  background-color: green;
+}
+
+input.action-dangerous {
+	color: white;
+	background-color: red;
+}
+
+input.required:after {
+  content: " \*";
+  color: red;
+}
+
+ins {
+  color: green;
+}
+
+label {
+  width: 20%;
+  min-width: 20em;
+  border-right: thin solid silver;
+  display: inline-block;
+}
+
+table {
+  border: thin solid silver;
+  border-collapse: collapse;
+}
+
+table.music-ruled tr:nth-child(odd) {
+	background-color: silver;
+}
+
+th, td {
+	text-align: left;
+  vertical-align: top;
+	padding: 0.15em 1.5em;
+  border: 1px solid silver;
+}
+
+th {
+  background-color: silver;
+}
+
+/*
+ ## ids generally in document order
+ */
+
+/* Overall container div, holds all content of page. Yes, I know it shouldn't have fixed width */
+#main-container{
+}
+
+
+/* left bar for all pages in the Wiki - editable, provided by users. Within main-container */
+#side-bar {
+  display: none;
+  width: 17%;
+  height: 100%;
+  float: left;
+}
+
+/* cookies information box, fixed, in right margin, just above footer */
+#cookies {
+	width: 20%;
+	float: right;
+  position: fixed;
+  bottom: 8px;
+  right: 0;
+	z-index: 175;
+  background: transparent;
+}
+
+/* about-cookies box: permanently visible part of cookies information box */
+#about-cookies {
+  clear: right;
+  font-size: 66%;
+  float: right;
+  text-align: right;
+  padding: 0.25em 2em;
+  border-radius: 0.25em;
+	color: gray;
+  background:rgba(200,200,200,0.8);
+}
+
+/* more-about-cookies box, normally hidden */
+#more-about-cookies {
+  display: none;
+	padding: 0.5em 2em;
+  border-radius: 0.5em;
+	color: gray;
+  background:rgba(200,200,200,0.8);
+	border-bottom: thin solid gray;
+}
+
+/* but magically appears on mouseover */
+#cookies:hover #more-about-cookies {
+	display: block;
+}
+
+#uploaded-image {
+  float: right;
+}
+
+.change {
+  background-color: rgb( 223, 223, 223);
+  border: thin solid silver;
+}
+
+
+.data-visualisation {
+  padding: 0.25em 5%;
+}
+
+.error {
+  width: 100%;
+  background-color: red;
+  color: white;
+  border: thin solid maroon;
+}
+
+.message {
+  color: darkgreen;
+  background-color: silver;
+  border: thin solid lime;
+}
+
+.minor-controls {
+  list-style: none;
+  float: right;
+  right: 0;
+  padding: 0.25em 2em;
+  border-radius: 0.25em;
+	color: gray;
+  background:rgba(200,200,200,0.8);
+  font-size: 66%;
+}
+
+.minor-controls li {
+  display: inline;
+}
+
+.minor-controls a {
+  float: right;
+  padding: 0.25em 2em;
+  color: gray;
+}
+
+.minor-controls a:hover {
+  color: darkgray;
+}
+
+.pseudo-input {
+  border: inset thin;
+  background-color: white;
+  display: inline-block;
+  min-width: 7.5em;
+  padding: 0 2em 0 0;
+}
+
+.sanity-cause .sanity-stacktrace {
+  display: none;
+}
+
+.sanity-cause:hover .sanity-stacktrace {
+  display: block;
+}
+
+.vega-bindings, .vega-actions {
+  font-size: 66%;
+}
+
+/* Add space between Vega-Embed links  */
+.vega-actions a {
+  margin-right: 5px;
+}
+
+.warn {
+  color: maroon;
+}
+
+.widget {
+	background-color: silver;
+ 	border: thin solid white;
+ 	margin-top: 0;
+ 	margin-bottom: 0;
+  width: 100%;
+}
+
+.wiki {
+  margin: 0;
+}
+
+/* desktops and laptops, primarily. Adapted to mouse; targets may be small */
+@media all and (min-device-width: 1025px) {
+  /* content of the current page in the Wiki - editable, provided by users. Within main-container */
+  #content {
+    border: thin solid silver;
+    width: 100%;
+    padding-bottom: 5em;
+  }
+
+  #phone-side-bar, #phone-credits {
+    display: none;
+  }
+
+  #header {
+    font-size: smaller;
+  }
+
+  /* top-of-page navigation, not editable, provided by Smeagol */
+  #nav{
+    margin: 0;
+    padding: 0;
+    top: 0;
+    min-height: 4px;
+    _position: absolute;
+    _top: expression(document.documentElement.scrollTop);
+    z-index: 149;
+    color: gray;
+    background:rgba(200,200,200,0.8);
+ }
+
+  #nav #nav-menu {
+    display: none;
+  }
+
+  #nav:hover #nav-menu {
+    display: block;
+  }
+
+  /* only needed for fly-out menu effect on tablet and phone stylesheets */
+  #nav-icon {
+    display: none;
+  }
+
+  #nav-menu {
+    margin: 0;
+    padding: 0;
+  }
+
+  #nav menu li {
+    padding: 0;
+    margin: 0;
+    display: inline;
+  }
+
+  #nav menu li a {
+    color: gray;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 0.1em 0.75em;
+    margin: 0;
+  }
+
+  #nav menu li.active a { background: gray; color: white;}
+  li.nav-item a:hover { background: rgb( 240, 240, 240) }
+  li.nav-item a:active { background: gray; color: white; }
+
+  #nav menu li#user {
+    padding: 0 1em;
+    float: right;
+  }
+}
+
+/* tablets, primarily. Adapted to touch; targets are larger */
+@media all and (min-device-width: 769px) and (max-device-width: 1024px) {
+  h1 {
+    /* I wouldn't normally use a px value, but the menu icon is 49px wide */
+    padding: 0.25em 5%;
+    padding-left: 100px;
+  }
+
+  /* content of the current page in the Wiki - editable, provided by users. Within main-container */
+  #content {
+    border: thin solid silver;
+    width: 80%;
+    float: right;
+    padding-bottom: 5em;
+  }
+
+  #nav{
+    margin: 0;
+    padding: 0;
+    position: fixed;
+    z-index: 149;
+    color: black;
+    background:rgba(200,200,200,0.9);
+  }
+
+  #nav a {
+    font-weight: bold;
+  }
+
+  #nav:hover #nav-menu, #nav:hover #phone-side-bar {
+    display: block;
+    list-style-type: none;
+    width: 100%;
+  }
+
+  #nav-icon {
+    padding: 0;
+  }
+
+  #nav-menu, #phone-side-bar {
+    display: none;
+  }
+
+  #nav menu li {
+    padding: 0.5em;
+    margin: 0.5 em;
+    font-size: 150%;
+  }
+
+  #nav menu li a {
+  }
+
+  #nav ul li.active a { background: silver;}
+  li.nav-item a:hover { background: rgb( 240, 240, 240) }
+  li.nav-item a:active { background: gray; color: white; }
+
+  #nav menu #user {
+    text-decoration: none;
+    font-weight: bold;
+    margin: 0;
+  }
+}
+
+/* phones, and, indeed, smaller phones. Adapted to touch; display radically
+ * decluttered */
+@media all and (max-device-width: 768px) {
+  footer {
+    display: none;
+  }
+
+  h1 {
+    /* I wouldn't normally use a px value, but the menu icon is 49px wide */
+    padding: 0.25em 5%;
+    padding-left: 100px;
+    text-align: right;
+  }
+
+  /* content of the current in the Wiki - editable, provided by users. Within main-container */
+  #content {
+    border: thin solid silver;
+    width: 100%;
+    padding-bottom: 2em;
+  }
+
+  #main-container {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+
+  #cookies {
+    display: none;
+  }
+
+  #header {
+    display: none;
+  }
+
+  #nav{
+    margin: 0;
+    padding: 0;
+    position: fixed;
+    z-index: 149;
+    color: black;
+    background:rgba(200,200,200,0.9);
+  }
+
+  #nav a {
+    color: black;
+    font-weight: bold;
+  }
+
+  #nav:hover #nav-menu, #nav:hover #phone-side-bar {
+    display: block;
+    list-style-type: none;
+    width: 100%;
+  }
+
+  #nav-icon {
+    padding: 0;
+  }
+
+  #nav-menu, #phone-side-bar {
+    display: none;
+  }
+
+  #nav menu li {
+    padding: 0.5em;
+    margin: 0.5 em;
+    font-size: 150%;
+  }
+
+  #nav menu li a {
+    color: black;
+    font-weight: bold;
+  }
+
+  #nav ul li.active a { background: silver;}
+  li.nav-item a:hover { background: rgb( 240, 240, 240) }
+  li.nav-item a:active { background: gray; color: white; }
+
+  #nav menu #user {
+    text-decoration: none;
+    font-weight: bold;
+    margin: 0;
+  }
+
+  #side-bar {
+    display: none;
+  }
+}

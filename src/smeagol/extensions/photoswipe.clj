@@ -108,17 +108,17 @@
         dimensions (try
                      (if (uploaded? url)
                        (dimensions
-                         (buffered-image (cio/file upload-dir (fs/base-name url)))))
-                     (catch Exception x (.getMessage x)))]
+                         (buffered-image
+                           (cio/file upload-dir (fs/base-name url)))))
+                     (catch Exception x
+                       (log/error
+                         "Failed to fetch dimensions of image "
+                         url (.getMessage x))
+                       nil))]
     (if dimensions
       (assoc slide :w (first dimensions) :h (nth dimensions 1))
-      (do
-        (log/warn "Failed to fetch dimensions of image " url)
-        slide))))
+      slide)))
 
-;; (slide-merge-dimensions
-;;   {:title "Frost on a gate, Laurieston",
-;;    :src "content/uploads/g1.jpg"})
 
 (defn find-thumb
   [url thumbsize]
@@ -131,7 +131,11 @@
           r (str (cio/file "content" p))]
       (if
         (and (fs/exists? p') (fs/readable? p'))
-        r))))
+        r
+        (do
+          (log/warn "Failed to find" thumbsize "thumbnail for" url "at" p')
+          nil)))))
+
 
 (defn process-simple-slide
   "Process a single `slide`, as decoded by `simple-grammar`. At this stage a
@@ -149,11 +153,13 @@
                     (sort
                       #(> (%1 thumbsizes) (%2 thumbsizes))
                       (keys thumbsizes)))
-        url (:src s')]
+        url (:src s')
+        thumb (find-thumb url thumbsize)]
     (slide-merge-dimensions
-      (assoc s' :msrc (find-thumb url thumbsize)))))
+      (if thumb
+        (assoc s' :msrc thumb)
+        s'))))
 
-(process-simple-slide '([:title "Frost on a gate, Laurieston"] [:src "content/uploads/g1.jpg"]))
 
 (def process-simple-photoswipe
   "Process a simplified specification for a photoswipe gallery, comprising just
@@ -170,20 +176,6 @@
            :options { :timeToIdle 100 }
            :openImmediately true}) index))))
 
-;; (map
-;;   process-simple-slide
-;;   (re-seq #"!\[[^(]*\([^)]*\)"
-;;           "![Frost on a gate, Laurieston](content/uploads/g1.jpg)
-;;           ![Feathered crystals on snow surface, Taliesin](content/uploads/g2.jpg)
-;;           ![Feathered snow on log, Taliesin](content/uploads/g3.jpg)
-;;           ![Crystaline growth on seed head, Taliesin](content/uploads/g4.jpg)"))
-
-(process-simple-photoswipe
-  "![Frost on a gate, Laurieston](content/uploads/g1.jpg)
-  ![Feathered crystals on snow surface, Taliesin](content/uploads/g2.jpg)
-  ![Feathered snow on log, Taliesin](content/uploads/g3.jpg)
-  ![Crystaline growth on seed head, Taliesin](content/uploads/g4.jpg)"
-  1)
 
 (defn process-photoswipe
   "Process a Photoswipe specification which may conform either to the

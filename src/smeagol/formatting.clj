@@ -97,7 +97,7 @@
       (last vs))))
 
 
-(defn- apply-formatter
+(defn apply-formatter
   "Within the context of `process-text`, process a fragment for which an explicit
   `formatter` has been identified, and then recurse back into `process-text` to
   process the remainder of the fragments. Arguments are as for `process-text`, q.v.,

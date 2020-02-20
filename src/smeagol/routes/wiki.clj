@@ -98,11 +98,12 @@
            file-path (cjio/file util/content-dir file-name)
            exists? (.exists (cjio/as-file file-path))
            user (session/get :user)]
-       (if-not
-         exists?
-         (log/info
-           (format "File '%s' not found; creating a new file" file-path))
-         (log/info (format "Opening '%s' for editing" file-path)))
+       (log/info
+         (format (if-not
+                   exists?
+                   "User %s: File '%s' not found; creating a new file"
+                   "User %s Opening '%s' for editing")
+                 user file-path))
        (cond src-text (process-source params suffix request)
              true
              (layout/render template
@@ -204,7 +205,7 @@
           page (or (:page params) util/start-page (util/get-message :default-page-title "Introduction" request))
           file-name (str page ".md")
           file-path (cjio/file util/content-dir file-name)
-          exists? (.exists (clojure.java.io/as-file file-path))]
+          exists? (.exists (cjio/as-file file-path))]
       (if exists?
         (do
           (log/info (format "Showing page '%s' from file '%s'" page file-path))
@@ -411,6 +412,7 @@
   ;; TODO: probably I need to use either the 'buddy' or 'friend' authentication libraries
   ;; see https://github.com/cemerick/friend and
   ;; https://github.com/metosin/compojure-api/wiki/Authentication-and-Authorization
+  ;; https://jakemccrary.com/blog/2014/12/21/restricting-access-to-certain-routes/
   ;; but I don't yet see even so how to do redirect to the failed page after successful
   ;; authorisation.
   [f request]
