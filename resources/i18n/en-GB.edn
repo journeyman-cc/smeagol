@@ -81,6 +81,8 @@
                                         ;; Text introducing the link to an uploaded file
  :file-upload-prompt    "File to upload" ;; prompt string for the file upload widget
  :file-upload-title     "Upload a file" ;; title for the file upload page
+ :fix-and-restart       "After fixing these problems you must restart Smeagol"
+                                        ;; used in sanity check report
  :is-admin-prompt       "Is administrator?"
  :here                  "here"          ;; used in sanity check report
  :history-link          "History"       ;; text of the history link on the content frame

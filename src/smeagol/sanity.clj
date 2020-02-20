@@ -120,7 +120,6 @@
   configured content directory."
   ([path]
   (compound-check-results
-    (check-with-protection check-exists :file-or-directory path :content-dir-exists)
     (check-with-protection check-is-dir :file-or-directory path :content-dir-is-dir)
     (check-can-read-and-write path :content-dir)
     (apply compound-check-results
@@ -131,6 +130,25 @@
         ["side-bar" "edit-side-bar" "header" ]))))
   ([]
    (check-content-dir util/content-dir)))
+
+
+(defn check-upload-dir
+  "Check that the upload directory at `path` (defaults to configured upload path)
+  exists and is readable and writable; check that each of the configured
+  thumbnail subdirectories also exists and is writable."
+  ([path]
+   (compound-check-results
+     (check-with-protection check-is-dir :file-or-directory path :upload-dir-is-dir)
+     (check-can-read-and-write path :upload-dir)
+     (apply
+       compound-check-results
+       (map
+         #(let [p (cjio/file path (name %))]
+            (compound-check-results
+              (check-with-protection check-is-dir :file-or-directory p :thumbnails)
+              (check-with-protection check-can-read-and-write :file-or-directory p :thumbnails)))
+         (keys (:thumbnails config))))))
+  ([] (check-upload-dir util/upload-dir)))
 
 
 (defn check-password-member-field
@@ -221,13 +239,14 @@
 
 
 (defn check-everything
-  ([content-dir config-path passwd-path]
+  ([content-dir upload-dir config-path passwd-path]
   (compound-check-results
     (check-content-dir content-dir)
+    (check-upload-dir upload-dir)
     (check-config config-path)
     (check-password-file passwd-path)))
   ([]
-   (check-everything util/content-dir config-file-path password-file-path)))
+   (check-everything util/content-dir util/upload-dir config-file-path password-file-path)))
 
 
 (defn- get-causes
@@ -367,7 +386,8 @@
    [:a
     {:href
      "https://github.com/journeyman-cc/smeagol/wiki/Deploying-Smeagol"}
-    (as-hiccup :here messages)] "."])
+    (as-hiccup :here messages)] ". "
+   (as-hiccup :fix-and-restart messages) "."])
 
 
 (defn as-hiccup-footer
