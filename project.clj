@@ -46,6 +46,7 @@
             [lein-codox "0.10.3"]
             [io.sarnowski/lein-docker "1.0.0"]
             [lein-environ "1.0.0"]
+            [lein-kibit "0.1.6"]
             [lein-marginalia "0.7.1" :exclusions [org.clojure/clojure]]
             [lein-npm "0.6.2"]
             [lein-ring "0.12.5" :exclusions [org.clojure/clojure]]]
@@ -56,7 +57,8 @@
                        [vega-lite "4.1.1"]
                        [mermaid "8.4.6"]
                        [photoswipe "4.1.3"]
-                       [tablesort "5.2.0"]]
+                       [tablesort "5.2.0"]
+                       [geocsv-js "simon-brooke/geocsv-js#80e5198"]]
         :root "resources/public/vendor"}
 
   :docker {:image-name "simonbrooke/smeagol"

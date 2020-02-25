@@ -4,6 +4,7 @@
   (:require [clojure.string :as cs]
             [clojure.java.io :as io]
             [image-resizer.core :refer [resize]]
+            [image-resizer.scale-methods :as sm]
             [image-resizer.util :refer :all]
             [me.raynes.fs :as fs]
             [noir.io :as nio]
@@ -58,18 +59,23 @@
   :format  - :gif, :jpg, :png or anything supported by ImageIO
   :quality - for JPEG images, a number between 0 and 100"
   [^RenderedImage img dest & {:keys [format quality] :or {format :jpg}}]
-  (log/info "Writing to " dest)
+  (log/info "Writing as" format "to"  dest)
   (let [fmt (subs (fs/extension (cs/lower-case dest)) 1)
         iw (doto ^ImageWriter (first
                                 (iterator-seq
                                   (ImageIO/getImageWritersByFormatName
                                     fmt)))
              (.setOutput (FileImageOutputStream. (io/file dest))))
-        iw-param (doto ^ImageWriteParam (.getDefaultWriteParam iw)
-                   (.setCompressionMode ImageWriteParam/MODE_EXPLICIT)
-                   (.setCompressionQuality (float (/ (or quality 75) 100))))
+        iw-param (case format
+                   :jpg (doto ^ImageWriteParam (.getDefaultWriteParam iw)
+                          (.setCompressionMode ImageWriteParam/MODE_EXPLICIT)
+                          (.setCompressionQuality (float (/ (or quality 75) 100))))
+                   (:png :gif)  nil)
         iio-img (IIOImage. img nil nil)]
-    (.write iw nil iio-img iw-param)))
+    (log/info "smeagol.uploads/write-image: fmt=" fmt "format=" format)
+    (if iw
+      (.write iw nil iio-img iw-param)
+      (log/error "smeagol.uploads/write-image: no suitable writer found"))))
 
 (def image?
   "True if the file at this `filename` appears as though it may be an image"
@@ -90,15 +96,22 @@
          (keys (config :thumbnails))))
      (log/info filename " cannot be thumbnailed.")))
   ([^String path ^String filename size ^RenderedImage image]
-   (let [s (-> config :thumbnails size)
-         d (dimensions image)
-         p (io/file path (name size) filename)]
-     (if (and (integer? s) (some #(> % s) d))
-       (do
-         (write-image (resize image s s) p)
-         (log/info "Created a " size " thumbnail of " filename)
-         {:size size :filename filename :location (str p) :is-image true})
-       (log/info filename "is smaller than " s "x" s " and was not scaled to " size)))))
+   (when image
+     (try
+       (let [s (-> config :thumbnails size)
+             d (dimensions image)
+             p (io/file path (name size) filename)]
+         (if (and (integer? s) (some #(> % s) d))
+           (do
+             (write-image
+               (resize image s s)
+               p
+               :format (keyword (subs (fs/extension filename) 1)))
+             (log/info "Created a " size " thumbnail of " filename)
+             {:size size :filename filename :location (str p) :is-image true})
+           (log/info filename "is smaller than " s "x" s " and was not scaled to " size)))
+       (catch Exception any
+         (log/error "Failed to thumbnail image " filename "to size" size ":" any))))))
 
 (defn store-upload
   "Store an upload both to the file system and to the database.

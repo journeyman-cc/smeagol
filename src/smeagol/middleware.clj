@@ -53,8 +53,8 @@
    #(wrap-resource % "public")
    #(wrap-file % util/content-dir
                {:index-files? false :prefer-handler? true})
-   #(wrap-content-type %)
-   #(wrap-not-modified %)])
+   wrap-content-type
+   wrap-not-modified])
 
 
 (defn load-middleware []

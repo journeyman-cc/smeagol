@@ -325,9 +325,9 @@
     (if-not
       (empty? uploaded)
       (do
-        (map
-          #(git/git-add git-repo (str :resource %))
-          (remove nil? uploaded))
+        (doall (map
+                 #(git/git-add git-repo (str :resource %))
+                 (remove nil? uploaded)))
         (git/git-commit git-repo summary {:name user :email (auth/get-email user)})))
     (layout/render "upload.html"
                    (merge (util/standard-params request)

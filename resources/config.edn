@@ -37,6 +37,15 @@
   {:backticks    {:formatter "smeagol.formatting/process-backticks"
                   :scripts {}
                   :styles {}}
+   :geocsv       {:formatter "smeagol.extensions.geocsv/process-geocsv"
+                  :scripts {:core {:local "vendor/node_modules/geocsv-js/js/geocsv.js"}
+                            :leaflet {:local "vendor/node_modules/leaflet/dist/leaflet.js"
+                                      :remote "https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"}
+                            :papaparse {:local "vendor/node_modules/papaparse/papaparse.js"
+                                        :remote "https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.1.0/papaparse.min.js"}}
+                  :styles {:leaflet {:local "vendor/node_modules/leaflet/dist/leaflet.css"
+                                     :remote "https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"}}
+                  :icon-url-base "uploads/map-pin/"}
    :mermaid      {:formatter "smeagol.extensions.mermaid/process-mermaid"
                   :scripts {:core {:local "vendor/node_modules/mermaid/dist/mermaid.min.js"
                                    :remote "https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.4.6/mermaid.min.js"}}}
@@ -68,6 +77,7 @@
                                         ;; stored in the /small directory
                          :med 400       ;; maximum dimension of thumbnails
                                         ;; stored in the /med directory
+                         :map-pin 40    ;; stored in the /map-pin directory
                          ;; you can add as many extra keys and values as
                          ;; you like here for additional sizes of images.
                          ;; Images will only be scaled if their maximum

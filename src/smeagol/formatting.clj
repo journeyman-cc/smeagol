@@ -7,6 +7,7 @@
             [clj-yaml.core :as yaml]
             [markdown.core :as md]
             [smeagol.configuration :refer [config]]
+            [smeagol.extensions.geocsv :refer [process-geocsv]]
             [smeagol.extensions.mermaid :refer [process-mermaid]]
             [smeagol.extensions.photoswipe :refer [process-photoswipe]]
             [smeagol.extensions.vega :refer [process-vega]]
@@ -93,7 +94,7 @@
                        (merge-with deep-merge v1 v2)
                        v2))]
     (if (some identity vs)
-      (reduce #(rec-merge %1 %2) v vs)
+      (reduce rec-merge v vs)
       (last vs))))
 
 
