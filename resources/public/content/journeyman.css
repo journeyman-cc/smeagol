@@ -1,0 +1,564 @@
+body
+{
+    font-family: Helvetica, Arial, sans-serif;
+    background-color: black;
+    color: #60C030;
+}
+
+h1, h2, h3, h4, h5, h6, dt
+{
+    padding-top: 1em;
+    padding-bottom: 0.5em;
+    padding-left: 1em;
+    font-family:  Helvetica, Arial, sans-serif;
+    color: lime;
+    background: transparent url( /~simon/images/graduated_pinstripe.png) no-repeat;
+    text-align: left;
+}
+
+th
+{
+    color: lime;
+    background: transparent url( /~simon/images/greenshade.png);
+    text-align: left;
+}
+
+p, li, td
+{
+    padding-top: 0.25em;
+    padding-bottom: 0.75em;
+    color: #60C030;
+    background: transparent;
+}
+
+p, td {
+    padding-left: 5%;
+    padding-right: 15%;
+    text-align: justify;
+}
+
+blockquote
+{
+    padding-left: 5%;
+    padding-right: 5%;
+    padding-top: 0.5em;
+    padding-bottom: 1.5em;
+    text-align: left;
+    font-style: italic;
+}
+
+pre, code, tt, kbd, samp
+{
+    font-family:  monospace;
+    color: green;
+    background-color: black;
+}
+
+var, cite, dfn, dd
+{
+    font-style:     italic;
+}
+
+address
+{
+    font-style:     normal;
+    font-family: cursive;
+    letter-spacing: .1em;
+}
+
+
+img
+{
+    padding: 4px;
+}
+
+
+ins
+{
+    text-decoration: underline;
+}
+
+del
+{
+    color: lime;
+    background-color: red;
+}
+
+/* footer of the page - not-editable, provided by Smeagol */
+footer {
+  border-top: thin solid green;
+  background-color: rgba( 0, 0, 0, 0.7);
+  clear: both;
+  font-size: smaller;
+  text-align: center;
+  width: 100%;
+  margin: 0;
+  min-height: 4px;
+  padding: 0.25em 0;
+  bottom:0;
+  position:fixed;
+  vertical-align: top;
+  z-index:150;
+  _position:absolute;
+  _top:expression(eval(document.documentElement.scrollTop+
+        (document.documentElement.clientHeight-this.offsetHeight)));
+}
+
+footer div {
+  display: none;
+  padding: 0.1em;
+}
+
+footer:hover div {
+  display: block;
+}
+
+.activenav
+{
+    background: transparent url( /~simon/images/greenshade.png);
+    color:      #008000;
+    padding:	0em 2em 0em 1em;
+}
+.navigation
+{
+    background: transparent;
+    color:      #008000;
+    padding:	0em 2em 0em 1em;
+}
+.navbox
+{
+    background: transparent;
+    position: fixed;
+    overflow: visible;
+    top: 0;
+    bottom: 50%;
+    right: 0;
+    left: 75%;
+}
+
+.illustration
+{
+    float: right;
+    width: 310px;
+    padding: 10px;
+    margin: 10px;
+    border: thin solid #008000;
+    font-size: 80%;
+    font-style: italic;
+    background: transparent url( /~simon/images/graduated_pinstripe.png) no-repeat;
+}
+
+
+.illustration IMG
+{
+    float: right;
+}
+
+.warning, .actionDangerous
+{
+        text-transform: none;
+        font-style:     normal;
+        font-weight:    bolder;
+        background:     red;
+        color:  yellow;
+
+}
+
+.actionSafe
+{
+}
+
+
+.prompt
+{
+    font-style:     normal;
+    font-weight:    bolder;
+}
+
+.widget
+{
+}
+
+.help
+{
+    font-style:     italic;
+}
+
+a:link
+{
+        color: rgb( 128, 255, 0);
+        background: transparent;
+}
+
+
+a:visited
+{
+        color: lime;
+        background: transparent;
+}
+
+
+a:active
+{
+        color: rgb( 128, 255, 0);
+        background: transparent;
+}
+
+
+a:hover
+{
+        color: yellow;
+        background:  #408020;
+
+}
+
+
+/* left bar for all pages in the Wiki - editable, provided by users. Within main-container */
+#side-bar {
+  border: thin solid green;
+  border-radius: 0.5em;
+  width: 17%;
+  height: 100%;
+  float: right;
+}
+
+/* cookies information box, fixed, in right margin, just above footer */
+#cookies {
+	width: 20%;
+	float: right;
+  position: fixed;
+  bottom: 8px;
+  right: 0;
+	z-index: 175;
+  background: transparent;
+}
+
+/* about-cookies box: permanently visible part of cookies information box */
+#about-cookies {
+  clear: right;
+  font-size: 66%;
+  float: right;
+  text-align: right;
+  padding: 0.25em 2em;
+  border-radius: 0.25em;
+	color: darkgreen;
+  background-color: rgba( 0, 0, 0, 0.7);
+}
+
+/* more-about-cookies box, normally hidden */
+#more-about-cookies {
+  display: none;
+	padding: 0.5em 2em;
+  border: thin solid darkgreen;
+  border-radius: 0.5em;
+	color: darkgreen;
+  background-color: rgba( 0, 0, 0, 0.7);
+}
+
+/* but magically appears on mouseover */
+#cookies:hover #more-about-cookies {
+	display: block;
+}
+
+
+.minor-controls {
+  list-style: none;
+  float: right;
+  right: 0;
+  padding: 0.25em 2em;
+	color: darkgreen;
+  background-color: rgba( 0, 0, 0, 0.7);
+  font-size: 66%;
+}
+
+.minor-controls li {
+/*  display: inline; */
+}
+
+.minor-controls a {
+  padding: 0.25em 2em;
+  color: darkgreen;
+}
+
+.minor-controls a:hover {
+  color: lime;
+}
+
+.pseudo-input {
+  border: inset thin;
+  background-color: lime;
+  color: black;
+  display: inline-block;
+  min-width: 7.5em;
+  padding: 0 2em 0 0;
+}
+
+.sanity-cause .sanity-stacktrace {
+  display: none;
+}
+
+.sanity-cause:hover .sanity-stacktrace {
+  display: block;
+}
+
+.vega-bindings, .vega-actions {
+  font-size: 66%;
+}
+
+/* Add space between Vega-Embed links  */
+.vega-actions a {
+  margin-right: 5px;
+}
+
+.warn {
+  color: maroon;
+}
+
+.widget {
+	background-color: #222;
+ 	border: thin solid green;
+ 	margin-top: 0;
+ 	margin-bottom: 0;
+  width: 100%;
+}
+
+.wiki {
+  margin: 0;
+}
+
+/* desktops and laptops, primarily. Adapted to mouse; targets may be small */
+@media all and (min-device-width: 1025px) {
+  #side-bar {
+    border: thin solid green;
+    border-radius: 0.5em;
+    float: right;
+    width: 17%;
+    padding-left: 2em;
+    padding-right: 2em;
+    padding-bottom: 2.5em;
+  }
+
+  #side-bar ul {
+    list-style: none;
+  }
+
+  /* content of the current page in the Wiki - editable, provided by users. Within main-container */
+  #content {
+    width: 80%;
+    padding-left: 5%;
+    padding-bottom: 5em;
+  }
+
+  #phone-side-bar, #phone-credits {
+    display: none;
+  }
+
+  #header {
+    font-size: smaller;
+  }
+
+  /* top-of-page navigation, not editable, provided by Smeagol */
+  #nav{
+    margin: 0;
+    padding: 0;
+    top: 0;
+    min-height: 4px;
+    _position: absolute;
+    _top: expression(document.documentElement.scrollTop);
+    z-index: 149;
+    color: darkgreen;
+ }
+
+  #nav #nav-menu {
+    display: none;
+  }
+
+  #nav:hover #nav-menu {
+    display: block;
+  }
+
+  /* only needed for fly-out menu effect on tablet and phone stylesheets */
+  #nav-icon {
+    display: none;
+  }
+
+  #nav-menu {
+    margin: 0;
+    padding: 0;
+  }
+
+  #nav menu li {
+    padding: 0;
+    margin: 0;
+    display: inline;
+  }
+
+  #nav menu li a {
+    color: darkgreen;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 0.1em 0.75em;
+    margin: 0;
+  }
+
+  #nav menu li.active a { background: darkgreen; color: lime;}
+  li.nav-item a:hover { background: rgb( 240, 240, 240) }
+  li.nav-item a:active { background: darkgreen; color: lime; }
+
+  #nav menu li#user {
+    padding: 0 1em;
+    float: right;
+  }
+}
+
+/* tablets, primarily. Adapted to touch; targets are larger */
+@media all and (min-device-width: 769px) and (max-device-width: 1024px) {
+  h1 {
+    /* I wouldn't normally use a px value, but the menu icon is 49px wide */
+    padding: 0.25em 5%;
+    padding-left: 100px;
+  }
+
+  /* content of the current page in the Wiki - editable, provided by users. Within main-container */
+  #content {
+    border: thin solid green;
+    width: 80%;
+    float: right;
+    padding-bottom: 5em;
+  }
+
+  #nav{
+    margin: 0;
+    padding: 0;
+    position: fixed;
+    z-index: 149;
+    color: black;
+    background:rgba(200,200,200,0.9);
+  }
+
+  #nav a {
+    font-weight: bold;
+  }
+
+  #nav:hover #nav-menu, #nav:hover #phone-side-bar {
+    display: block;
+    list-style-type: none;
+    width: 100%;
+  }
+
+  #nav-icon {
+    padding: 0;
+  }
+
+  #nav-menu, #phone-side-bar {
+    display: none;
+  }
+
+  #nav menu li {
+    padding: 0.5em;
+    margin: 0.5 em;
+    font-size: 150%;
+  }
+
+  #nav menu li a {
+  }
+
+  #nav ul li.active a { background: green;}
+  li.nav-item a:hover { background: rgb( 240, 240, 240) }
+  li.nav-item a:active { background: darkgreen; color: lime; }
+
+  #nav menu #user {
+    text-decoration: none;
+    font-weight: bold;
+    margin: 0;
+  }
+}
+
+/* phones, and, indeed, smaller phones. Adapted to touch; display radically
+ * decluttered */
+@media all and (max-device-width: 768px) {
+  footer {
+    display: none;
+  }
+
+  h1 {
+    /* I wouldn't normally use a px value, but the menu icon is 49px wide */
+    padding: 0.25em 5%;
+    padding-left: 100px;
+    text-align: left;
+  }
+
+  /* content of the current in the Wiki - editable, provided by users. Within main-container */
+  #content {
+    border: thin solid green;
+    width: 100%;
+    padding-bottom: 2em;
+  }
+
+  #main-container {
+    width: 100%;
+    margin: 0;
+    padding: 2.5em 0;
+  }
+
+
+  #cookies {
+    display: none;
+  }
+
+  #header {
+    display: none;
+  }
+
+  #nav{
+    margin: 0;
+    padding: 0;
+    position: fixed;
+    z-index: 149;
+    color: black;
+    background:rgba(200,200,200,0.9);
+  }
+
+  #nav a {
+    color: black;
+    font-weight: bold;
+  }
+
+  #nav:hover #nav-menu, #nav:hover #phone-side-bar {
+    display: block;
+    list-style-type: none;
+    width: 100%;
+  }
+
+  #nav-icon {
+    padding: 0;
+  }
+
+  #nav-menu, #phone-side-bar {
+    display: none;
+  }
+
+  #nav menu li {
+    padding: 0.5em;
+    margin: 0.5 em;
+    font-size: 150%;
+  }
+
+  #nav menu li a {
+  font-weight: bold;
+  }
+
+  #nav ul li.active a { background: green;}
+  li.nav-item a:hover { background: rgb( 240, 240, 240) }
+  li.nav-item a:active { background: darkgreen; color: lime; }
+
+  #nav menu #user {
+    text-decoration: none;
+    font-weight: bold;
+    margin: 0;
+  }
+
+  #side-bar {
+    display: none;
+  }
+}
