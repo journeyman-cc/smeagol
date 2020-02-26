@@ -18,7 +18,7 @@
             [smeagol.authenticate :as auth]
             [smeagol.configuration :refer [config]]
             [smeagol.diff2html :as d2h]
-            [smeagol.finder :refer [find-image-url]]
+            [smeagol.finder :refer [find-image]]
             [smeagol.formatting :refer [md->html]]
             [smeagol.history :as hist]
             [smeagol.layout :as layout]
@@ -467,35 +467,33 @@
   (GET "/edit-user" request (route/restricted (admin/edit-user request)))
   (POST "/edit-user" request (route/restricted (admin/edit-user request)))
   (GET "/history" request (history-page request))
-  (GET "/image/:n" request (find-image-url
-                                 request
-                                 (-> request :route-params :n)
-                                 "http://localhost:3000/img/smeagol.png"
-                                 [(fs/file local-url-base "img")
-                                  upload-dir
-                                  ;; TODO: should map over the configured
-                                  ;; thumbnail paths in descending order
-                                  ;; by size - generally, bigger images are
-                                  ;; better.
-                                  (fs/file upload-dir "med")
-                                  (fs/file upload-dir "small")
-                                  (fs/file upload-dir "map-pin")]))
+  (GET "/image/:n" [n] (find-image
+                         n
+                         "resources/public/img/smeagol.png"
+                         [(fs/file local-url-base "img")
+                          upload-dir
+                          ;; TODO: should map over the configured
+                          ;; thumbnail paths in descending order
+                          ;; by size - generally, bigger images are
+                          ;; better.
+                          (fs/file upload-dir "med")
+                          (fs/file upload-dir "small")
+                          (fs/file upload-dir "map-pin")]))
   (GET "/list-uploads" request (route/restricted (list-uploads-page request)))
   (POST "/list-uploads" request (route/restricted (list-uploads-page request)))
-  (GET "/map-pin/:n" request (find-image-url
-                               request
-                               (-> request :route-params :n)
-                               "http://localhost:3000/img/Unknown-pin.png"
-                               [(fs/file local-url-base "img")
-                                ;; TODO: should map over the configured
-                                ;; thumbnail paths in ascending order
-                                ;; by size - for map pins, smaller images are
-                                ;; better.
-                                (fs/file upload-dir "map-pin")
-                                (fs/file upload-dir "small")
-                                (fs/file upload-dir "med")
-                                upload-dir
-                                local-url-base]))
+  (GET "/map-pin/:n" [n] (find-image
+                           n
+                           "resources/public/img/Unknown-pin.png"
+                           [;; TODO: should map over the configured
+                             ;; thumbnail paths in ascending order
+                             ;; by size - for map pins, smaller images are
+                             ;; better.
+                             (fs/file upload-dir "map-pin")
+                             (fs/file upload-dir "small")
+                             (fs/file upload-dir "med")
+                             (fs/file local-url-base "img")
+                             upload-dir
+                             local-url-base]))
   (GET "/passwd" request (passwd-page request))
   (POST "/passwd" request (passwd-page request))
   (GET "/upload" request (route/restricted (upload-page request)))

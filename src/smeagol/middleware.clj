@@ -48,12 +48,29 @@
    wrap-exceptions])
 
 
+(defn smeagol-wrap-content-type
+  "Ring's `wrap-content-type` infers the content type from the *requested* file
+  name. But because we fuzzy-match images, the file we return may not be the
+  same type as the file that was requested, in which case we've already set
+  a content type from the filename extension on the file actually served. Do not
+  overwrite this!"
+  [response]
+  (if-not
+    (and (map? (:headers response))((:headers response) "Content-Type"))
+    (wrap-content-type response)
+    (do
+      (log/info "Content-type already set as"
+                ((:headers response) "Content-Type")
+                "; not overriding")
+      response)))
+
+
 (def production-middleware
   [#(wrap-internal-error % :log (fn [e] (log/error e)))
    #(wrap-resource % "public")
+   smeagol-wrap-content-type
    #(wrap-file % util/content-dir
                {:index-files? false :prefer-handler? true})
-   wrap-content-type
    wrap-not-modified])
 
 

@@ -5,9 +5,10 @@
   (:require [clojure.string :as cs]
             [me.raynes.fs :as fs]
             [noir.io :as io]
-            [noir.response :as response]
+            [ring.util.mime-type :refer [ext-mime-type]]
+            [ring.util.response :as response]
             [smeagol.configuration :refer [config]]
-            [smeagol.util :refer [local-url-base content-dir]]
+            [smeagol.util :refer [local-url-base content-dir upload-dir]]
             [taoensso.timbre :as log]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -85,24 +86,40 @@
         paths))))
 
 
-(defn find-image-url
-  "Return a 302 redirect to
-  1. The requested file, if available;
-  2. This default URL otherwise."
-  [request requested-name default-url paths]
-  (let [url (to-url
-              (find-file-on-paths requested-name paths
-                                  [".gif" ".png" ".jpg" ".jpeg" ".svg"]))]
-    (if url
-      (log/info "Found image" requested-name "at" url)
-      (log/warn "Failed to find image matching" requested-name))
-    (response/redirect
-      ;; (str "/" (:servlet-context request) url) ;; TODO: >>> Nasty
-      (if url
-        (str (name (:scheme request)) "://" (:host request) ":" (:server-port request) "/" url)
-        default-url)
-      :found )))
+(defn with-mime-type-for-file
+  [response file]
+  (assoc-in
+    response
+    [:headers "Content-Type"]
+    (ext-mime-type (str file))))
 
+
+(defn find-image
+  "Return the first image file found on these `paths` with this
+  `requested-name`, if available; this `default-file` otherwise."
+  [requested-name default-file paths]
+  (let [file (find-file-on-paths requested-name paths
+                                 [".gif" ".png" ".jpg" ".jpeg" ".svg"])
+        s (if file (str file) default-file)]
+    (if file
+      (log/info "Found image" requested-name "at" s)
+      (log/warn "Failed to find image matching" requested-name))
+    (with-mime-type-for-file
+      (response/file-response s)
+      s)))
+
+(find-image "froboz.jpg" "resources/public/img/Unknown-pin.png"
+            [;; TODO: should map over the configured
+              ;; thumbnail paths in ascending order
+              ;; by size - for map pins, smaller images are
+              ;; better.
+              (fs/file upload-dir "map-pin")
+              (fs/file upload-dir "small")
+              (fs/file upload-dir "med")])
+
+
+
+;; (response/file-response "resources/public/img/smeagol.png")
 
 ;; (def r {:ssl-client-cert nil,
 ;;         :access-rules [{:redirect "/auth",
