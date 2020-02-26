@@ -57,8 +57,9 @@
                        [vega-lite "4.1.1"]
                        [mermaid "8.4.6"]
                        [photoswipe "4.1.3"]
+                       [showdown "1.9.1"]
                        [tablesort "5.2.0"]
-                       [geocsv-js "simon-brooke/geocsv-js#80e5198"]]
+                       [geocsv-js "simon-brooke/geocsv-js#3a34ba7"]]
         :root "resources/public/vendor"}
 
   :docker {:image-name "simonbrooke/smeagol"

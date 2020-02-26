@@ -38,11 +38,13 @@
                   :scripts {}
                   :styles {}}
    :geocsv       {:formatter "smeagol.extensions.geocsv/process-geocsv"
-                  :scripts {:core {:local "vendor/node_modules/geocsv-js/js/geocsv.js"}
+                  :scripts {:core {:local "vendor/node_modules/@simon_brooke/geocsv/js/geocsv.js"}
                             :leaflet {:local "vendor/node_modules/leaflet/dist/leaflet.js"
                                       :remote "https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"}
                             :papaparse {:local "vendor/node_modules/papaparse/papaparse.js"
-                                        :remote "https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.1.0/papaparse.min.js"}}
+                                        :remote "https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.1.0/papaparse.min.js"}
+                            :showdown {:local "vendor/node_modules/showdown/bin/showdown.js"
+                                       :remote "https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.1/showdown.min.js"}}
                   :styles {:leaflet {:local "vendor/node_modules/leaflet/dist/leaflet.css"
                                      :remote "https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"}}
                   :icon-url-base "map-pin/"}
