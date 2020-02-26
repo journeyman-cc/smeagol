@@ -45,7 +45,7 @@
                                         :remote "https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.1.0/papaparse.min.js"}}
                   :styles {:leaflet {:local "vendor/node_modules/leaflet/dist/leaflet.css"
                                      :remote "https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"}}
-                  :icon-url-base "uploads/map-pin/"}
+                  :icon-url-base "map-pin/"}
    :mermaid      {:formatter "smeagol.extensions.mermaid/process-mermaid"
                   :scripts {:core {:local "vendor/node_modules/mermaid/dist/mermaid.min.js"
                                    :remote "https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.4.6/mermaid.min.js"}}}

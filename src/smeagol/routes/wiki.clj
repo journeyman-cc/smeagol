@@ -18,6 +18,7 @@
             [smeagol.authenticate :as auth]
             [smeagol.configuration :refer [config]]
             [smeagol.diff2html :as d2h]
+            [smeagol.finder :refer [find-image-url]]
             [smeagol.formatting :refer [md->html]]
             [smeagol.history :as hist]
             [smeagol.layout :as layout]
@@ -31,7 +32,7 @@
             [smeagol.configuration :refer [config]]
             [smeagol.include.resolve-local-file :as resolve]
             [smeagol.include :as include]
-            [smeagol.util :refer [content-dir local-url]]))
+            [smeagol.util :refer [content-dir local-url local-url-base upload-dir]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;
@@ -466,12 +467,39 @@
   (GET "/edit-user" request (route/restricted (admin/edit-user request)))
   (POST "/edit-user" request (route/restricted (admin/edit-user request)))
   (GET "/history" request (history-page request))
+  (GET "/image/:n" request (find-image-url
+                                 request
+                                 (-> request :route-params :n)
+                                 "http://localhost:3000/img/smeagol.png"
+                                 [(fs/file local-url-base "img")
+                                  upload-dir
+                                  ;; TODO: should map over the configured
+                                  ;; thumbnail paths in descending order
+                                  ;; by size - generally, bigger images are
+                                  ;; better.
+                                  (fs/file upload-dir "med")
+                                  (fs/file upload-dir "small")
+                                  (fs/file upload-dir "map-pin")]))
   (GET "/list-uploads" request (route/restricted (list-uploads-page request)))
   (POST "/list-uploads" request (route/restricted (list-uploads-page request)))
-  (GET "/version" request (version-page request))
+  (GET "/map-pin/:n" request (find-image-url
+                               request
+                               (-> request :route-params :n)
+                               "http://localhost:3000/img/Unknown-pin.png"
+                               [(fs/file local-url-base "img")
+                                ;; TODO: should map over the configured
+                                ;; thumbnail paths in ascending order
+                                ;; by size - for map pins, smaller images are
+                                ;; better.
+                                (fs/file upload-dir "map-pin")
+                                (fs/file upload-dir "small")
+                                (fs/file upload-dir "med")
+                                upload-dir
+                                local-url-base]))
   (GET "/passwd" request (passwd-page request))
   (POST "/passwd" request (passwd-page request))
   (GET "/upload" request (route/restricted (upload-page request)))
   (POST "/upload" request (route/restricted (upload-page request)))
+  (GET "/version" request (version-page request))
   (GET "/wiki" request (wiki-page request))
   )
