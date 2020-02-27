@@ -21,7 +21,7 @@
 ;;;;
 ;;;; You should have received a copy of the GNU General Public License
 ;;;; along with this program; if not, write to the Free Software
-;;;; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
+;;;; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 ;;;; USA.
 ;;;;
 ;;;; Copyright (C) 2017 Simon Brooke
@@ -48,7 +48,7 @@
                  GeoCSV.setIconUrlBase( \""
                  (-> config :formatters :geocsv :icon-url-base) "\");
                  GeoCSV.initialiseMapElement(\"geocsv-" index "\",
-                 document.getElementById(\"geocsv-" index "\").innerText.trim()); // local-links here!
+                 document.getElementById(\"geocsv-" index "\").innerText.trim().replace(/\\[\\[([^\\[\\]]*)\\]\\]/, \"<a href='wiki?page=$1'>$1</a>\"));
                 }};
            //]]
          </script>

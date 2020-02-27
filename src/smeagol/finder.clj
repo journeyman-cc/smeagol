@@ -108,14 +108,14 @@
       (response/file-response s)
       s)))
 
-(find-image "froboz.jpg" "resources/public/img/Unknown-pin.png"
-            [;; TODO: should map over the configured
-              ;; thumbnail paths in ascending order
-              ;; by size - for map pins, smaller images are
-              ;; better.
-              (fs/file upload-dir "map-pin")
-              (fs/file upload-dir "small")
-              (fs/file upload-dir "med")])
+;; (find-image "froboz.jpg" "resources/public/img/Unknown-pin.png"
+;;             [;; TODO: should map over the configured
+;;               ;; thumbnail paths in ascending order
+;;               ;; by size - for map pins, smaller images are
+;;               ;; better.
+;;               (fs/file upload-dir "map-pin")
+;;               (fs/file upload-dir "small")
+;;               (fs/file upload-dir "med")])
 
 
 

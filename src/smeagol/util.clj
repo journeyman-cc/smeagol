@@ -129,11 +129,11 @@
         (do
           (log/error
             "In `smeagol.util/local-url `" file-path "` is not a servable resource.")
-          (str "404-not-found?path=" file-path))))
+          file-path)))
     (catch Exception any
       (log/error
         "In `smeagol.util/local-url `" file-path "` is not a servable resource:" any)
-      (str "404-not-found?path=" file-path))))
+      file-path)))
 
 ;; (local-url? "vendor/node_modules/photoswipe/dist/photoswipe.min.js")
 ;; (local-url? "/home/simon/workspace/smeagol/resources/public/vendor/node_modules/photoswipe/dist/photoswipe.min.js")
