@@ -32,7 +32,8 @@
             [smeagol.configuration :refer [config]]
             [smeagol.include.resolve-local-file :as resolve]
             [smeagol.include :as include]
-            [smeagol.util :refer [content-dir local-url local-url-base upload-dir]]))
+            [smeagol.util :refer [content-dir get-servlet-context-path
+                                  local-url local-url-base upload-dir]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;
@@ -398,7 +399,10 @@
         (and username password (auth/authenticate username password))
         (do
           (session/put! :user username)
-          (response/redirect redirect-to))
+          (response/redirect
+            (or
+              redirect-to
+              (get-servlet-context-path request))))
         true
         (layout/render "auth.html"
                        (merge (util/standard-params request)

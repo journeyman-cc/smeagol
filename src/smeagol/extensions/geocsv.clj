@@ -48,7 +48,7 @@
                  GeoCSV.setIconUrlBase( \""
                  (-> config :formatters :geocsv :icon-url-base) "\");
                  GeoCSV.initialiseMapElement(\"geocsv-" index "\",
-                 document.getElementById(\"geocsv-" index "\").innerText.trim().replace(/\\[\\[([^\\[\\]]*)\\]\\]/, \"<a href='wiki?page=$1'>$1</a>\"));
+                 document.getElementById(\"geocsv-" index "\").innerText.trim().replace(/\\[\\[([^\\[\\]]*)\\]\\]/g, \"<a href='wiki?page=$1'>$1</a>\"));
                 }};
            //]]
          </script>
