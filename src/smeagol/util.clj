@@ -156,6 +156,16 @@
      :version (System/getProperty "smeagol.version")}))
 
 
+(defn get-servlet-context-path
+  [request]
+  (if-let [context (:servlet-context request)]
+    ;; If we're not inside a serlvet environment (for
+    ;; example when using mock requests), then
+    ;; .getContextPath might not exist
+    (try (.getContextPath context)
+      (catch IllegalArgumentException _ context))))
+
+
 (def get-messages
   "Return the most acceptable messages collection we have given the
   `Accept-Language` header in this `request`."

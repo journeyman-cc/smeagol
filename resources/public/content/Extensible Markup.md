@@ -8,7 +8,7 @@ Allows you to embed maps with markers on them into Wiki pages. To embed a map, s
 
 The CSV must have the column titles in the first line, and must have columns called `latitude` and `longitude`, which must both contain floating point numbers, not degrees, minutes and seconds. The CSV *may* also have a column called `name`, which will be used as the heading for the popup that shows if you click an image, and a column named category. If the category column is present, and contains a value in a given row, the marker image for the marker for that row will the uploaded file whose name is that value followed by `-pin.png`.
 
-Here's an example: the capital cities of Europe.
+Here's an example: the capital cities of Europe. You can use local links in the CSV values, as you will see if you select the pin on Iceland, but not in the column titles.
 
 ```geocsv
 Country,Name,Latitude,Longitude,CountryCode,Continent,Category
