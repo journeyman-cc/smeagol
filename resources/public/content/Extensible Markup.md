@@ -73,6 +73,8 @@ Northern Cyprus,North Nicosia,35.183333,33.366667,NULL,Europe,
 
 ```
 
+Read more about [[Data on maps]].
+
 ## The Vega formatter
 
 Inspired by [visdown](https://visdown.com/) and [vega-lite](https://vega.github.io/vega-lite/docs/), the Vega formatter allows you to embed vega data visualisations into Smeagol pages. The graph description should start with a line comprising three back-ticks and then the word '`vega`', and end with a line comprising just three backticks.
