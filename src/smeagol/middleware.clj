@@ -69,8 +69,12 @@
   [#(wrap-internal-error % :log (fn [e] (log/error e)))
    #(wrap-resource % "public")
    smeagol-wrap-content-type
-   #(wrap-file % util/content-dir
-               {:index-files? false :prefer-handler? true})
+   #(try
+      (wrap-file % util/content-dir
+                 {:index-files? false :prefer-handler? true})
+      (catch Exception error
+        (log/fatal "Could not locate content dir" util/content-dir error)
+        %))
    wrap-not-modified])
 
 

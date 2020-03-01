@@ -369,7 +369,7 @@
   [messages]
   [:head
    [:title (as-hiccup :smeagol-not-initialised messages)]
-   [:link {:href "/content/stylesheet.css" :rel "stylesheet"}]])
+   [:link {:href "content/stylesheet.css" :rel "stylesheet"}]])
 
 
 (defn as-hiccup-header
