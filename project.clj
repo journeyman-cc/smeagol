@@ -19,7 +19,7 @@
                  [image-resizer "0.1.10"]
                  [instaparse "1.4.10"]
                  [lib-noir "0.9.9" :exclusions [org.clojure/tools.reader]]
-                 [markdown-clj "0.9.99" :exclusions [com.keminglabs/cljx]]
+                 [markdown-clj "1.10.2"]
                  [me.raynes/fs "1.4.6"]
                  [noir-exception "0.2.5"]
                  [org.clojars.simon_brooke/internationalisation "1.0.3"]

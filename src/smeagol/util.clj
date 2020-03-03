@@ -162,7 +162,12 @@
     ;; If we're not inside a serlvet environment (for
     ;; example when using mock requests), then
     ;; .getContextPath might not exist
-    (try (.getContextPath context)
+    (try
+      (let [path (.getContextPath context)
+            path' (if-not (cs/ends-with? path "/")
+                    (str path "/")
+                    path)]
+        path')
       (catch IllegalArgumentException _ context))))
 
 
