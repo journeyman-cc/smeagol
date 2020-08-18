@@ -79,15 +79,15 @@
                (cjio/file local-url-base file-path))]
     (cond
       (cs/includes? file-path "..")
-      (cs/join " " file-path
-               "Attempts to ascend the file hierarchy are disallowed.")
+      (cs/join " " [file-path
+                    "Attempts to ascend the file hierarchy are disallowed."])
       (not (cs/starts-with? path local-url-base))
       (cs/join " " [path "is not servable"])
       (not (fs/exists? path))
       (cs/join " " [path "does not exist"])
       (not (fs/readable? path))
       (cs/join " " [path "is not readable"])))
-    (catch Exception any (cs/join " " file-path "is not servable because" (.getMessage any)))))
+    (catch Exception any (cs/join " " [file-path "is not servable because" (.getMessage any)]))))
 
 
 ;; (not-servable-reason "/home/simon/workspace/smeagol/resources/public/content/vendor/node_modules/photoswipe/dist/photoswipe.min.js")
@@ -157,8 +157,10 @@
 
 
 (defn get-servlet-context-path
+  "Return the servlet context path, if we're running as a servlet; if
+   not, return `nil`."
   [request]
-  (if-let [context (:servlet-context request)]
+  (when-let [context (:servlet-context request)]
     ;; If we're not inside a serlvet environment (for
     ;; example when using mock requests), then
     ;; .getContextPath might not exist
