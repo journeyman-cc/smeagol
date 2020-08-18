@@ -6,11 +6,17 @@
             [clj-jgit.querying :as q]
             [taoensso.timbre :as log])
   (:import  [org.eclipse.jgit.api Git]
-            [org.eclipse.jgit.lib Repository ObjectId]
-            [org.eclipse.jgit.revwalk RevCommit RevTree RevWalk]
-            [org.eclipse.jgit.treewalk TreeWalk AbstractTreeIterator CanonicalTreeParser]
+            [org.eclipse.jgit.lib 
+             ;; Repository
+             ObjectId]
+            ;; [org.eclipse.jgit.revwalk RevCommit RevTree RevWalk]
+            [org.eclipse.jgit.treewalk TreeWalk
+             ;; AbstractTreeIterator 
+             CanonicalTreeParser]
             [org.eclipse.jgit.treewalk.filter PathFilter]
-            [org.eclipse.jgit.diff DiffEntry DiffFormatter]))
+            [org.eclipse.jgit.diff 
+             ;; DiffEntry 
+             DiffFormatter]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;
