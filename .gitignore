@@ -17,7 +17,7 @@ pom.xml.asc
 smeagol.log*
 /node_modules/
 .DS_Store
-
+/.calva
 
 resources/public/content/uploads/
 
