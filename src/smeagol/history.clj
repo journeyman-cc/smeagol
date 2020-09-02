@@ -6,11 +6,17 @@
             [clj-jgit.querying :as q]
             [taoensso.timbre :as log])
   (:import  [org.eclipse.jgit.api Git]
-            [org.eclipse.jgit.lib Repository ObjectId]
-            [org.eclipse.jgit.revwalk RevCommit RevTree RevWalk]
-            [org.eclipse.jgit.treewalk TreeWalk AbstractTreeIterator CanonicalTreeParser]
+            [org.eclipse.jgit.lib 
+             ;; Repository
+             ObjectId]
+            ;; [org.eclipse.jgit.revwalk RevCommit RevTree RevWalk]
+            [org.eclipse.jgit.treewalk TreeWalk
+             ;; AbstractTreeIterator 
+             CanonicalTreeParser]
             [org.eclipse.jgit.treewalk.filter PathFilter]
-            [org.eclipse.jgit.diff DiffEntry DiffFormatter]))
+            [org.eclipse.jgit.diff 
+             ;; DiffEntry 
+             DiffFormatter]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;
@@ -55,9 +61,9 @@
     (git/load-repo git-directory-path)
     (catch java.io.FileNotFoundException fnf
       (log/info "Initialising Git repository at" git-directory-path)
-      (git/git-init git-directory-path)
+      (git/git-init :dir git-directory-path)
       (let [repo (git/load-repo git-directory-path)]
-        (git/git-add-and-commit repo "Initial commit")
+        (git/git-commit repo "Initial commit")
         repo))))
 
 
