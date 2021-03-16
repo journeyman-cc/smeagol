@@ -17,10 +17,14 @@ pom.xml.asc
 smeagol.log*
 /node_modules/
 .DS_Store
-
+.calva/
+.idea/
+.lsp/
 
 resources/public/content/uploads/
 
 .eastwood
 
 resources/public/content/Populating a game world.md
+
+*.iml
