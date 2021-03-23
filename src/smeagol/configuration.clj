@@ -56,6 +56,11 @@
    {}
    vars))
 
+
+;;; TODO: OK, why this doesn't work. We need a namespace (and, indeed, ideally
+;;;  in a library) which returns the name/value pairs of the InitialContext as 
+;;;  a map. We need this because, if the config file itself is to be specified
+;;;  in this way, we need to be able to access this map BEFORE we do build-config.
 (defn- from-initial-context
   "Config `vars` are read from the initial context, which (at least under Tomcat) 
    are specific to the individual web app. Nevertheless the same names will 
@@ -175,10 +180,11 @@
                               (transform-map
                                (from-env-vars config-var-names)
                                config-env-transforms)
-                              (transform-map
-                                (from-initial-context config-var-names)
-                                config-env-transforms))]
-                 (if (env :dev)
+                              ;; (transform-map
+                              ;;   (from-initial-context config-var-names)
+                              ;;   config-env-transforms)
+                             )]
+                 (when (env :dev)
                    (log/debug
                      "Loaded configuration\n"
                      (with-out-str (clojure.pprint/pprint config))))
