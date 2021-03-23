@@ -4,31 +4,33 @@
   (:require 
    [ring.middleware.file :refer [wrap-file]]
    [ring.middleware.file-info :refer [wrap-file-info]]
-   [ring.server.standalone :refer [app serve]]
-   [smeagol.handler :refer [destroy init]]))
+   [ring.server.standalone :refer [serve]]
+   [smeagol.handler :refer [app destroy init]])
+    ;; (:import [javax.servlet AsyncContext]) 
+  )
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;
-;;;; Smeagol: a very simple Wiki engine.
-;;;;
-;;;; This program is free software; you can redistribute it and/or
-;;;; modify it under the terms of the GNU General Public License
-;;;; as published by the Free Software Foundation; either version 2
-;;;; of the License, or (at your option) any later version.
-;;;;
-;;;; This program is distributed in the hope that it will be useful,
-;;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;;;; GNU General Public License for more details.
-;;;;
-;;;; You should have received a copy of the GNU General Public License
-;;;; along with this program; if not, write to the Free Software
-;;;; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
-;;;; USA.
-;;;;
-;;;; Copyright (C) 2014 Simon Brooke
-;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;;
+;; ;;;; Smeagol: a very simple Wiki engine.
+;; ;;;;
+;; ;;;; This program is free software; you can redistribute it and/or
+;; ;;;; modify it under the terms of the GNU General Public License
+;; ;;;; as published by the Free Software Foundation; either version 2
+;; ;;;; of the License, or (at your option) any later version.
+;; ;;;;
+;; ;;;; This program is distributed in the hope that it will be useful,
+;; ;;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; ;;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; ;;;; GNU General Public License for more details.
+;; ;;;;
+;; ;;;; You should have received a copy of the GNU General Public License
+;; ;;;; along with this program; if not, write to the Free Software
+;; ;;;; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
+;; ;;;; USA.
+;; ;;;;
+;; ;;;; Copyright (C) 2014 Simon Brooke
+;; ;;;;
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 (defonce server (atom nil))
@@ -47,7 +49,7 @@
 (defn start-server
   "used for starting the server in development mode from REPL"
   [& [port]]
-  (let [port (if port (Integer/parseInt port) 3000)]
+  (let [port (if port (Integer/parseInt (str port)) 3000)]
     (reset! server
             (serve (get-handler)
                    {:port port
@@ -60,3 +62,6 @@
 (defn stop-server []
   (.stop @server)
   (reset! server nil))
+
+;; ;;(start-server 4444)
+

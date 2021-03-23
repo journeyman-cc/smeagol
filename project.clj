@@ -35,7 +35,10 @@
                  [prismatic/schema "1.1.9"]
                  [prone "1.1.4"]
                  [ring/ring-anti-forgery "1.1.0"]
-                 [ring-server "0.4.0"]
+                 [ring/ring-core "1.9.1"]
+                 [ring/ring-defaults "0.3.2"]
+                 [ring-server "0.5.0"]
+                 [ring-webjars "0.2.0"]
                  [selmer "1.11.0"]]
 
   :repl-options {:init-ns smeagol.repl}

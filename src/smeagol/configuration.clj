@@ -62,10 +62,11 @@
    be used as for environment variables, because it just makes life easier."
   [vars]
   (log/info "Seeking config in initial context")
+  (log/debug (str "Bound names are: " (map #(.toString %) (.list (new javax.naming.InitialContext) "java:comp/env/"))))
   (try
     (reduce
      #(try
-        (log/info "Seeking value for " %2 " in initial context")
+        (log/debug "Seeking value for " %2 " in initial context")
         (let [v (javax.naming.InitialContext/doLookup %2)]
           (if v
             (do
@@ -73,10 +74,12 @@
               (assoc %1 %2 v))
             %1))
         (catch Exception e
-          (log/warn (str "Error while seeking value for " %2 " in initial context: " (type e) "; " (.getMessage e)))
+          (log/debug (str "Error while seeking value for " %2 " in initial context: " (type e) "; " (.getMessage e)))
           %1))
      {}
-     (map #(str "java:comp/env/" (name %)) vars))
+     (map #(str 
+            "java:comp/env/" 
+            (s/replace (name %) #"-" "_")) vars))
     (catch javax.naming.NoInitialContextException _
       ;; ignore: this only means we're not in a servlet context, 
       ;; e.g unit tests. 
