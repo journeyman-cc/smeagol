@@ -9,6 +9,8 @@
             [instaparse.core :as insta]
             [me.raynes.fs :as fs]
             [noir.io :as io]
+            [selmer.parser :refer [render]]
+            [selmer.util :refer [without-escaping]]
             [smeagol.configuration :refer [config]]
             [smeagol.extensions.utils :refer [resource-url-or-data->data uploaded?]]
             [smeagol.util :refer [content-dir upload-dir]]
@@ -41,31 +43,11 @@
   "Process a specification for a photoswipe gallery, using a JSON
   specification based on that documented on the Photoswipe website."
   [^String spec ^Integer index]
-  (str
-    "<div class='gallery'>
-    <div class=\"pswp\" id=\"pswp-"
-    index "\" tabindex=\"-1\" role=\"dialog\" aria-hidden=\"true\">\n"
+  (without-escaping
+   (render
     (slurp
-      (str (io/resource-path) "html-includes/photoswipe-boilerplate.html"))
-    "</div>
-    <p><button id=\"open-gallery-" index "\" onclick=\"gallery" index
-    ".init(); document.getElementById(`open-gallery-" index "`).style.display = 'none';\">Open the gallery</button></p>
-    <script>
-    \n//<![CDATA[\n
-    var pswpElement = document.getElementById('pswp-" index "');
-    var spec" index " = "
-    spec
-    ";
-    var gallery" index
-    " = new PhotoSwipe( pswpElement, PhotoSwipeUI_Default, spec"
-    index ".slides, spec" index ".options);
-    if (spec" index ".openImmediately) {
-    document.getElementById(`open-gallery-" index "`).style.display = 'none';
-    gallery" index ".init();
-    }
-    \n//]]\n
-    </script>
-    </div>"))
+     (str (io/resource-path) "html-includes/photoswipe-boilerplate.html"))
+    {:spec spec :index index})))
 
 
 (def simple-grammar

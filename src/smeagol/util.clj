@@ -156,8 +156,10 @@
 
 
 (defn get-servlet-context-path
+  "Return the servlet context path, if we're running as a servlet; if
+   not, return `nil`."
   [request]
-  (if-let [context (:servlet-context request)]
+  (when-let [context (:servlet-context request)]
     ;; If we're not inside a serlvet environment (for
     ;; example when using mock requests), then
     ;; .getContextPath might not exist

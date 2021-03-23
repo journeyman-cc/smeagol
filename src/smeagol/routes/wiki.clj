@@ -72,7 +72,7 @@
     (log/info (format "Saving %s's changes ('%s') to %s in file '%s'" user summary page file-path))
     (spit file-path source-text)
     (git/git-add git-repo file-name)
-    (git/git-commit git-repo summary {:name user :email email})
+    (git/git-commit git-repo summary :name user :email email)
     (response/redirect
       (str
         "/wiki?page="
