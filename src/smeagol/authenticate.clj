@@ -2,7 +2,6 @@
       :author "Simon Brooke"}
   smeagol.authenticate
   (:require [crypto.password.scrypt :as password]
-            [environ.core :refer [env]]
             [noir.io :as io]
             [smeagol.configuration :refer [config]]
             [taoensso.timbre :as log]))
@@ -65,7 +64,7 @@
 (defn get-email
   "Return the email address associated with this `username`."
   [username]
-  (if username
+  (when username
     (let [user ((keyword username)  (get-users))]
       (:email user))))
 
@@ -73,7 +72,7 @@
 (defn get-admin
   "Return a flag indicating whether the user with this username is an administrator."
   [username]
-  (if username
+  (when username
     (let [user ((keyword username)  (get-users))]
       (:admin user))))
 
@@ -84,7 +83,7 @@
    (cond
      (< (count pass1) 8) :chpass-too-short
      (.equals pass1 pass2) true
-     true :chpass-bad-match))
+     :else :chpass-bad-match))
   ([password]
    (evaluate-password password password)))
 
@@ -97,8 +96,7 @@
   (log/info (format "Changing password for user %s" username))
   (let [users (get-users)
         keywd (keyword username)
-        user (keywd users)
-        email (:email user)]
+        user (keywd users)]
     (try
       (cond
         (and user
@@ -130,7 +128,7 @@
 (defn fetch-user-details
   "Return the map of features of this user, if any."
   [username]
-  (if
+  (when
     (and username (pos? (count (str username))))
     ((keyword username) (get-users))))
 
@@ -144,9 +142,9 @@
   (cond
     (not (string? username)) (throw (Exception. "Username must be a string."))
     (zero? (count username)) (throw (Exception. "Username cannot be zero length"))
-    true (let [users (get-users)
+    :else (let [users (get-users)
                user ((keyword username) users)
-               password (if
+               password (when
                           (and newpass (evaluate-password newpass))
                           (password/encrypt newpass))
                details {:email email

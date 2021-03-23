@@ -1,7 +1,7 @@
 (ns ^{:doc "Mermaid formatter for Semagol's extendsible markdown format."
       :author "Simon Brooke"}
   smeagol.extensions.mermaid
-  (:require [smeagol.extensions.utils :refer :all]
+  (:require [smeagol.extensions.utils :refer [resource-url-or-data->data]]
             [taoensso.timbre :as log]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

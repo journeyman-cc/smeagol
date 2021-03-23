@@ -1,17 +1,10 @@
 (ns ^{:doc "Format Semagol's extended markdown format."
       :author "Simon Brooke"}
   smeagol.formatting
-  (:require [clojure.data.json :as json]
-            [clojure.string :as cs]
-            [cemerick.url :refer (url url-encode url-decode)]
-            [clj-yaml.core :as yaml]
+  (:require [clojure.string :as cs]
             [markdown.core :as md]
             [smeagol.configuration :refer [config]]
-            [smeagol.extensions.geocsv :refer [process-geocsv]]
-            [smeagol.extensions.mermaid :refer [process-mermaid]]
-            [smeagol.extensions.photoswipe :refer [process-photoswipe]]
-            [smeagol.extensions.vega :refer [process-vega]]
-            [smeagol.local-links :refer :all]
+            [smeagol.local-links :refer [local-links]]
             [taoensso.timbre :as log]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -55,7 +48,7 @@
 
   **NOTE** that it is not expected that this function forms part of a stable
   API."
-  [^String text ^Integer index]
+  [^String text _]
   (str "<pre class=\"backticks\">```" (.trim text) "\n```</pre>"))
 
 
@@ -64,7 +57,7 @@
   or `nil` if there is none."
   [^String string]
   (try
-    (if string (first (cs/split (first (cs/split-lines string)) #"[^a-zA-Z0-9]+")))
+    (when string (first (cs/split (first (cs/split-lines string)) #"[^a-zA-Z0-9]+")))
     (catch NullPointerException _ nil)))
 
 
@@ -195,17 +188,16 @@
         ;; I need to put the backticks back in.
         remarked (if (odd? index) (str "```" fragment "\n```") fragment)
         first-token (get-first-token fragment)
-        kw (if-not (empty? first-token) (keyword first-token))
-        formatter (if
+        kw (when-not (empty? first-token) (keyword first-token))
+        formatter (when
                     kw
                     (try
                       (read-string (-> config :formatters kw :formatter))
                       (catch Exception _
-                        (do
-                          (log/info "No formatter found for extension `" kw "`")
+                        (log/info "No formatter found for extension `" kw "`")
                           ;; no extension registered - there sometimes won't be,
                           ;; and it doesn't matter
-                          nil))))]
+                          nil)))]
     (cond
       (empty? fragments)
       ;; We've come to the end of the list of fragments. Reassemble them into
@@ -213,7 +205,7 @@
       (reassemble-text result processed)
       formatter
       (apply-formatter index result fragments processed fragment first-token formatter)
-      true
+      :else
       (process-markdown-fragment index result remarked (rest fragments) processed))))
 
 (defn md->html

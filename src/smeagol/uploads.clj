@@ -4,16 +4,13 @@
   (:require [clojure.string :as cs]
             [clojure.java.io :as io]
             [image-resizer.core :refer [resize]]
-            [image-resizer.scale-methods :as sm]
-            [image-resizer.util :refer :all]
+            [image-resizer.util :refer [buffered-image dimensions]]
             [me.raynes.fs :as fs]
-            [noir.io :as nio]
             [smeagol.configuration :refer [config]]
             [smeagol.util :as util]
             [taoensso.timbre :as log])
   (:import [java.io File]
-           [java.awt Image]
-           [java.awt.image RenderedImage BufferedImageOp]
+           [java.awt.image RenderedImage]
            [javax.imageio ImageIO ImageWriter ImageWriteParam IIOImage]
            [javax.imageio.stream FileImageOutputStream]))
 

@@ -3,7 +3,6 @@
   smeagol.util
   (:require [clojure.java.io :as cjio]
             [clojure.string :as cs]
-            [environ.core :refer [env]]
             [markdown.core :as md]
             [me.raynes.fs :as fs]
             [noir.io :as io]
@@ -11,7 +10,7 @@
             [scot.weft.i18n.core :as i18n]
             [smeagol.authenticate :as auth]
             [smeagol.configuration :refer [config]]
-            [smeagol.local-links :refer :all]
+            [smeagol.local-links :refer [local-links]]
             [taoensso.timbre :as log]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -79,15 +78,15 @@
                (cjio/file local-url-base file-path))]
     (cond
       (cs/includes? file-path "..")
-      (cs/join " " file-path
-               "Attempts to ascend the file hierarchy are disallowed.")
+      (cs/join " " [file-path
+               "Attempts to ascend the file hierarchy are disallowed."])
       (not (cs/starts-with? path local-url-base))
       (cs/join " " [path "is not servable"])
       (not (fs/exists? path))
       (cs/join " " [path "does not exist"])
       (not (fs/readable? path))
       (cs/join " " [path "is not readable"])))
-    (catch Exception any (cs/join " " file-path "is not servable because" (.getMessage any)))))
+    (catch Exception any (cs/join " " [file-path "is not servable because" (.getMessage any)]))))
 
 
 ;; (not-servable-reason "/home/simon/workspace/smeagol/resources/public/content/vendor/node_modules/photoswipe/dist/photoswipe.min.js")

@@ -1,9 +1,7 @@
 (ns ^{:doc "Set up, configure, and clean up after the wiki server."
       :author "Simon Brooke"}
   smeagol.handler
-  (:require [clojure.java.io :as cjio]
-            [clojure.string :refer [lower-case]]
-            [compojure.core :refer [defroutes]]
+  (:require [compojure.core :refer [defroutes]]
             [compojure.route :as route]
             [cronj.core :as cronj]
             [environ.core :refer [env]]
@@ -42,7 +40,7 @@
 ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn user-access [request]
+(defn user-access [_]
   (session/get :user))
 
 
@@ -75,10 +73,10 @@
                   :backlog 10})}
        :level (or
                 (:log-level config)
-                (if (env :dev) :debug)
+                (when (env :dev) :debug)
                 :info)})
     (cronj/start! session-manager/cleanup-job)
-    (if (env :dev) (parser/cache-off!))
+    (when (env :dev) (parser/cache-off!))
     ;;start the expired session cleanup job
     (log/info "\n-=[ smeagol started successfully"
                  (when (env :dev) "using the development profile") "]=-")

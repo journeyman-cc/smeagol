@@ -67,6 +67,7 @@
 
 (def production-middleware
   [#(wrap-internal-error % :log (fn [e] (log/error e)))
+   wrap-anti-forgery
    #(wrap-resource % "public")
    smeagol-wrap-content-type
    #(try

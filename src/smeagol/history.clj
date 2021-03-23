@@ -6,11 +6,10 @@
             [clj-jgit.querying :as q]
             [taoensso.timbre :as log])
   (:import  [org.eclipse.jgit.api Git]
-            [org.eclipse.jgit.lib Repository ObjectId]
-            [org.eclipse.jgit.revwalk RevCommit RevTree RevWalk]
-            [org.eclipse.jgit.treewalk TreeWalk AbstractTreeIterator CanonicalTreeParser]
+            [org.eclipse.jgit.lib ObjectId]
+            [org.eclipse.jgit.treewalk TreeWalk CanonicalTreeParser]
             [org.eclipse.jgit.treewalk.filter PathFilter]
-            [org.eclipse.jgit.diff DiffEntry DiffFormatter]))
+            [org.eclipse.jgit.diff DiffFormatter]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;
@@ -53,7 +52,7 @@
   [^String git-directory-path]
   (try
     (git/load-repo git-directory-path)
-    (catch java.io.FileNotFoundException fnf
+    (catch java.io.FileNotFoundException _
       (log/info "Initialising Git repository at" git-directory-path)
       (git/git-init git-directory-path)
       (let [repo (git/load-repo git-directory-path)]
@@ -137,7 +136,7 @@
     (.addTree tw tree)
     (.setRecursive tw true)
     (.setFilter tw (PathFilter/create file-path))
-    (if (not (.next tw))
+    (when-not (.next tw)
       (throw (IllegalStateException.
                (str "Did not find expected file '" file-path "'"))))
     (.copyTo (.open repo (.getObjectId tw 0)) out)

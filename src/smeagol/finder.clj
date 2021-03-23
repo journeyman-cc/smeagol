@@ -4,11 +4,9 @@
   smeagol.finder
   (:require [clojure.string :as cs]
             [me.raynes.fs :as fs]
-            [noir.io :as io]
             [ring.util.mime-type :refer [ext-mime-type]]
             [ring.util.response :as response]
-            [smeagol.configuration :refer [config]]
-            [smeagol.util :refer [local-url-base content-dir upload-dir]]
+            [smeagol.util :refer [local-url-base content-dir]]
             [taoensso.timbre :as log]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -1,7 +1,7 @@
 (ns ^{:doc "Render all the main pages of a very simple Wiki engine."
       :author "Simon Brooke"}
   smeagol.routes.admin
-  (:require [clojure.walk :refer :all]
+  (:require [clojure.walk :refer [keywordize-keys]]
             [noir.session :as session]
             [taoensso.timbre :as timbre]
             [smeagol.authenticate :as auth]
@@ -35,12 +35,10 @@
 (defn edit-users
   "Render a page showing a list of users for editing."
   [request]
-  (let [params (keywordize-keys (:params request))
-        user (session/get :user)]
-    (layout/render "edit-users.html"
-                   (merge (util/standard-params request)
-                          {:title (:edit-users-title (util/get-messages request))
-                           :users (auth/list-users)}))))
+  (layout/render "edit-users.html"
+                 (merge (util/standard-params request)
+                        {:title (:edit-users-title (util/get-messages request))
+                         :users (auth/list-users)})))
 
 (defn delete-user
   "Render a form allowing a user to be deleted; and
@@ -49,8 +47,8 @@
   (let [params (keywordize-keys (:params request))
         target (:target params)
         deleted (auth/delete-user target)
-        message (if deleted (str (:del-user-success (util/get-messages request)) " " target "."))
-        error (if (not deleted) (str (:del-user-fail (util/get-messages request)) " " target "."))]
+        message (when deleted (str (:del-user-success (util/get-messages request)) " " target "."))
+        error (when-not deleted (str (:del-user-fail (util/get-messages request)) " " target "."))]
     (layout/render "edit-users.html"
                    (merge (util/standard-params request)
                           {:title (:edit-users-title (util/get-messages request))
@@ -69,8 +67,8 @@
             pass1 (:pass1 params)
             pass2 (:pass2 params)
             check-pass (auth/evaluate-password pass1 pass2)
-            password (if (and pass1 (true? check-pass)) pass1)
-            stored (if
+            password (when (and pass1 (true? check-pass)) pass1)
+            stored (when
                      (and
                       (:email params)
                       (or
@@ -78,18 +76,18 @@
                        (zero? (count pass1))
                        (true? check-pass)))
                      (auth/add-user target password (:email params) (:admin params)))
-            message (if stored (str (:save-user-success (util/get-messages request)) " " target "."))
-            error (if
+            message (when stored (str (:save-user-success (util/get-messages request)) " " target "."))
+            error (when
                     (and (:email params) (not stored))
                     (str
                       (:save-user-fail (util/get-messages request))
                       " " target ". "
-                      (if (keyword? check-pass) (check-pass (util/get-messages request)))))
+                      (when (keyword? check-pass) (check-pass (util/get-messages request)))))
             page (if stored "edit-users.html" "edit-user.html")
             details (auth/fetch-user-details target)]
-        (if message
+        (when message
           (timbre/info message))
-        (if error
+        (when error
           (timbre/warn error))
         (layout/render page
                        (merge (util/standard-params request)

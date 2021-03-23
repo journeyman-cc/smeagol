@@ -4,7 +4,6 @@
   (:require
     [clojure.string :as cs]
     [schema.core :as s]
-    [com.stuartsierra.component :as component]
     [smeagol.include.parse :as parse]
     [smeagol.include.resolve :as resolve]
     [smeagol.include.indent :as indent]))

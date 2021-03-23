@@ -6,7 +6,6 @@ smeagol.include and not inteded for direct usage."
   (:require
     [schema.core :as s]
     [smeagol.include.resolve :as resolve]
-    [com.stuartsierra.component :as component]
     [clojure.java.io :as cjio]
     [taoensso.timbre :as timbre]))
 

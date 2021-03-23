@@ -1,16 +1,15 @@
 (ns ^{:doc "Utility functions useful to extension processors."
       :author "Simon Brooke"}
   smeagol.extensions.utils
-  (:require [cemerick.url :refer (url url-encode url-decode)]
+  (:require [cemerick.url :refer (url)]
             [clj-yaml.core :as yaml]
             [clojure.data.json :as json]
             [clojure.java.io :as cjio]
             [clojure.string :as cs]
             [me.raynes.fs :as fs]
             [noir.io :as io]
-            [smeagol.configuration :refer [config]]
             [taoensso.timbre :as log]
-            [smeagol.util :refer [content-dir upload-dir]]))
+            [smeagol.util :refer [upload-dir]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;

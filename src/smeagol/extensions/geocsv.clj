@@ -2,7 +2,7 @@
       :author "Simon Brooke"}
   smeagol.extensions.geocsv
   (:require [smeagol.configuration :refer [config]]
-            [smeagol.extensions.utils :refer :all]
+            [smeagol.extensions.utils :refer [resource-url-or-data->data]]
             [taoensso.timbre :as log]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

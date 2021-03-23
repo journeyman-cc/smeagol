@@ -5,7 +5,8 @@
             [clojure.string :as s]
             [environ.core :refer [env]]
             [noir.io :as io]
-            [taoensso.timbre :as log]))
+            [taoensso.timbre :as log])
+  (:import (javax.naming InitialContext )))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;
@@ -30,12 +31,9 @@
 ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;
-;;;; Right, doing the data visualisation thing is tricky. Doing it in the
-;;;; pipeline doesn't work, because the md-to-html-string filter messes up
-;;;; both YAML and JSON notation. So we need to extract the visualisation
-;;;; fragments from the Markdown text and replace them with tokens we will
-;;;; recognise afterwards, perform md-to-html-string, and then replace our
-;;;; tokens with the transformed visualisation specification.
+;;;; Configuration may have to be pulled from different places depending on the
+;;;; environment in which Smeagol runs. This handles that problem reasonably
+;;;; seamlessly.
 ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -47,13 +45,44 @@
 
 
 (defn- from-env-vars
-  "Read a map from those of these environment variables which have values"
-  [& vars]
+  "Read a map from those of these environment `vars` which have values"
+  [vars]
   (reduce
-    #(let [v (env %2)]
-       (if v (assoc %1 %2 v) %1))
-    {}
-    vars))
+   #(let [v (env %2)]
+      (if v
+        (do
+          (log/info (str "Read value of " %2 " from shell environment as " v))
+          (assoc %1 %2 v)) %1))
+   {}
+   vars))
+
+(defn- from-initial-context
+  "Config `vars` are read from the initial context, which (at least under Tomcat) 
+   are specific to the individual web app. Nevertheless the same names will 
+   be used as for environment variables, because it just makes life easier."
+  [vars]
+  (log/info "Seeking config in initial context")
+  (try
+    (reduce
+     #(try
+        (log/info "Seeking value for " %2 " in initial context")
+        (let [v (javax.naming.InitialContext/doLookup %2)]
+          (if v
+            (do
+              (log/info (str "Read value of " %2 " from initial context as " v))
+              (assoc %1 %2 v))
+            %1))
+        (catch Exception e
+          (log/warn (str "Error while seeking value for " %2 " in initial context: " (type e) "; " (.getMessage e)))
+          %1))
+     {}
+     (map #(str "java:comp/env/" (name %)) vars))
+    (catch javax.naming.NoInitialContextException _
+      ;; ignore: this only means we're not in a servlet context, 
+      ;; e.g unit tests. 
+      )
+    (catch Exception other
+      (log/warn (str "Error while seeking values in initial context: " (type other) "; " (.getMessage other))))))
 
 
 (defn to-keyword
@@ -106,6 +135,19 @@
      {:from :smeagol-site-title :to :site-title}))
 
 
+(def config-var-names
+  "Names of configuration variables which will be sought in the environment or
+   initial context"
+  '(:smeagol-config
+    :smeagol-content-dir
+    :smeagol-default-locale
+    :smeagol-formatters
+    :smeagol-js-from
+    :smeagol-log-level
+    :smeagol-passwd
+    :smeagol-site-title))
+
+
 (def build-config
   "The actual configuration, as a map. The idea here is that the config
   file is read (if it is specified and present), but that individual
@@ -128,14 +170,10 @@
                      config (merge
                               file-contents
                               (transform-map
-                                (from-env-vars
-                                  :smeagol-content-dir
-                                  :smeagol-default-locale
-                                  :smeagol-formatters
-                                  :smeagol-js-from
-                                  :smeagol-log-level
-                                  :smeagol-passwd
-                                  :smeagol-site-title)
+                               (from-env-vars config-var-names)
+                               config-env-transforms)
+                              (transform-map
+                                (from-initial-context config-var-names)
                                 config-env-transforms))]
                  (if (env :dev)
                    (log/debug

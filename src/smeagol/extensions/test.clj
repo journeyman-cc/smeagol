@@ -6,5 +6,5 @@
 (def process-test-return-value "<!-- The test extension has run and this is its output -->")
 
 (defn process-test
-    [^String fragment ^Integer index]
+    [^String _ ^Integer _]
     process-test-return-value)

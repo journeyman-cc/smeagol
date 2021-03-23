@@ -10,7 +10,7 @@
             [me.raynes.fs :as fs]
             [noir.io :as io]
             [smeagol.configuration :refer [config]]
-            [smeagol.extensions.utils :refer :all]
+            [smeagol.extensions.utils :refer [resource-url-or-data->data uploaded?]]
             [smeagol.util :refer [content-dir upload-dir]]
             [taoensso.timbre :as log]))
 
@@ -85,7 +85,7 @@
 (defn simplify
   "Simplify a parse-`tree` created by `simple-grammar`, q.v."
   [tree]
-  (if
+  (when
     (coll? tree)
     (case (first tree)
       :SLIDES (cons
@@ -106,7 +106,7 @@
   [slide]
   (let [url (:src slide)
         dimensions (try
-                     (if (uploaded? url)
+                     (when (uploaded? url)
                        (dimensions
                          (buffered-image
                            (cio/file upload-dir (fs/base-name url)))))
@@ -122,7 +122,7 @@
 
 (defn find-thumb
   [url thumbsize]
-  (if
+  (when
     (and
       (uploaded? url)
       thumbsize)

@@ -4,8 +4,7 @@ smeagol.include and not inteded for direct usage."
       :author "Michael Jerger"}
   smeagol.include.resolve
   (:require
-    [schema.core :as s]
-    [com.stuartsierra.component :as component]))
+    [schema.core :as s]))
 
 (s/defrecord Resolver
   [type :- s/Keyword

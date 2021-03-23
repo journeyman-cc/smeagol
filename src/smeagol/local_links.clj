@@ -1,9 +1,8 @@
 (ns ^{:doc "Format Semagol's local links."
       :author "Simon Brooke"}
   smeagol.local-links
-  (:require [clojure.data.json :as json]
-            [clojure.string :as cs]
-            [cemerick.url :refer (url url-encode url-decode)]))
+  (:require [clojure.string :as cs]
+            [cemerick.url :refer (url-encode)]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;

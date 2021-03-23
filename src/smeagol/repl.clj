@@ -1,9 +1,11 @@
 (ns ^{:doc "Functions to allow the wiki to be started and stopped from the REPL."
       :author "Simon Brooke"}
   smeagol.repl
-  (:use smeagol.handler
-        ring.server.standalone
-        [ring.middleware file-info file]))
+  (:require 
+   [ring.middleware.file :refer [wrap-file]]
+   [ring.middleware.file-info :refer [wrap-file-info]]
+   [ring.server.standalone :refer [app serve]]
+   [smeagol.handler :refer [destroy init]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;
