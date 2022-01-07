@@ -1,7 +1,7 @@
 (ns ^{:doc "Photoswipe gallery formatter for Semagol's extendsible markdown
       format."
       :author "Simon Brooke"}
-  smeagol.extensions.photoswipe
+ smeagol.extensions.photoswipe
   (:require [clojure.data.json :as json]
             [clojure.java.io :as cio]
             [clojure.string :as cs]
@@ -14,7 +14,8 @@
             [smeagol.configuration :refer [config]]
             [smeagol.extensions.utils :refer [resource-url-or-data->data uploaded?]]
             [smeagol.util :refer [content-dir upload-dir]]
-            [taoensso.timbre :as log]))
+            [taoensso.timbre :as log])
+  (:gen-class))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;
@@ -68,11 +69,11 @@
   "Simplify a parse-`tree` created by `simple-grammar`, q.v."
   [tree]
   (when
-    (coll? tree)
+   (coll? tree)
     (case (first tree)
       :SLIDES (cons
-                (simplify (first (rest tree)))
-                (first (simplify (rest (rest tree)))))
+               (simplify (first (rest tree)))
+               (first (simplify (rest (rest tree)))))
       :SLIDE (remove empty? (map simplify (rest tree)))
       :title tree
       :src tree
@@ -90,12 +91,12 @@
         dimensions (try
                      (when (uploaded? url)
                        (dimensions
-                         (buffered-image
-                           (cio/file upload-dir (fs/base-name url)))))
+                        (buffered-image
+                         (cio/file upload-dir (fs/base-name url)))))
                      (catch Exception x
                        (log/error
-                         "Failed to fetch dimensions of image "
-                         url (.getMessage x))
+                        "Failed to fetch dimensions of image "
+                        url (.getMessage x))
                        nil))]
     (if dimensions
       (assoc slide :w (first dimensions) :h (nth dimensions 1))
@@ -105,14 +106,14 @@
 (defn find-thumb
   [url thumbsize]
   (when
-    (and
-      (uploaded? url)
-      thumbsize)
+   (and
+    (uploaded? url)
+    thumbsize)
     (let [p (str (cio/file "uploads" (name thumbsize) (fs/base-name url)))
           p' (cio/file content-dir p)
           r (str (cio/file "content" p))]
       (if
-        (and (fs/exists? p') (fs/readable? p'))
+       (and (fs/exists? p') (fs/readable? p'))
         r
         (do
           (log/warn "Failed to find" thumbsize "thumbnail for" url "at" p')
@@ -132,15 +133,15 @@
   (let [s' (zipmap (map first slide) (map #(nth % 1) slide))
         thumbsizes (:thumbnails config)
         thumbsize (first
-                    (sort
-                      #(> (%1 thumbsizes) (%2 thumbsizes))
-                      (keys thumbsizes)))
+                   (sort
+                    #(> (%1 thumbsizes) (%2 thumbsizes))
+                    (keys thumbsizes)))
         url (:src s')
         thumb (find-thumb url thumbsize)]
     (slide-merge-dimensions
-      (if thumb
-        (assoc s' :msrc thumb)
-        s'))))
+     (if thumb
+       (assoc s' :msrc thumb)
+       s'))))
 
 
 (def process-simple-photoswipe
@@ -148,15 +149,15 @@
   a sequence of MarkDown image links. This is REALLY expensive to do, we don't
   want to do it often. Hence memoised."
   (memoize
-    (fn
-      [^String spec ^Integer index]
-      (process-full-photoswipe
-        (json/write-str
-          {:slides (map
-                     process-simple-slide
-                     (simplify (simple-grammar spec)))
-           :options { :timeToIdle 100 }
-           :openImmediately true}) index))))
+   (fn
+     [^String spec ^Integer index]
+     (process-full-photoswipe
+      (json/write-str
+       {:slides (map
+                 process-simple-slide
+                 (simplify (simple-grammar spec)))
+        :options {:timeToIdle 100}
+        :openImmediately true}) index))))
 
 
 (defn process-photoswipe
@@ -165,7 +166,7 @@
   [^String url-or-pswp-spec ^Integer index]
   (let [data (resource-url-or-data->data url-or-pswp-spec)
         spec (cs/trim (:data data))]
-        (if
-          (cs/starts-with? spec "![")
-          (process-simple-photoswipe spec index)
-          (process-full-photoswipe spec index))))
+    (if
+     (cs/starts-with? spec "![")
+      (process-simple-photoswipe spec index)
+      (process-full-photoswipe spec index))))

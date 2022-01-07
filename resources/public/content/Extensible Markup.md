@@ -146,7 +146,9 @@ followed by three backticks on a line by themselves. There is an [[Example galle
 
 ## Writing your own custom formatters
 
-A custom formatter is simply a Clojure function which takes a string and an integer as arguments and produces a string as output. The string is the text the user has typed into their markdown; the integer is simply a number you can use to keep track of which addition to the page this is, in order, for example, to fix up some JavaScript to render it.
+A custom formatter is simply a Clojure function which takes a string and an integer as arguments and produces a string as output. The string argument is the text the user has typed into their markdown; the integer is simply a number you can use to keep track of which addition to the page this is, in order, for example, to fix up some JavaScript to render it.
+
+The string returned should just be the necessary HTML text to add to the page to invoke the formatter.
 
 For example, here's the formatter which handles the Vega charts:
 
@@ -165,6 +167,10 @@ For example, here's the formatter which handles the Vega charts:
         "', vl"
         index
         ");\n//]]\n</script>"))
+				
+In order to allow pluggable extensions -- that is, extensions which are not compiled as part of Smeagol but are added as additional classes on the classpath at run time -- every extension function must be written in a namespace which has the `(:gen-class)` directive.
+
+In principal it should be possible to write extensions in Java, or in other languages which compile for the JVM, but this has not yet been demonstrated.
 
 ### Configuring Smeagol to use your formatter
 

@@ -2,7 +2,8 @@
       :author "Simon Brooke"}
   smeagol.extensions.mermaid
   (:require [smeagol.extensions.utils :refer [resource-url-or-data->data]]
-            [taoensso.timbre :as log]))
+            [taoensso.timbre :as log])
+  (:gen-class))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;

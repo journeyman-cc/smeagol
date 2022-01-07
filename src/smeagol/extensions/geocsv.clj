@@ -3,7 +3,8 @@
   smeagol.extensions.geocsv
   (:require [smeagol.configuration :refer [config]]
             [smeagol.extensions.utils :refer [resource-url-or-data->data]]
-            [taoensso.timbre :as log]))
+            [taoensso.timbre :as log])
+  (:gen-class))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;
