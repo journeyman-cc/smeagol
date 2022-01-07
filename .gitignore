@@ -17,6 +17,12 @@ pom.xml.asc
 smeagol.log*
 /node_modules/
 .DS_Store
+.clj-kondo/
+.idea/
+.calva/
+.lsp
+.eastwood
+smeagol.iml
 
 
 resources/public/content/uploads/

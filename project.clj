@@ -50,13 +50,13 @@
             [lein-npm "0.6.2"]
             [lein-ring "0.12.5" :exclusions [org.clojure/clojure]]]
 
-  :npm {:dependencies [[simplemde "1.11.2"]
-                       [vega "5.8.0"]
-                       [vega-embed "6.2.2"]
-                       [vega-lite "4.1.1"]
-                       [mermaid "8.4.6"]
+  :npm {:dependencies [[mermaid "8.13.8"]
                        [photoswipe "4.1.3"]
-                       [tablesort "5.2.0"]]
+                       [simplemde "1.11.2"]
+                       [tablesort "5.3.0"]
+                       [vega "5.21.0"]
+                       [vega-embed "6.20.5"]
+                       [vega-lite "5.2.0"]]
         :root "resources/public/vendor"}
 
   :docker {:image-name "simonbrooke/smeagol"
