@@ -20,6 +20,7 @@ smeagol.log*
 .calva/
 .idea/
 .lsp/
+.clj-kondo/
 
 resources/public/content/uploads/
 

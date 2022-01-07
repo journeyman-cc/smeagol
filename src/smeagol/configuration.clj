@@ -47,6 +47,7 @@
 (defn- from-env-vars
   "Read a map from those of these environment `vars` which have values"
   [vars]
+  (log/info (str "env is: " (keys env)))
   (reduce
    #(let [v (env %2)]
       (if v
@@ -55,42 +56,6 @@
           (assoc %1 %2 v)) %1))
    {}
    vars))
-
-
-;;; TODO: OK, why this doesn't work. We need a namespace (and, indeed, ideally
-;;;  in a library) which returns the name/value pairs of the InitialContext as 
-;;;  a map. We need this because, if the config file itself is to be specified
-;;;  in this way, we need to be able to access this map BEFORE we do build-config.
-(defn- from-initial-context
-  "Config `vars` are read from the initial context, which (at least under Tomcat) 
-   are specific to the individual web app. Nevertheless the same names will 
-   be used as for environment variables, because it just makes life easier."
-  [vars]
-  (log/info "Seeking config in initial context")
-  (log/debug (str "Bound names are: " (map #(.toString %) (.list (new javax.naming.InitialContext) "java:comp/env/"))))
-  (try
-    (reduce
-     #(try
-        (log/debug "Seeking value for " %2 " in initial context")
-        (let [v (javax.naming.InitialContext/doLookup %2)]
-          (if v
-            (do
-              (log/info (str "Read value of " %2 " from initial context as " v))
-              (assoc %1 %2 v))
-            %1))
-        (catch Exception e
-          (log/debug (str "Error while seeking value for " %2 " in initial context: " (type e) "; " (.getMessage e)))
-          %1))
-     {}
-     (map #(str 
-            "java:comp/env/" 
-            (s/replace (name %) #"-" "_")) vars))
-    (catch javax.naming.NoInitialContextException _
-      ;; ignore: this only means we're not in a servlet context, 
-      ;; e.g unit tests. 
-      )
-    (catch Exception other
-      (log/warn (str "Error while seeking values in initial context: " (type other) "; " (.getMessage other))))))
 
 
 (defn to-keyword
