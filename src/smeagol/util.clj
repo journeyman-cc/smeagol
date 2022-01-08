@@ -60,12 +60,6 @@
   (let [a (str (fs/absolute content-dir))]
     (subs a 0 (- (count a) (count "content")))))
 
-;; (def local-url-base
-;;   "Essentially, the slash-terminated absolute path of the `public` resource
-;;   directory. **NOTE** that this MAY NOT contain `content-dir`."
-;;   (cjio/file (io/resource-path)))
-
-
 (defn not-servable-reason
   "As a string, the reason this `file-path` cannot safely be served, or `nil`
   if it is safe to serve. This reason may be logged, but should *not* be

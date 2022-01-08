@@ -1,4 +1,4 @@
-![One wiki to rule them all](https://www.weft.scot/images/smeagol.png)
+![One wiki to rule them all](img/smeagol.png)
 
 # Welcome to Smeagol!
 Smeagol is a hackable, extensible Wiki engine which is reasonably user-friendly. It uses [Markdown](http://daringfireball.net/projects/markdown/) as its text format, and [Git](http://git-scm.com/) to provide versioning and backup.
@@ -27,13 +27,10 @@ You can run Smeagol from the [[Docker Image]]; alternatively you can run it from
 Smeagol is an open source project; you're entitled to make changes yourself. Read more about  [[Developing Smeagol]].
 
 ## License
-Copyright © 2014-2020 Simon Brooke. Licensed under the GNU General Public License,
+Copyright © 2014-2022 [Simon Brooke](mailto:simon@journeyman.cc). Licensed under the GNU General Public License,
 version 2.0 or (at your option) any later version. If you wish to incorporate
 parts of Smeagol into another open source project which uses a less restrictive
 license, please contact me; I'm open to dual licensing it.
-
-## Phoning home
-Smeagol does currently fetch one image from my home site. Read more about [[Phoning Home]], and how to prevent it (if you want to).
 
 ## Advertisement
 If you like what you see here, I am available for work on open source Clojure projects.
