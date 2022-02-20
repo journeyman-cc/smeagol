@@ -380,13 +380,14 @@
   (or
     (show-sanity-check-error)
     (let [params (keywordize-keys (:params request))
+          headers (keywordize-keys (:headers request))
           form-params (keywordize-keys (:form-params request))
           username (:username form-params)
           password (:password form-params)
           action (:action form-params)
           user (session/get :user)
-          redirect-to (:redirect-to params)]
-      (if redirect-to (log/info (str "After auth, redirect to: " redirect-to)))
+          redirect-to (or (:redirect-to params) (:referer headers))]
+      (when redirect-to (log/info (str "After auth, redirect to: " redirect-to)))
       (cond
         (= action (util/get-message :logout-label request))
         (do
@@ -418,7 +419,9 @@
         ;; else merge a redirect target into the params
         (let
           [redirect-to (if (:uri request)
-                         (cs/join "?" [(:uri request) (:query-string request)]))]
+                         (cs/join "?" [(:uri request) (:query-string request)])
+                         ((:headers request) "referer"))]
+          (log/info "Setting redirect to '" redirect-to "'")
           (assoc-in request [:params :redirect-to] redirect-to))))))
 
 (defn passwd-page
