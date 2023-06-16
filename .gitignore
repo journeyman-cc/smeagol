@@ -31,3 +31,5 @@ resources/public/content/uploads/
 resources/public/content/Populating a game world.md
 
 *.iml
+
+.portal/vs-code.edn

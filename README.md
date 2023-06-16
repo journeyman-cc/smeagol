@@ -3,6 +3,8 @@
 # Welcome to Smeagol!
 Smeagol is a hackable, extensible Wiki engine which is reasonably user-friendly. It uses [Markdown](http://daringfireball.net/projects/markdown/) as its text format, and [Git](http://git-scm.com/) to provide versioning and backup.
 
+**NOTE** Smeagol is no longer actively maintained; I have moved on to using [Cryogen](http://cryogenweb.org/) as my preferred system for generating websites. There's a lot of good ideas in Smeagol, but doing markdown to HTML conversion every time a document is requested puts load on the server which isn't really merited. If anyone else would like to take on the project, they would be welcome to do so.
+
 ## Using Smeagol
 Read the [[User Documentation]] for an introduction to all Smeagol's features.
 

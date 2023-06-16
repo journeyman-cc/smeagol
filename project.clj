@@ -3,7 +3,7 @@
   :url "https://github.com/simon-brooke/smeagol"
   :license {:name "GNU General Public License,version 2.0 or (at your option) any later version"
             :url "https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html"}
-  :dependencies [[clj-jgit "0.8.10"]
+  :dependencies [[clj-jgit "1.0.2"]
                  [clj-yaml "0.4.0"]
                  [clojure.java-time "0.3.2"]
                  [com.cemerick/url "0.1.1"]
