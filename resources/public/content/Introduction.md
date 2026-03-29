@@ -18,7 +18,7 @@ Smeagol has built in internationalisation. Currently it has translation files fo
 ## Images
 You can (if you're logged in) upload files, including images, using the **Upload a file** link on the top menu bar. You can link to an uploaded image, or to other images already available on the web, like this:
 
-![Smeagol](http://vignette3.wikia.nocookie.net/lotr/images/e/e1/Gollum_Render.png/revision/latest?cb=20141218075509)
+![Smeagol](/img/smeagol.png)
 
 ## Running Smeagol
 You can run Smeagol from the [[Docker Image]]; alternatively you can run it from an executable jar file or as a war file in a servlet container. Read how about [[Configuring Smeagol]] and [[Deploying Smeagol]].
@@ -35,5 +35,3 @@ license, please contact me; I'm open to dual licensing it.
 ## Phoning home
 Smeagol does currently fetch one image from my home site. Read more about [[Phoning Home]], and how to prevent it (if you want to).
 
-## Advertisement
-If you like what you see here, I am available for work on open source Clojure projects.
